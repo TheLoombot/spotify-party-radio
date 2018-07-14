@@ -9,7 +9,7 @@ import { Component, OnInit } from '@angular/core';
 export class LoginComponent implements OnInit {
   client_id = "7fafbce74b0b4d78868fbdc6d6b1858b";
   response_type = "token";
-  redirect_uri = "https://poop-50473.firebaseapp.com/redirect";
+  redirect_uri = "https://poop-a1c0e.firebaseapp.com/redirect";
   authorizationUrl = "https://accounts.spotify.com/authorize?"; 
 
 

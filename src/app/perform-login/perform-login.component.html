@@ -1,4 +1,11 @@
-<p>
-  Spotify-provided access code is: 
-   {{ code }} 
-</p>
+<div class="panel panel-primary">
+	<div class="panel-heading">Perform Login</div>
+	<div class="panel-body">
+		Spotify-provided access code is: 
+		{{ code }}
+	</div>
+	<div class="panel-body">
+		Generated "state" value to prevent CSRF is:
+		{{ state }}
+	</div>
+</div>

@@ -8,13 +8,15 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class PerformLoginComponent implements OnInit {
 
-  code: string; 
   tokenFunctionURL = 'https://us-central1-poop-a1c0e.cloudfunctions.net/token';
+  code: string; 
+  state: string;
 
   constructor(private route: ActivatedRoute) { }
 
   ngOnInit() {
   	this.code = this.route.snapshot.queryParams["code"];
+  	this.state = this.route.snapshot.queryParams["state"];
   }
 
 }

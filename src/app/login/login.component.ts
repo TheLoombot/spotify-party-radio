@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { AngularFireModule } from 'angularfire2';
+import { AngularFireDatabaseModule } from 'angularfire2/database';
 
 @Component({
   selector: 'app-login',
@@ -7,24 +9,16 @@ import { Component, OnInit } from '@angular/core';
 })
 
 export class LoginComponent implements OnInit {
-  client_id = "7fafbce74b0b4d78868fbdc6d6b1858b";
-  response_type = "token";
-  redirect_uri = "https://poop-a1c0e.firebaseapp.com/redirect";
-  authorizationUrl = "https://accounts.spotify.com/authorize?"; 
-
 
   constructor() { }
 
   ngOnInit() {
-    this.authorizationUrl += "&client_id=" + this.client_id; 
-    this.authorizationUrl += "&response_type=" + this.response_type;
-    this.authorizationUrl += "&redirect_uri=" + this.redirect_uri;
-    this.authorizationUrl += "&scope=streaming";
-
   }
 
+/** Call the Firebase function that will initiate the Spotify auth flow
+    TODO update this so it's not environment-specific */
   authSpotify() {
-    window.open(this.authorizationUrl);
+    window.location.href  = 'https://us-central1-poop-a1c0e.cloudfunctions.net/redirect';
   }
 
 }

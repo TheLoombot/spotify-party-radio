@@ -8,11 +8,20 @@ Run `ng build; firebase deploy` to build and deploy the project.
 
 # Project Notes
 
-First goal is just to get basic auth working in an Angular app deployed to Firebase authenticating via Spotify.
+[Project Spec](https://github.com/TheLoombot/deep-strafe/blob/master/DeepState.pdf)
+
+Though originally conceived as a native iOS App that integrates with Apple Music, I'm trying to build a proof of concept for the web instead, using Spotify (since more people I know have Spotify). However this PoC retains some of the spec's ideas: serverless design using Firebase as a backend, and the basic user experience.
+
+Goals in priority order:
+
+1. Get basic auth working in an Angular app deployed to Firebase authenticating via Spotify.
+2. Verify auth works by building basic search and playback functions
+3. Create a basic list of users (all users in the system) and for each, allow the user to add songs to her own station
+4. Listen to other user's stations according to the spec's 
 
 ## Authentication
 
-We use the "Authorization Code" flow described in Spotify's [auth guide](https://developer.spotify.com/documentation/general/guides/authorization-guide/). Clicking "sign in with Spotify" in the app calls the `redirect` Cloud Function, which sets a cookie with a CSRF-preventing random value, and then redirects the user to the Spotify authorize URL, which then redirects back to the app (see Routing section below) with an access code (and the CSRF value).
+We use the "Authorization Code" flow described in Spotify's [auth guide](https://developer.spotify.com/documentation/general/guides/authorization-guide/). Clicking "sign in with Spotify" in the app calls the `redirect` Cloud Function, which sets a cookie with a CSRF-preventing random value, and then redirects the user to the Spotify authorize URL (getting Spotify Client ID and Secret from Google Cloud environment variables), which then redirects back to the app (see Routing section below) with an access code (and the CSRF value).
 
 What should happen next:
 

@@ -27,9 +27,9 @@ What should happen next:
 
 * The access code and CSRF value are passed to the `token` Cloud Function
 * This function: 
- * Checks the CSRF value against the one stored in the user's cookie
- * Saves the access code from Spotify to the Firebase DB for this user
- * Creates a Firebase account for the user and get a Firebase auth token back
+  * Checks the CSRF value against the one stored in the user's cookie
+  * Saves the access code from Spotify to the Firebase DB for this user
+  * Creates a Firebase account for the user and get a Firebase auth token back
 * We then log the user in to the Firebase account with that Firebase auth token
 
 This whole pattern, and all the current deployed Cloud Function code, is stolen from [this sample project](https://github.com/firebase/functions-samples/tree/master/spotify-auth).

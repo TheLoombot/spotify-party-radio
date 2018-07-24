@@ -25,4 +25,6 @@ We use the "Implicit Grant" flow described in Spotify's [auth guide](https://dev
 
 We store the access token in the browser's local storage and include it as header on all subsequent HTTP requests using Angular's Interceptor functionality. 
 
+Since authentication requires handling a callback it's tricky to do when you're running the app off localhost... but you can get an access token [from prod](https://poop-a1c0e.firebaseapp.com/) and then manually redirect yourself to `localhost:4200/#access_token={YOUR ACCESS TOKEN}` and things should work fine from there... until the token expires. 
 
+Note that we are using Implicit Grant rather than "Authorization Code" flow for now because it requires no server resources. We can stay "serverless" and still get the benefit of Authorization Code flow (which requires a server, but gets you easy auth refreshes in return) using Firebase's "Cloud Funtions" features, as described [here](https://github.com/firebase/functions-samples/tree/master/spotify-auth). 

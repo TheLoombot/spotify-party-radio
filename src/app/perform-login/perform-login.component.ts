@@ -19,19 +19,6 @@ export class PerformLoginComponent implements OnInit {
   accessTokenStored: string;     // an old token from localStorage
   hasToken = true;
 
-  authorizeURL = 'https://accounts.spotify.com/authorize';
-  clientId = '7fafbce74b0b4d78868fbdc6d6b1858b';
-  responseType = 'token';
-  redirectURI = "https://" + window.location.hostname;
-  scope = ['user-read-email',
-  'user-read-currently-playing', 
-  'user-modify-playback-state',
-  'streaming',
-  'user-read-playback-state',
-  'user-read-private',
-  'user-top-read',
-  'user-read-email'].join('%20');
-
   constructor(private route: ActivatedRoute,
     public http: HttpClient,
     private spotify: SpotifyService
@@ -57,20 +44,23 @@ export class PerformLoginComponent implements OnInit {
     // Other otherwise we show the login button
   } else { 
     this.hasToken = false;
-    this.authorizeURL += "?" + "client_id=" + this.clientId;
-    this.authorizeURL += "&response_type=" + this.responseType;
-    this.authorizeURL += "&redirect_uri=" + this.redirectURI;
-    this.authorizeURL += "&scope=" + this.scope;
   }
 
   this.spotify.user().subscribe(
-    data => this.user = data
-  ) 
+    data => { 
+      this.user = data
+    },
+    error => {
+      window.localStorage.removeItem("access_token");
+      this.accessTokenStored = null;
+      this.hasToken = false;
+    }
+  )
 
 }
 
 authSpotify() {
-  window.location.href  = this.authorizeURL;
+  window.location.href  = this.spotify.getAuthUrl();
 }
 
 

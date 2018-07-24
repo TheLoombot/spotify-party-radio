@@ -1,7 +1,19 @@
-<div class="panel panel-primary">
-	<div class="panel-heading">Perform Login</div>
-	<div class="panel-body">
-		Spotify-provided access access_token is: 
-		{{ access_token }}
-	</div>
-</div>
+  <div class="panel panel-primary">
+
+  	<div class="panel-heading">Login</div>
+
+  	<div class="panel-body" *ngIf="accessTokenNew">
+  		New access token from Spotify is:
+  		{{ accessTokenNew }}
+  	</div>
+
+  	<div class="panel-body" *ngIf="accessTokenStored">
+  		Stored access token is:
+  		{{ accessTokenStored }}
+  	</div>
+
+  	<div class="panel-body" *ngIf="!hasToken">
+  		<button (click)="authSpotify()">Sign in with spitify</button>
+  	</div>
+
+  </div>

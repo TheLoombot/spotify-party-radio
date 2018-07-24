@@ -16,4 +16,8 @@
   		<button (click)="authSpotify()">Sign in with Spotify</button>
   	</div>
 
-  </div>
+    <div class="panel-body" *ngIf="user">
+      Hola, <a href="{{ user.external_urls.spotify }}">{{ user.id }}</a>! You've got {{ user.product }} access.
+    </div>
+
+  </div> 

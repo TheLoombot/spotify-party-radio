@@ -2,15 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpModule } from '@angular/http';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { SpotifyService } from '../spotify.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-perform-login',
   templateUrl: './perform-login.component.html',
-  styleUrls: ['./perform-login.component.css']
+  styleUrls: ['./perform-login.component.css'],
+  providers: [SpotifyService]
 })
 export class PerformLoginComponent implements OnInit {
 
-  params: string[];
+  user: Object;
 
   accessTokenNew: string;        // a new token from URL hash fragment params
   accessTokenStored: string;     // an old token from localStorage
@@ -25,19 +28,23 @@ export class PerformLoginComponent implements OnInit {
   'user-modify-playback-state',
   'streaming',
   'user-read-playback-state',
+  'user-read-private',
   'user-top-read',
   'user-read-email'].join('%20');
 
-  constructor(private route: ActivatedRoute, public http: HttpClient) { }
+  constructor(private route: ActivatedRoute,
+    public http: HttpClient,
+    private spotify: SpotifyService
+    ) { }
 
   ngOnInit() {
     // The "fragment" is hash fragment, which we can access only as a string
     // Its presence means we're getting a callback from Spotify
     if (this.route.snapshot.fragment) {
-      this.params = this.route.snapshot.fragment.split("&");
+      const params = this.route.snapshot.fragment.split("&");
 
       window.location.hash = "";
-      for (let paramString of this.params) {
+      for (let paramString of params) {
         let paramArray = paramString.split("=");
         if (paramArray[0]=="access_token") {
           this.accessTokenNew = paramArray[1];
@@ -45,30 +52,26 @@ export class PerformLoginComponent implements OnInit {
         }
       }
     // Otherwise we get the locally-stored token
-    } else if (window.localStorage.getItem("access_token")) {
-      this.accessTokenStored = window.localStorage.getItem("access_token"); 
+  } else if (window.localStorage.getItem("access_token")) {
+    this.accessTokenStored = window.localStorage.getItem("access_token"); 
     // Other otherwise we show the login button
-    } else { 
-      this.hasToken = false;
-      this.authorizeURL += "?" + "client_id=" + this.clientId;
-      this.authorizeURL += "&response_type=" + this.responseType;
-      this.authorizeURL += "&redirect_uri=" + this.redirectURI;
-      this.authorizeURL += "&scope=" + this.scope;
-    }
-
-
-    this.http.get('https://api.spotify.com/v1/artists/1vCWHaC5f2uS3yhpwWbIA6/albums?album_type=SINGLE&offset=20&limit=10')
-    .subscribe(
-      data => console.log("data is", data),
-      err => console.log(err)
-      );
-
-
+  } else { 
+    this.hasToken = false;
+    this.authorizeURL += "?" + "client_id=" + this.clientId;
+    this.authorizeURL += "&response_type=" + this.responseType;
+    this.authorizeURL += "&redirect_uri=" + this.redirectURI;
+    this.authorizeURL += "&scope=" + this.scope;
   }
 
-  authSpotify() {
-    window.location.href  = this.authorizeURL;
-  }
+  this.spotify.user().subscribe(
+    data => this.user = data
+  ) 
+
+}
+
+authSpotify() {
+  window.location.href  = this.authorizeURL;
+}
 
 
 }

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpModule } from '@angular/http';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { SpotifyService } from '../spotify.service';
 import { Observable } from 'rxjs';
 
@@ -20,7 +19,6 @@ export class PerformLoginComponent implements OnInit {
   hasToken = true;
 
   constructor(private route: ActivatedRoute,
-    public http: HttpClient,
     private spotify: SpotifyService
     ) { }
 

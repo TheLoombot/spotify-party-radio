@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { Http, HttpModule } from '@angular/http';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root'
@@ -38,4 +39,19 @@ export class SpotifyService {
 		return this.authorizeURL;
 	}
 
-}
+	search(terms: Observable<string>) {
+		return terms.pipe(
+			debounceTime(400),
+			distinctUntilChanged()).pipe(switchMap(
+				term => term ? 
+				  this.searchEntries(term)
+				:
+			    of([]) 
+			    ))
+		}
+
+		searchEntries(term) {
+			return this.http.get(this.baseUrl + "/search?type=track,album,artist&q=" + term);
+		}
+
+	}

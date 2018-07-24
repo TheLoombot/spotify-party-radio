@@ -15,11 +15,13 @@ import { SpotifyService } from './spotify.service'
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { environment } from '../environments/environment';
+import { SearchComponent } from './search/search.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PerformLoginComponent
+    PerformLoginComponent,
+    SearchComponent
   ],
   imports: [
     BrowserModule,

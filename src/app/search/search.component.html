@@ -1,0 +1,17 @@
+  <div class="panel panel-primary">
+
+  	<div class="panel-heading">Search</div>
+
+  	<div class="panel-body">
+
+  		<input
+  		(keyup)="searchTerm$.next($event.target.value)">
+
+
+  		<ul *ngIf="results?.tracks">
+  			<li *ngFor="let track of results.tracks.items">
+  				<span *ngFor="let artist of track.artists"> {{ artist.name }} / </span> {{ track.name }}
+  			</li>
+  		</ul>
+  	</div>
+  </div>

@@ -14,7 +14,7 @@ Though originally conceived as a native iOS App that integrates with Apple Music
 
 Goals in priority order:
 
-1. Get basic auth working in an Angular app deployed to Firebase authenticating via Spotify.
+1. (DONE) Get basic auth working in an Angular app deployed to Firebase authenticating via Spotify.
 2. Verify auth works by building basic search and playback functions
 3. Create a basic list of users (all users in the system) and for each, allow the user to add songs to her own station
 4. Listen to other user's stations according to the spec's 
@@ -23,6 +23,6 @@ Goals in priority order:
 
 We use the "Implicit Grant" flow described in Spotify's [auth guide](https://developer.spotify.com/documentation/general/guides/authorization-guide/). Clicking "sign in with Spotify" in the app  redirects the user to the Spotify authorize URL (passing the app's Spotify Client ID), which then redirects back to the app with an access token.
 
-We store the access token in the browsers local storage and include it as header on all subsequent HTTP requests using Angular's Interceptor functionality. 
+We store the access token in the browser's local storage and include it as header on all subsequent HTTP requests using Angular's Interceptor functionality. 
 
 

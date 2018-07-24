@@ -35,6 +35,7 @@ export class PerformLoginComponent implements OnInit {
     // Its presence means we're getting a callback from Spotify
     if (this.route.snapshot.fragment) {
       this.params = this.route.snapshot.fragment.split("&");
+
       window.location.hash = "";
       for (let paramString of this.params) {
         let paramArray = paramString.split("=");

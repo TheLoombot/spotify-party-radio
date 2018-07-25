@@ -15,9 +15,9 @@ Though originally conceived as a native iOS App that integrates with Apple Music
 Goals in priority order:
 
 1. (DONE) Get basic auth working in an Angular app deployed to Firebase authenticating via Spotify.
-2. Verify auth works by building basic search and playback functions
-3. Create a basic list of users (all users in the system) and for each, allow the user to add songs to her own station
-4. Listen to other user's stations according to the spec's 
+2. Verify auth works by building basic search (DONE) and playback (TODO) functions
+3. Create a single shared playlist in Firebase, test that multiple users can add to it 
+4. Implement playback management functionality described in the spec
 
 ## Authentication
 

@@ -2,12 +2,12 @@
 
   	<div class="panel-heading">Login</div>
 
-  	<div class="panel-body" *ngIf="accessTokenNew">
+  	<div class="panel-body" *ngIf="accessTokenNew" style="word-wrap: break-word">
   		New access token from Spotify is:
   		{{ accessTokenNew }}
   	</div>
 
-  	<div class="panel-body" *ngIf="accessTokenStored">
+  	<div class="panel-body" *ngIf="accessTokenStored" style="word-wrap: break-word">
   		Stored access token is:
   		{{ accessTokenStored }}
   	</div>

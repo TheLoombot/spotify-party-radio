@@ -37,7 +37,7 @@ export class SearchComponent implements OnInit {
 		error => {
 			this.playBackResponse = error.error.error.message
 		}
-		})
+		)
 	}
 
 }

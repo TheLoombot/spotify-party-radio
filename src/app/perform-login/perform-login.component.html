@@ -4,7 +4,8 @@
 
   	<div class="panel-body" *ngIf="accessTokenNew" style="word-wrap: break-word">
   		New access token from Spotify is:
-  		{{ accessTokenNew }}
+  		{{ accessTokenNew }} <br />
+      (<a href="http://localhost:4200/#access_token={{ accessTokenNew }}">apply to localhost</a>)
   	</div>
 
   	<div class="panel-body" *ngIf="accessTokenStored" style="word-wrap: break-word">

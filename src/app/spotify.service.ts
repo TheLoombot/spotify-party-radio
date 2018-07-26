@@ -44,14 +44,24 @@ export class SpotifyService {
 			debounceTime(400),
 			distinctUntilChanged()).pipe(switchMap(
 				term => term ? 
-				  this.searchEntries(term)
+				this.searchEntries(term)
 				:
-			    of([]) 
-			    ))
+				of([]) 
+				))
 		}
 
 		searchEntries(term) {
 			return this.http.get(this.baseUrl + "/search?type=track,album,artist&q=" + term);
 		}
 
+		playTrack(uri: string) {
+			let bodyObj = {
+				"uris": [uri]
+			}
+
+			console.log("attempting to play ", uri);
+
+			return this.http.put(this.baseUrl + "/me/player/play", JSON.stringify(bodyObj))
+
+		}
 	}

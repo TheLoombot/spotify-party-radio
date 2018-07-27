@@ -1,0 +1,13 @@
+<div class="panel panel-primary">
+	<div class="panel-heading">Playlist</div>
+
+	<div class="panel-body" *ngIf="tracks">
+		<div class="panel panel-primary" *ngFor="let track of tracks">
+			<div (click)="playTrack(track.uri)" class="panel-body">   
+				<img src="{{ track.imageUrl }}" class="pull-left" style="margin-right: 10px">
+				<h4>{{ track.trackName }} </h4>
+				<h5> {{ track.artistName }} - {{ track.albumName }} </h5>
+			</div>
+		</div>
+	</div>
+</div>

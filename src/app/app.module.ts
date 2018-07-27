@@ -16,12 +16,14 @@ import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { environment } from '../environments/environment';
 import { SearchComponent } from './search/search.component';
+import { PlaylistComponent } from './playlist/playlist.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PerformLoginComponent,
-    SearchComponent
+    SearchComponent,
+    PlaylistComponent
   ],
   imports: [
     BrowserModule,

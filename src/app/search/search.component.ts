@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SpotifyService } from '../spotify.service';
 import { Subject } from 'rxjs';
+import { AngularFireDatabase } from 'angularfire2/database';
 
 @Component({
 	selector: 'app-search',
@@ -12,32 +13,54 @@ export class SearchComponent implements OnInit {
 
 	results: Object;
 	searchTerm$ = new Subject<string>();
-	playBackResponse;
+	searchError;
+	playlist;  
 
-	constructor(private spotify: SpotifyService) { 
+	constructor(private spotify: SpotifyService, db: AngularFireDatabase) { 
 		this.spotify.search(this.searchTerm$)
 		.subscribe(data => {
 			this.results = data
 			console.log(this.results)
 		},
 		error => {
-			console.log("search error")
+			this.searchError = error.error.error.message
 		}
 		);
+
+		// should probably be a playlist service instead of doing the db calls from here
+		this.playlist = db.list('Playlist');
+
 	}
 
 	ngOnInit() {
 	}
 
-	playTrack(uri: string) {
-		this.spotify.playTrack(uri)
-		.subscribe(response => {
-			this.playBackResponse = response
-		}, 
-		error => {
-			this.playBackResponse = error.error.error.message
-		}
-		)
+	pushTrack(track: Object) {
+
+		// IDE hates all this shit because track isn't properly typed?
+		console.log("pushing track", track.uri);
+
+		let uri = track.uri;
+
+		// use itemsRef.set('key-of-some-data', { size: newSize }); 
+		// instead of push() so that we can set the URI as our own custom key
+		// instead of push()'s automatic key
+		// ... we want this so it's easy to check for presence of a given
+		// track in the current play list (for search results)
+		let playlistEntry = 
+			{
+				"albumName" : track.album.name,
+				"artistName" : track.artists[0].name,
+				"expiresAt" : 23,
+				"imageUrl" : track.album.images[2].url,
+				"trackName" : track.name,
+				"uri" : track.uri
+			}
+
+
+		this.playlist.push(playlistEntry);
+
 	}
+
 
 }

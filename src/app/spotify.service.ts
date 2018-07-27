@@ -51,7 +51,7 @@ export class SpotifyService {
 		}
 
 		searchEntries(term) {
-			return this.http.get(this.baseUrl + "/search?type=track,album,artist&q=" + term);
+			return this.http.get(this.baseUrl + "/search?type=track,album,artist&limit=5&q=" + term);
 		}
 
 		playTrack(uri: string) {

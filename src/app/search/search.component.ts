@@ -38,9 +38,11 @@ export class SearchComponent implements OnInit {
 	pushTrack(track: Object) {
 
 		// IDE hates all this shit because track isn't properly typed?
-		console.log("pushing track", track.uri);
+		console.log("pushing track", track["uri"]);
 
-		let uri = track.uri;
+		console.log("album name", track["album"]["name"]);
+
+		let uri = track["uri"]
 
 		// use itemsRef.set('key-of-some-data', { size: newSize }); 
 		// instead of push() so that we can set the URI as our own custom key
@@ -49,14 +51,13 @@ export class SearchComponent implements OnInit {
 		// track in the current play list (for search results)
 		let playlistEntry = 
 			{
-				"albumName" : track.album.name,
-				"artistName" : track.artists[0].name,
+				"albumName" : track["album"]["name"],
+				"artistName" : track["artists"][0]["name"]
 				"expiresAt" : 23,
-				"imageUrl" : track.album.images[2].url,
-				"trackName" : track.name,
-				"uri" : track.uri
+				"imageUrl" : track["album"]["images"][2]["url"],
+				"trackName" : track["name"],
+				"uri" : track["uri"]
 			}
-
 
 		this.playlist.push(playlistEntry);
 

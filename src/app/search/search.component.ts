@@ -37,27 +37,29 @@ export class SearchComponent implements OnInit {
 
 	pushTrack(track: Object) {
 
-		// IDE hates all this shit because track isn't properly typed?
 		console.log("pushing track", track["uri"]);
 
-		console.log("album name", track["album"]["name"]);
-
+		// Could in theory create an interface for this object to use dot notation instead?
 		let uri = track["uri"]
 
-		// use itemsRef.set('key-of-some-data', { size: newSize }); 
+		// use itemsRef.set('key-of-some-data', { value: SomeValue }); 
 		// instead of push() so that we can set the URI as our own custom key
 		// instead of push()'s automatic key
 		// ... we want this so it's easy to check for presence of a given
-		// track in the current play list (for search results)
+		// track in the current play list (for search results to know if a track is already in list)
 		let playlistEntry = 
 			{
 				"albumName" : track["album"]["name"],
 				"artistName" : track["artists"][0]["name"]
-				"expiresAt" : 23,
+				"addedAt" : new Date().getTime(),
+				"duration" : track["duration_ms"],
+				"expiresAt" : new Date().getTime() + track["duration_ms"],
 				"imageUrl" : track["album"]["images"][2]["url"],
 				"trackName" : track["name"],
 				"uri" : track["uri"]
 			}
+
+
 
 		this.playlist.push(playlistEntry);
 

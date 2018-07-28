@@ -9,7 +9,7 @@
 
       <br>
 
-      <div class="alert alert-danger" *ngIf="searchError">{{ searchError }} -- <a href="https://open.spotify.com/"> Open a Spotify session</a> and interact with it (press Play)</div>
+      <app-error-alert *ngIf="searchError" [error]="searchError"></app-error-alert>
 
   		<div *ngIf="results?.tracks">
   			<div class="panel panel-primary" *ngFor="let track of results.tracks.items" >

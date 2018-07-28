@@ -23,7 +23,7 @@ export class SearchComponent implements OnInit {
 			console.log(this.results)
 		},
 		error => {
-			this.searchError = error.error.error.message
+			this.searchError = error.error.error
 		}
 		);
 
@@ -50,7 +50,7 @@ export class SearchComponent implements OnInit {
 		let playlistEntry = 
 			{
 				"albumName" : track["album"]["name"],
-				"artistName" : track["artists"][0]["name"]
+				"artistName" : track["artists"][0]["name"],
 				"addedAt" : new Date().getTime(),
 				"duration" : track["duration_ms"],
 				"expiresAt" : new Date().getTime() + track["duration_ms"],

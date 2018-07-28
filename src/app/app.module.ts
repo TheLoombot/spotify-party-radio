@@ -17,13 +17,15 @@ import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { environment } from '../environments/environment';
 import { SearchComponent } from './search/search.component';
 import { PlaylistComponent } from './playlist/playlist.component';
+import { ErrorAlertComponent } from './error-alert/error-alert.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PerformLoginComponent,
     SearchComponent,
-    PlaylistComponent
+    PlaylistComponent,
+    ErrorAlertComponent
   ],
   imports: [
     BrowserModule,

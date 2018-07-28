@@ -11,7 +11,7 @@ import { SpotifyService } from '../spotify.service';
 export class PlaylistComponent implements OnInit {
 
 	tracks: Object;
-	playBackResponse; 
+	playBackResponseError; 
 
 	constructor(private spotify: SpotifyService, db: AngularFireDatabase) { 
 		db.list('Playlist').valueChanges().subscribe 
@@ -20,7 +20,7 @@ export class PlaylistComponent implements OnInit {
 			console.log(this.tracks)
 		},
 		error => {
-			console.log("playlist retrieve error")
+			console.log("playlist retrieve error: ", error)
 		}
 		);
 	}
@@ -32,10 +32,11 @@ export class PlaylistComponent implements OnInit {
 	playTrack(uri: string) {
 		this.spotify.playTrack(uri)
 		.subscribe(response => {
-			this.playBackResponse = response
+			this.playBackResponseError = response
 		}, 
 		error => {
-			this.playBackResponse = error.error.error.message
+			this.playBackResponseError = error.error.error
+			console.log("play back error ", this.playBackResponseError)
 		}
 		)
 	}

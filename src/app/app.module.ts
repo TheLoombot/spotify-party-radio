@@ -18,6 +18,7 @@ import { environment } from '../environments/environment';
 import { SearchComponent } from './search/search.component';
 import { PlaylistComponent } from './playlist/playlist.component';
 import { ErrorAlertComponent } from './error-alert/error-alert.component';
+import { PlayerComponent } from './player/player.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { ErrorAlertComponent } from './error-alert/error-alert.component';
     PerformLoginComponent,
     SearchComponent,
     PlaylistComponent,
-    ErrorAlertComponent
+    ErrorAlertComponent,
+    PlayerComponent
   ],
   imports: [
     BrowserModule,

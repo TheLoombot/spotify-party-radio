@@ -17,7 +17,7 @@ export class PlaylistComponent implements OnInit {
 		db.list('Playlist').valueChanges().subscribe 
 		(data => {
 			this.tracks = data
-			console.log(this.tracks)
+			// console.log(this.tracks)
 		},
 		error => {
 			console.log("playlist retrieve error: ", error)

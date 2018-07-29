@@ -5,7 +5,6 @@
 
 	<div class="panel-body" *ngIf="nowPlaying">
 		<img src="{{ nowPlaying.item.album.images[1].url }}" class="pull-left" style="margin-right: 10px">
-		<h4 *ngIf="nowPlaying.is_playing">Progress in ms: {{ nowPlaying.progress_ms }} </h4>
 	</div>
 
 	<div class="panel-body" *ngIf="!nowPlaying">

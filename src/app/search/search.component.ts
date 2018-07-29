@@ -20,7 +20,7 @@ export class SearchComponent implements OnInit {
 		this.spotify.search(this.searchTerm$)
 		.subscribe(data => {
 			this.results = data
-			console.log(this.results)
+			// console.log(this.results)
 		},
 		error => {
 			this.searchError = error.error.error

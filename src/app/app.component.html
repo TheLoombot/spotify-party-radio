@@ -1,13 +1,15 @@
 <div class="container">
 
-  <h1>Deep Strafe</h1>
+	<h1>Deep Strafe</h1>
 
-  <app-player></app-player>
+	<div class="row">
+		<div class="col-md-6"><router-outlet></router-outlet></div>
+		<div class="col-md-6"><app-player></app-player></div>
+	</div>
 
-  <router-outlet></router-outlet>
-  
-  <app-search></app-search>
-
-  <app-playlist></app-playlist>
+	<div class="row">
+		<div class="col-md-6"><app-search></app-search></div>
+		<div class="col-md-6"><app-playlist></app-playlist></div>
+	</div>
 
 </div>

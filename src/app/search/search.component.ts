@@ -29,7 +29,7 @@ export class SearchComponent implements OnInit {
 		);
 
 		// should probably be a playlist service instead of doing the db calls from here
-		this.playlist = db.list('Playlist', ,ref => ref.limitToLast(1));
+		this.playlist = db.list('Playlist', ref => ref.limitToLast(1));
 
 		this.playlist.snapshotChanges().subscribe
 		(data => {

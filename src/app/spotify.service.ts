@@ -68,4 +68,11 @@ export class SpotifyService {
 			return this.http.put(this.baseUrl + "/me/player/play", JSON.stringify(bodyObj))
 
 		}
+
+		seekTrack(offset: number) {
+			if (offset < 0) return of([]);
+			console.log("seeking to position ", offset)
+			return this.http.put(this.baseUrl + "/me/player/seek?position_ms=" + offset, null)
+		}
+
 	}

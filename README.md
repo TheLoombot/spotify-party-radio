@@ -6,6 +6,8 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`.
 
 Run `ng build; firebase deploy` to build and deploy the project. 
 
+You can find a [deployed version of the app here](https://poop-a1c0e.firebaseapp.com/).
+
 # Project Notes
 
 [Project Vision PDF](https://github.com/TheLoombot/deep-strafe/blob/master/DeepState.pdf)
@@ -16,8 +18,8 @@ Short term goals in priority order:
 
 1. (DONE) Get basic auth working in an Angular app deployed to Firebase authenticating via Spotify.
 2. (DONE) Verify auth works by building basic search and playback functions
-3. Create a single shared playlist in Firebase, test that multiple users can add to it 
-4. Implement the specific playback management functionality described in the spec
+3. (DONE) Create a single shared playlist in Firebase, test that multiple users can add to it 
+4. (DONE) Implement the specific playback management functionality described in the spec
 5. Stop and see if any of this makes sense so far, before trying to create the true multi-user experience
 
 ## Authentication

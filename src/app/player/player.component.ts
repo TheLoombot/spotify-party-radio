@@ -71,7 +71,9 @@ export class PlayerComponent implements OnInit {
                   this.nowPlaying = data
                   // console.log("now playing ", this.nowPlaying)
                   // console.log("track 1 ", this.firstTrack)
-                  if (this.nowPlaying["is_playing"] && this.nowPlaying.item.uri == this.firstTrack.uri) {
+                  if (this.nowPlaying == null) {
+                    // this.playerError = "poopie"; 
+                  } else if (this.nowPlaying["is_playing"] && this.nowPlaying.item.uri == this.firstTrack.uri) {
                       console.log("now playing is track 1, expires in ", timeToExpiration)
                       setTimeout(()=>{
                           this.checkFirstTrack()

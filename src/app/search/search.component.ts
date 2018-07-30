@@ -37,6 +37,7 @@ export class SearchComponent implements OnInit {
 				this.lastTrack = data[0].payload.val()
 				// console.log("yes last track: ", this.lastTrack)
 			} else {
+				this.lastTrack = null;
 				// console.log("no last track  ");
 			}
 		},

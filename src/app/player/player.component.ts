@@ -79,28 +79,28 @@ export class PlayerComponent implements OnInit {
                   } else {
                       this.spotify.playTrack(this.firstTrack.uri)
                       .subscribe(response => {
-                          this.playerError = response
+                          // this.playerError = response
                           setTimeout(()=>{
                               this.checkFirstTrack()
                           }, 1000)
-                      this.spotify.seekTrack(new Date().getTime() - this.firstTrack.expiresAt + this.firstTrack.duration)
-                      .subscribe(response => {
-                          this.playerError = response
+                          this.spotify.seekTrack(new Date().getTime() - this.firstTrack.expiresAt + this.firstTrack.duration)
+                          .subscribe(response => {
+                              // this.playerError = response
+                          })
+                      }, 
+                      error => {
+                          this.playerError = error.error.error
+                          console.log("play back error ", this.playerError)
                       })
-                  }, 
-                  error => {
-                      this.playerError = error.error.error
-                      console.log("play back error ", this.playerError)
-                  })
+                  }
+
+              }, 
+              error => {
+                  this.playerError = error.error.error
+                  console.log("now playing error  ", this.playerError)
+              }
+              )
+
       }
 
-  }, 
-  error => {
-      this.playerError = error.error.error
-      console.log("now playing error  ", this.playerError)
   }
-  )
-
-}
-
-}

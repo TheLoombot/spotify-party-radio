@@ -90,6 +90,9 @@ export class PlayerComponent implements OnInit {
                           this.spotify.seekTrack(new Date().getTime() - this.firstTrack.expiresAt + this.firstTrack.duration)
                           .subscribe(response => {
                               // this.playerError = response
+                          },
+                          error => {
+                            console.log("Brad's error: failed on seek", error)
                           })
                       }, 
                       error => {

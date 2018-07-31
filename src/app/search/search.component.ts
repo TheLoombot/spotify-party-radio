@@ -79,7 +79,7 @@ export class SearchComponent implements OnInit {
 			"artistName" : track["artists"][0]["name"],
 			"addedAt" : new Date().getTime(),
 			"duration" : track["duration_ms"],
-			"expiresAt" : lastTrackExpiresAt + track["duration_ms"] + 1000,  // introducing some fudge here
+			"expiresAt" : lastTrackExpiresAt + track["duration_ms"] + 1500,  // introducing some fudge here
 			"imageUrl" : track["album"]["images"][2]["url"],
 			"trackName" : track["name"],
 			"uri" : track["uri"]

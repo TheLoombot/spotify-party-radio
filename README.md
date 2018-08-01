@@ -2,7 +2,7 @@
 
 I miss [Turntable.fm](https://en.wikipedia.org/wiki/Turntable.fm), the defunct service that let you share DJ duties with your friends. This is my take on some of their ideas. 
 
-[Project Vision PDF](https://github.com/TheLoombot/deep-strafe/blob/master/DeepState.pdf)
+[Project Vision PDF](https://github.com/TheLoombot/deep-strafe/blob/master/docs/DeepState.pdf)
 
 Though originally conceived as a native iOS App that integrates with Apple Music, I'm trying to build a proof of concept for the web instead, using Spotify (since more people I know have Spotify). However this PoC retains some of the spec's ideas: serverless design using Firebase as a backend, and the basic user experience.
 

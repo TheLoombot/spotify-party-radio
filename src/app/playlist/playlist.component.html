@@ -1,16 +1,16 @@
-<div class="panel panel-primary">
-	<div class="panel-heading">Playlist</div>
+<div class="panel panel-default">
+	<div class="panel-heading">Up next</div>
 
 	<div class="panel-body" *ngIf="tracks">
 
 		<app-error-alert *ngIf="playBackResponseError" [error]="playBackResponseError"></app-error-alert>
 
-		<div class="panel panel-primary" *ngFor="let track of tracks">
-			<div class="panel-body">   
-				<img src="{{ track.imageUrl }}" class="pull-left" style="margin-right: 10px">
-				<h4>{{ track.trackName }} </h4>
-				<h5> {{ track.artistName }} - {{ track.albumName }} </h5>
-			</div>
+		<div class="panel panel-default" *ngFor="let track of tracks | slice:1" >
+				<div class="panel-body" >   
+					<img src="{{ track.imageUrl }}" class="pull-left" style="margin-right: 10px">
+					<h4>{{ track.trackName }} </h4>
+					<h5> {{ track.artistName }} - {{ track.albumName }} </h5>
+				</div>
 		</div>
 	</div>
 </div>

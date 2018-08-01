@@ -1,6 +1,6 @@
-  <div class="panel panel-primary">
+  <div class="panel panel-default">
 
-  	<div class="panel-heading">Search</div>
+  	<div class="panel-heading">Search for and add tracks</div>
 
   	<div class="panel-body">
 
@@ -11,7 +11,7 @@
 
       <app-error-alert *ngIf="searchError" [error]="searchError"></app-error-alert>
 
-  		<div *ngIf="results?.tracks">
+  		<div *ngIf="results?.tracks" class="text-primary">
   			<div class="panel panel-primary" *ngFor="let track of results.tracks.items; let i = index" >
             <div (click)="pushTrack(track, i)" class="panel-body" style="cursor: pointer">   
               <img src="{{ track.album.images[2].url }}" class="pull-left" style="margin-right: 10px">

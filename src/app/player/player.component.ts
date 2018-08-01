@@ -60,7 +60,7 @@ export class PlayerComponent implements OnInit {
           // console.log("time to first track expiration: ", timeToExpiration)
 
           if (timeToExpiration > 0) {
-              console.log("track expired ! ", this.firstTrack)
+              console.log(new Date().getTime(), this.firstTrack.trackName, " track expired, expected expiration time was ", this.firstTrack.expiresAt)
               this.playlistRef.remove(this.firstTrackKey)
               return
           }
@@ -74,7 +74,8 @@ export class PlayerComponent implements OnInit {
                   if (this.nowPlaying == null) {
                     // this.playerError = "poopie"; 
                   } else if (this.nowPlaying["is_playing"] && this.nowPlaying.item.uri == this.firstTrack.uri) {
-                      console.log("now playing is track 1, expires in ", timeToExpiration)
+                      console.log(new Date().getTime(), this.nowPlaying.item.name, " Now playing matches position 1, expires in ", timeToExpiration)
+                      console.log(new Date().getTime(), " Scheduling check in ", timeToExpiration)
                       setTimeout(()=>{    // should prob record scheduling this event and prevent double-booking
                           this.checkFirstTrack()
                       }, -timeToExpiration)
@@ -82,6 +83,7 @@ export class PlayerComponent implements OnInit {
                       this.spotify.playTrack(this.firstTrack.uri)
                       .subscribe(response => {
                           // this.playerError = response
+                          console.log(new Date().getTime(), this.firstTrack.trackName, " Requested playback, scheduled check in 1500ms ")
                           setTimeout(()=>{
                               this.checkFirstTrack()
                           }, 1500)   // playTrack doesn't give us an affirmative response on the play request

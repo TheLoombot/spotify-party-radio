@@ -53,7 +53,6 @@ export class SearchComponent implements OnInit {
 
 	pushTrack(track: Object) {
 
-		console.log("pushing track", track["uri"]);
 
 		// Could in theory create an interface for this object to use dot notation instead?
 		let uri = track["uri"]
@@ -73,19 +72,22 @@ export class SearchComponent implements OnInit {
 		// instead of push()'s automatic key
 		// ... we want this so it's easy to check for presence of a given
 		// track in the current play list (for search results to know if a track is already in list)
+		
+		let nextTrackExpiresAt = lastTrackExpiresAt + track["duration_ms"] + 1500 // introducing some fudge here
+
 		let playlistEntry = 
 		{
 			"albumName" : track["album"]["name"],
 			"artistName" : track["artists"][0]["name"],
 			"addedAt" : new Date().getTime(),
 			"duration" : track["duration_ms"],
-			"expiresAt" : lastTrackExpiresAt + track["duration_ms"] + 1500,  // introducing some fudge here
+			"expiresAt" : nextTrackExpiresAt,  
 			"imageUrl" : track["album"]["images"][2]["url"],
 			"trackName" : track["name"],
 			"uri" : track["uri"]
 		}
 
-
+		console.log(new Date().getTime(), "pushing track onto playlist: ", track["name"], " expires at ", nextTrackExpiresAt);
 
 		this.playlist.push(playlistEntry);
 

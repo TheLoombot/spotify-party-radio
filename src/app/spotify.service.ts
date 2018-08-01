@@ -63,7 +63,7 @@ export class SpotifyService {
 				"uris": [uri]
 			}
 
-			console.log("attempting to play ", uri);
+			// console.log(new Date().getTime(), "attempting to play ", uri);
 
 			return this.http.put(this.baseUrl + "/me/player/play", JSON.stringify(bodyObj))
 
@@ -71,7 +71,7 @@ export class SpotifyService {
 
 		seekTrack(offset: number) {
 			if (offset < 0) return of([]);
-			console.log("seeking to position ", offset)
+			console.log(new Date().getTime(), " seeking to position ", offset)
 			return this.http.put(this.baseUrl + "/me/player/seek?position_ms=" + offset, null)
 		}
 

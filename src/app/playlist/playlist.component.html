@@ -12,5 +12,8 @@
 					<h5> {{ track.artistName }} - {{ track.albumName }} </h5>
 				</div>
 		</div>
+
+		<div *ngIf="tracks.length<2">👈🏽 Add something, will ya</div>
+
 	</div>
 </div>

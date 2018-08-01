@@ -32,7 +32,8 @@ export class PlayerComponent implements OnInit {
                 // console.log("First track is: ", this.firstTrack)
                 this.checkFirstTrack()
             } else {
-                // console.log("playlist is empty ");
+                this.nowPlaying = null;
+                console.log("play list is empty :(")
             }
         },
         error => {

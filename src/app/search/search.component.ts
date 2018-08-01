@@ -16,12 +16,13 @@ export class SearchComponent implements OnInit {
 	searchError;
 	playlist;  
 	lastTrack;
-	clicked;
+	clicked : number;
 
 	constructor(private spotify: SpotifyService, db: AngularFireDatabase) { 
 		this.spotify.search(this.searchTerm$)
 		.subscribe(data => {
 			this.results = data
+			this.clicked = -1;
 			// console.log(this.results)
 		},
 		error => {

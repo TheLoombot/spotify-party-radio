@@ -47,10 +47,10 @@ export class SpotifyService {
 		return terms.pipe(
 			debounceTime(400),
 			distinctUntilChanged()).pipe(switchMap(
-				term => term ? 
+				term => (term && term.trim().length > 0) ? 
 				this.searchEntries(term)
 				:
-				of([]) 
+				this.searchEntries("lizzo")   // called when search is empty, replace this with recommended tracks
 				))
 		}
 

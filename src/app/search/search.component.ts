@@ -30,6 +30,9 @@ export class SearchComponent implements OnInit {
 		}
 		);
 
+		// Have the subject call next on init to submit an empty search
+		this.searchTerm$.next(null);
+
 		// should probably be a playlist service instead of doing the db calls from here
 		this.playlist = db.list('Playlist', ref => ref.limitToLast(1));
 

@@ -16,6 +16,7 @@ export class PlayerComponent implements OnInit {
     playlistRef;
     firstTrack;
     firstTrackKey;
+    pendingCheck = false; 
 
     constructor(private spotify: SpotifyService, db: AngularFireDatabase) {
 
@@ -75,10 +76,18 @@ export class PlayerComponent implements OnInit {
                     // this.playerError = "poopie"; 
                   } else if (this.nowPlaying["is_playing"] && this.nowPlaying.item.uri == this.firstTrack.uri) {
                       console.log(new Date().getTime(), this.nowPlaying.item.name, " Now playing matches position 1, expires in ", timeToExpiration)
+                    if (!this.pendingCheck) { // only schedule the check if there's not one pending already
+                                             // when we support deletes, we'll have to handle cancelling
+                                             // the pending check and replacing it instead. later. 
                       console.log(new Date().getTime(), " Scheduling check in ", timeToExpiration)
-                      setTimeout(()=>{    // should prob record scheduling this event and prevent double-booking
+                      this.pendingCheck = true
+                      setTimeout(()=>{ 
                           this.checkFirstTrack()
+                          this.pendingCheck = false
                       }, -timeToExpiration)
+                    } else {
+                      console.log(new Date().getTime(), " NOT scheduling check, one is pending, yo ", timeToExpiration)
+                    }
                   } else {
                       this.spotify.playTrack(this.firstTrack.uri)
                       .subscribe(response => {

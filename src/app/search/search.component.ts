@@ -16,6 +16,7 @@ export class SearchComponent implements OnInit {
 	searchError;
 	playlist;  
 	lastTrack;
+	clicked;
 
 	constructor(private spotify: SpotifyService, db: AngularFireDatabase) { 
 		this.spotify.search(this.searchTerm$)
@@ -51,8 +52,9 @@ export class SearchComponent implements OnInit {
 	ngOnInit() {
 	}
 
-	pushTrack(track: Object) {
+	pushTrack(track: Object, i: number) {
 
+		this.clicked = i;
 
 		// Could in theory create an interface for this object to use dot notation instead?
 		let uri = track["uri"]

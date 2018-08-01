@@ -12,11 +12,10 @@
       <app-error-alert *ngIf="searchError" [error]="searchError"></app-error-alert>
 
   		<div *ngIf="results?.tracks">
-  			<div class="panel panel-primary" *ngFor="let track of results.tracks.items" >
-            <div (click)="pushTrack(track)" class="panel-body" style="cursor: pointer">   
+  			<div class="panel panel-primary" *ngFor="let track of results.tracks.items; let i = index" >
+            <div (click)="pushTrack(track, i)" class="panel-body" style="cursor: pointer">   
               <img src="{{ track.album.images[2].url }}" class="pull-left" style="margin-right: 10px">
-              <span *ngIf="!inPlaylist"class="pull-right glyphicon glyphicon-plus"></span>
-              <span *ngIf="inPlaylist"class="pull-right glyphicon glyphicon-minus  "></span>
+              <span class="pull-right glyphicon glyphicon-plus" [class.glyphicon-ok]="clicked === i"></span>
               <h4>{{ track.name }} </h4>
               <h5> {{ track.artists[0].name }} - {{ track.album.name }} </h5>
             </div>

@@ -31,7 +31,7 @@ To run the app locally:
 
 We're at Step 5... a basic, single shared playlist that multiple users can append tracks to, and experience listening synchronized among clients, has been built. So far it mostly works for 2 people at a time. Right now there's bugs to fix and smaller immediate features to build even for this basic version of the product ... so it might be a minute of testing and experimentation at this phase before I commit to building anything huge. 
 
-[[https://github.com/TheLoombot/deep-strafe/blob/master/docs/Screen%20Shot%202018-08-01%20at%2012.22.51%20AM.png]]
+![screenshot](/docs/Screen%20Shot%202018-08-01%20at%2012.22.51%20AM.png "Work in progress")
 
 ## Potential Next Steps
 

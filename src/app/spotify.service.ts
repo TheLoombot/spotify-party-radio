@@ -70,7 +70,7 @@ export class SpotifyService {
 		}
 
 		seekTrack(offset: number) {
-			if (offset < 0) return of([]);
+			if (offset < 2000) return of([]);
 			console.log(new Date().getTime(), " seeking to position ", offset)
 			return this.http.put(this.baseUrl + "/me/player/seek?position_ms=" + offset, null)
 		}

@@ -1,4 +1,4 @@
-# Overview
+# Deep State Radio - Overview
 
 I miss [Turntable.fm](https://en.wikipedia.org/wiki/Turntable.fm), the defunct service that let you share DJ duties with your friends. This is my take on some of their ideas. 
 
@@ -30,6 +30,8 @@ To run the app locally:
 5. Stop and see if any of this makes sense so far, before trying to create the true multi-user experience
 
 We're at Step 5... a basic, single shared playlist that multiple users can append tracks to, and experience listening synchronized among clients, has been built. So far it mostly works for 2 people at a time. Right now there's bugs to fix and smaller immediate features to build even for this basic version of the product ... so it might be a minute of testing and experimentation at this phase before I commit to building anything huge. 
+
+![screenshot](/docs/Screen%20Shot%202018-08-01%20at%2012.22.51%20AM.png "Work in progress")
 
 ## Potential Next Steps
 

@@ -75,7 +75,7 @@ export class PlayerComponent implements OnInit {
                   if (this.nowPlaying == null) {
                     // this.playerError = "poopie"; 
                   } else if (this.nowPlaying["is_playing"] && this.nowPlaying.item.uri == this.firstTrack.uri) {
-                      console.log(new Date().getTime(), this.nowPlaying.item.name, " Now playing matches position 1, expires in ", timeToExpiration)
+                      console.log(new Date().getTime(), this.nowPlaying.item.name, " Now playing matches position 0, expires in ", timeToExpiration)
                     if (!this.pendingCheck) { // only schedule the check if there's not one pending already
                                              // when we support deletes, we'll have to handle cancelling
                                              // the pending check and replacing it instead. later. 

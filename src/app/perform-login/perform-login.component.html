@@ -6,16 +6,9 @@
       <img src="{{ user.images[0].url }}" class="pull-left" style="margin-right: 10px" *ngIf="user.images">
       <h4>Hola, <a href="{{ user.external_urls.spotify }}">{{ user.id }}</a>.</h4>
       <h5> You've got {{ user.product }} access.</h5>
+      <h5><a href (click)="killToken()">Sign Out</a></h5>
+      <h5><a href="http://localhost:4200/#access_token={{ accessTokenNew ? accessTokenNew : accessTokenStored}}">Apply to localhost</a></h5>
     </div>
-
-  	<div class="panel-body" *ngIf="accessTokenNew" style="word-wrap: break-word">
-  		New access token from Spotify:	{{ accessTokenNew }} <br />
-      (<a href="http://localhost:4200/#access_token={{ accessTokenNew }}">apply to localhost</a>)
-  	</div>
-
-  	<div class="panel-body" *ngIf="accessTokenStored" style="word-wrap: break-word">
-  		Using stored access token: {{ accessTokenStored }}
-  	</div>
 
   	<div class="panel-body" *ngIf="!hasToken">
   		<button (click)="authSpotify()">Sign in with Spotify</button>

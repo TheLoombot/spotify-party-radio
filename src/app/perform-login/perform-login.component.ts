@@ -13,7 +13,6 @@ import { Observable } from 'rxjs';
 export class PerformLoginComponent implements OnInit {
 
   user: Object;
-
   accessTokenNew: string;        // a new token from URL hash fragment params
   accessTokenStored: string;     // an old token from localStorage
   hasToken = true;
@@ -61,5 +60,12 @@ authSpotify() {
   window.location.href  = this.spotify.getAuthUrl();
 }
 
+killToken() {
+      window.localStorage.removeItem("access_token");
+      this.accessTokenStored = null;
+      this.hasToken = false;
+      this.user = null;
+
+}
 
 }

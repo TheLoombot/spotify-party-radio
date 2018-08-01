@@ -1,11 +1,11 @@
   <div class="panel panel-default">
 
-  	<div class="panel-heading">Search for and add tracks</div>
+  	<div class="panel-heading">Add tracks</div>
 
   	<div class="panel-body">
 
   		<input type="text" class="form-control" style="font-size: 16px;"
-  		(keyup)="searchTerm$.next($event.target.value)" spellcheck="false">
+  		(keyup)="searchTerm$.next($event.target.value)" spellcheck="false" placeholder="Search">
 
       <br>
 

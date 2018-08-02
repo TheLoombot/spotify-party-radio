@@ -44,35 +44,39 @@ export class SpotifyService {
 	}
 
 	search(terms: Observable<string>) {
-		return terms.pipe(
-			debounceTime(400),
-			distinctUntilChanged()).pipe(switchMap(
-				term => (term && term.trim().length > 0) ? 
-				this.searchEntries(term)
-				:
-				of([]) 
-				))
-		}
-
-		searchEntries(term) {
-			return this.http.get(this.baseUrl + "/search?type=track,album,artist&limit=5&q=" + term);
-		}
-
-		playTrack(uri: string) {
-			let bodyObj = {
-				"uris": [uri]
-			}
-
-			// console.log(new Date().getTime(), "attempting to play ", uri);
-
-			return this.http.put(this.baseUrl + "/me/player/play", JSON.stringify(bodyObj))
-
-		}
-
-		seekTrack(offset: number) {
-			if (offset < 2000) return of([]);
-			console.log(new Date().getTime(), " seeking to position ", offset)
-			return this.http.put(this.baseUrl + "/me/player/seek?position_ms=" + offset, null)
-		}
-
+		return terms.pipe(debounceTime(400),distinctUntilChanged())
+		.pipe(switchMap(
+			term => (term && term.trim().length > 0) ? 
+			this.searchEntries(term)
+			:
+			of([]) 
+			))
 	}
+
+	searchEntries(term) {
+		return this.http.get(this.baseUrl + "/search?type=track,album,artist&limit=5&q=" + term);
+	}
+
+	playTrack(uri: string) {
+		let bodyObj = {
+			"uris": [uri]
+		}
+		// console.log(new Date().getTime(), "attempting to play ", uri);
+		return this.http.put(this.baseUrl + "/me/player/play", JSON.stringify(bodyObj))
+	}
+
+	seekTrack(offset: number) {
+		if (offset < 2000) return of([]);
+		console.log(new Date().getTime(), " seeking to position ", offset)
+		return this.http.put(this.baseUrl + "/me/player/seek?position_ms=" + offset, null)
+	}
+
+	getRecos(ids: string) {
+		if (ids) {
+			return this.http.get(this.baseUrl + "/recommendations?limit=5&seed_tracks=" + ids)
+		} else {
+			return of([])
+		}
+	}
+
+}

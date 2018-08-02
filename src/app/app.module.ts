@@ -19,6 +19,7 @@ import { SearchComponent } from './search/search.component';
 import { PlaylistComponent } from './playlist/playlist.component';
 import { ErrorAlertComponent } from './error-alert/error-alert.component';
 import { PlayerComponent } from './player/player.component';
+import { RecosComponent } from './recos/recos.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { PlayerComponent } from './player/player.component';
     SearchComponent,
     PlaylistComponent,
     ErrorAlertComponent,
-    PlayerComponent
+    PlayerComponent,
+    RecosComponent
   ],
   imports: [
     BrowserModule,

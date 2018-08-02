@@ -33,7 +33,7 @@ export class PlayerComponent implements OnInit {
                 this.checkFirstTrack()
             } else {
                 this.nowPlaying = null;
-                console.log("play list is empty :(")
+                // console.log("play list is empty :(")
             }
         },
         error => {

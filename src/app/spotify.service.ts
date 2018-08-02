@@ -50,7 +50,7 @@ export class SpotifyService {
 				term => (term && term.trim().length > 0) ? 
 				this.searchEntries(term)
 				:
-				this.searchEntries("lizzo")   // called when search is empty, replace this with recommended tracks
+				of([]) 
 				))
 		}
 

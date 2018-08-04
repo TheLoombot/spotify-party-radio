@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { SpotifyService } from '../spotify.service';
+import { PlaylistService } from '../playlist.service';
 import { Observable, interval, pipe } from 'rxjs';
 import { switchMap, map, startWith, distinctUntilChanged } from 'rxjs/operators';
-import { AngularFireDatabase } from 'angularfire2/database';
+
 
 @Component({
     selector: 'app-player',
@@ -18,9 +19,9 @@ export class PlayerComponent implements OnInit {
     firstTrackKey;
     pendingCheck = false; 
 
-    constructor(private spotify: SpotifyService, db: AngularFireDatabase) {
+    constructor(private spotify: SpotifyService, private playlistSvc: PlaylistService) {
 
-        this.playlistRef = db.list('Playlist',ref => ref.limitToFirst(1));
+        this.playlistRef = playlistSvc.getFirstTracks(1);
 
         this.playlistRef.snapshotChanges().subscribe 
         (data => {
@@ -63,7 +64,7 @@ export class PlayerComponent implements OnInit {
 
           if (timeToExpiration > 0) {
               console.log(new Date().getTime(), this.firstTrack.trackName, " track expired, expected expiration time was ", this.firstTrack.expiresAt)
-              this.playlistRef.remove(this.firstTrackKey)
+              this.playlistSvc.remove(this.firstTrackKey)
               return
           }
 
@@ -101,7 +102,7 @@ export class PlayerComponent implements OnInit {
                                      // playing status" again 
                           this.spotify.seekTrack(new Date().getTime() - this.firstTrack.expiresAt + this.firstTrack.duration)
                           .subscribe(response => {
-                              // this.playerError = response
+                              // no op
                           },
                           error => {
                             console.log("Brad's error: failed on seek", error)

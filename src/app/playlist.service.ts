@@ -7,6 +7,7 @@ import { AngularFireDatabase } from 'angularfire2/database';
 export class PlaylistService {
 
     lastTrack;
+    firstTrack
 
     constructor(private db: AngularFireDatabase) { 
         this.getLastTracks(1).snapshotChanges().subscribe
@@ -20,6 +21,14 @@ export class PlaylistService {
         error => {
             console.log("playlist retrieve error: ", error)
         })
+    }
+
+    remove(key: string) {
+        this.db.list('Playlist').remove(key)
+    }
+
+    getFirstTracks(i: number) {
+        return this.db.list('Playlist', ref => ref.limitToFirst(i))
     }
 
     getLastTracks(i: number) {

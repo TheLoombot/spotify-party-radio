@@ -18,6 +18,7 @@ export class PlayerComponent implements OnInit {
     firstTrack;
     firstTrackKey;
     pendingCheck = false; 
+    progress = 0;
 
     constructor(private spotify: SpotifyService, private playlistSvc: PlaylistService) {
 
@@ -40,6 +41,11 @@ export class PlayerComponent implements OnInit {
         error => {
             console.log("playlist retrieve error: ", error)
         })
+
+        interval(1000).subscribe(()=>
+          this.progress = Math.floor(100*(1-(this.firstTrack.expiresAt - new Date().getTime())/this.firstTrack.duration))
+          );
+
     }
 
     ngOnInit() {
@@ -78,6 +84,7 @@ export class PlayerComponent implements OnInit {
                     // this.playerError = "poopie"; 
                   } else if (this.nowPlaying["is_playing"] && this.nowPlaying.item.uri == this.firstTrack.uri) {
                       console.log(new Date().getTime(), this.nowPlaying.item.name, " Now playing matches position 0, expires in ", timeToExpiration)
+
                     if (!this.pendingCheck) { // only schedule the check if there's not one pending already
                                              // when we support deletes, we'll have to handle cancelling
                                              // the pending check and replacing it instead. later. 

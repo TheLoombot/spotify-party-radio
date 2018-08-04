@@ -64,3 +64,9 @@ Note that we are using Implicit Grant rather than "Authorization Code" flow for 
 For the POC we are using [Spotify's Player Web API](https://developer.spotify.com/documentation/web-api/reference/player/start-a-users-playback/), which is effectively a remote control for another Spotify session the user has active. It even works if you have the Spotify app open and backgrounded on your mobile. The only catch is you have to have recently interacted with the player, but we can detect when the player is not active and show the user an error and prompt them to open the Spotify web player. 
 
 A preferred approach is to use the [Web Playback SDK](https://developer.spotify.com/documentation/web-playback-sdk/) but that's a whole separate integration I don't want to deal with right now. 
+
+## Firebase
+
+At the moment, we are using Firebase DB with wide open auth rules. 😬 
+
+We really only use it to manage the shared playlist. No user data even goes in there right now. 

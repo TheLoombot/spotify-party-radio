@@ -27,6 +27,10 @@ export class PlaylistService {
         this.db.list('Playlist').remove(key)
     }
 
+    getAllTracks() {
+        return this.db.list('Playlist')
+    }
+
     getFirstTracks(i: number) {
         return this.db.list('Playlist', ref => ref.limitToFirst(i))
     }

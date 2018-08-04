@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SpotifyService } from '../spotify.service';
 import { Subject } from 'rxjs';
-import { AngularFireDatabase } from 'angularfire2/database';
 import { PlaylistService } from '../playlist.service'
 
 @Component({

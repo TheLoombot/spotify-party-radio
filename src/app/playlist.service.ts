@@ -13,10 +13,8 @@ export class PlaylistService {
         (data => {
             if (data[0]) {
                 this.lastTrack = data[0].payload.val()
-                // console.log("yes last track: ", this.lastTrack)
             } else {
                 this.lastTrack = null;
-                // console.log("no last track  ");
             }
         },
         error => {
@@ -30,14 +28,7 @@ export class PlaylistService {
 
     pushTrack(track: Object) {
 
-        let lastTrackExpiresAt;
-
-        if (this.lastTrack) {
-            lastTrackExpiresAt = this.lastTrack["expiresAt"]
-        } else { 
-            lastTrackExpiresAt = new Date().getTime();
-        }
-
+        let lastTrackExpiresAt = (this.lastTrack) ? this.lastTrack["expiresAt"] : new Date().getTime()
         let nextTrackExpiresAt = lastTrackExpiresAt + track["duration_ms"] + 1500 // introducing some fudge here
 
         let playlistEntry = 

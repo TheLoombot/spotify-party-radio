@@ -73,7 +73,7 @@ export class SpotifyService {
 
 	getRecos(ids: string) {
 		if (ids) {
-			return this.http.get(this.baseUrl + "/recommendations?limit=5&seed_tracks=" + ids)
+			return this.http.get(this.baseUrl + "/recommendations?limit=5&min_popularity=50&seed_tracks=" + ids)
 		} else {
 			return of([])
 		}

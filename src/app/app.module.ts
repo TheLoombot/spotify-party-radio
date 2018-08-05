@@ -20,6 +20,7 @@ import { PlaylistComponent } from './playlist/playlist.component';
 import { ErrorAlertComponent } from './error-alert/error-alert.component';
 import { PlayerComponent } from './player/player.component';
 import { RecosComponent } from './recos/recos.component';
+import { ToptracksComponent } from './toptracks/toptracks.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { RecosComponent } from './recos/recos.component';
     PlaylistComponent,
     ErrorAlertComponent,
     PlayerComponent,
-    RecosComponent
+    RecosComponent,
+    ToptracksComponent
   ],
   imports: [
     BrowserModule,

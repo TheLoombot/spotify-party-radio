@@ -1,12 +1,12 @@
-<app-error-alert *ngIf="recoError" [error]="recoError"></app-error-alert>
+<app-error-alert *ngIf="topTracksError" [error]="topTracksError"></app-error-alert>
 
-<div *ngIf="recos?.tracks" class="panel panel-primary">
+<div *ngIf="topTracks?.items" class="panel panel-primary">
 
-	<div class="panel-heading">Some recommendations:</div>
+	<div class="panel-heading">Your top tracks:</div>
 
 	<div class="panel-body text-primary">
 
-		<div class="panel panel-primary" *ngFor="let track of recos.tracks; let i = index" >
+		<div class="panel panel-primary" *ngFor="let track of topTracks.items; let i = index" >
 			<div (click)="pushTrack(track, i)" class="panel-body" style="cursor: pointer">   
 				<img src="{{ track.album.images[2].url }}" class="pull-left" style="margin-right: 10px">
 				<span class="pull-right glyphicon" [class.glyphicon-plus]="clicked !== i"
@@ -17,6 +17,3 @@
 		</div>
 	</div>
 </div>
-
-<app-toptracks *ngIf="!recos?.tracks"></app-toptracks>
-

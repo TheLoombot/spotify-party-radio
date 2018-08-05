@@ -43,8 +43,11 @@ export class PlayerComponent implements OnInit {
         })
 
         interval(1000).subscribe(()=>
-          this.progress = Math.floor(100*(1-(this.firstTrack.expiresAt - new Date().getTime())/this.firstTrack.duration))
-          );
+        {
+          if (this.firstTrack) {
+            this.progress = Math.floor(100*(1-(this.firstTrack.expiresAt - new Date().getTime())/this.firstTrack.duration))
+          }
+        });
 
     }
 

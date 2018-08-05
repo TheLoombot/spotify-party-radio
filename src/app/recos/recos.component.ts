@@ -31,14 +31,8 @@ export class RecosComponent implements OnInit {
                 this.lastFiveTrackUris += ","
             }
 
-            this.spotify.getRecos(this.lastFiveTrackUris)
-            .subscribe(data => {
-                this.recos = data
-                this.clicked = -1;
-            },
-            error => {
-                this.recoError = error.error.error
-            });
+            this.refreshRecos();
+
         },
         error => {
             console.log("playlist retrieve error for recos: ", error)
@@ -53,5 +47,14 @@ export class RecosComponent implements OnInit {
         this.playlistSvc.pushTrack(track);
     }
 
-
+    refreshRecos() {
+        this.spotify.getRecos(this.lastFiveTrackUris)
+        .subscribe(data => {
+            this.recos = data
+            this.clicked = -1;
+        },
+        error => {
+            this.recoError = error.error.error
+        });
+    }
 }

@@ -1,7 +1,10 @@
 
 <div *ngIf="recos?.tracks?.length > 0" class="panel panel-primary">
 
-	<div class="panel-heading">Some recommendations:</div>
+	<div class="panel-heading">Some recommendations:
+		<span style="cursor: pointer" 
+		class="pull-right glyphicon glyphicon-refresh"
+		(click)="refreshRecos()"></span></div>
 
 	<div class="panel-body text-primary">
 

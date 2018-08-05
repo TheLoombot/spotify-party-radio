@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from 'angularfire2/database';
+import { SpotifyService } from './spotify.service';
 
 @Injectable({
     providedIn: 'root'
@@ -8,8 +9,9 @@ export class PlaylistService {
 
     lastTrack;
     firstTrack
+    userId;
 
-    constructor(private db: AngularFireDatabase) { 
+    constructor(private db: AngularFireDatabase, private spotifySvc: SpotifyService) { 
         this.getLastTracks(1).snapshotChanges().subscribe
         (data => {
             if (data[0]) {
@@ -21,6 +23,16 @@ export class PlaylistService {
         error => {
             console.log("playlist retrieve error: ", error)
         })
+
+        this.spotifySvc.user().subscribe(
+          data => { 
+            this.userId = data["id"]
+          },
+          error => {
+            console.log("error getting user ID for playlist push", error)
+          }
+        )
+
     }
 
     remove(key: string) {
@@ -53,7 +65,8 @@ export class PlaylistService {
             "expiresAt" : nextTrackExpiresAt,  
             "imageUrl" : track["album"]["images"][2]["url"],
             "trackName" : track["name"],
-            "uri" : track["uri"]
+            "uri" : track["uri"],
+            "addedBy" : this.userId
         }
 
         console.log(new Date().getTime(), "pushing track onto playlist: ", track["name"], " expires at ", nextTrackExpiresAt);

@@ -1,6 +1,6 @@
 <app-error-alert *ngIf="recoError" [error]="recoError"></app-error-alert>
 
-<div *ngIf="recos?.tracks" class="panel panel-primary">
+<div *ngIf="recos?.tracks?.length > 0" class="panel panel-primary">
 
 	<div class="panel-heading">Some recommendations:</div>
 

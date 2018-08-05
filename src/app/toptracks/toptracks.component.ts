@@ -18,7 +18,6 @@ export class ToptracksComponent implements OnInit {
 		.subscribe(data => {
 			this.topTracks = data;
 			this.clicked = -1;
-			console.log(this.topTracks)
 		},
 		error => {
 			this.topTracksError = error.error.error

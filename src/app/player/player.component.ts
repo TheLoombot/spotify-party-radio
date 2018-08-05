@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SpotifyService } from '../spotify.service';
 import { PlaylistService } from '../playlist.service';
 import { Observable, interval, pipe } from 'rxjs';
-import { switchMap, map, startWith, distinctUntilChanged } from 'rxjs/operators';
+import { switchMap, map, startWith, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 
 
 @Component({
@@ -24,7 +24,7 @@ export class PlayerComponent implements OnInit {
 
         this.playlistRef = playlistSvc.getFirstTracks(1);
 
-        this.playlistRef.snapshotChanges().subscribe 
+        this.playlistRef.snapshotChanges().pipe(debounceTime(300)).subscribe 
         (data => {
             if (data[0]) {
                 this.firstTrackKey = data[0].key
@@ -34,8 +34,7 @@ export class PlayerComponent implements OnInit {
                 // console.log("First track is: ", this.firstTrack)
                 this.checkFirstTrack()
             } else {
-                this.nowPlaying = null;
-                // console.log("play list is empty :(")
+                this.playlistSvc.addSomeTrack();
             }
         },
         error => {

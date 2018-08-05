@@ -25,13 +25,13 @@ export class PlaylistService {
         })
 
         this.spotifySvc.user().subscribe(
-          data => { 
-            this.userId = data["id"]
-          },
-          error => {
-            console.log("error getting user ID for playlist push", error)
-          }
-        )
+            data => { 
+                this.userId = data["id"]
+            },
+            error => {
+                console.log("error getting user ID for playlist push", error)
+            }
+            )
 
     }
 
@@ -51,7 +51,7 @@ export class PlaylistService {
         return this.db.list('Playlist', ref => ref.limitToLast(i))
     }
 
-    pushTrack(track: Object) {
+    pushTrack(track: Object, userId = this.userId) {
 
         let lastTrackExpiresAt = (this.lastTrack) ? this.lastTrack["expiresAt"] : new Date().getTime()
         let nextTrackExpiresAt = lastTrackExpiresAt + track["duration_ms"] + 1500 // introducing some fudge here
@@ -66,12 +66,27 @@ export class PlaylistService {
             "imageUrl" : track["album"]["images"][2]["url"],
             "trackName" : track["name"],
             "uri" : track["uri"],
-            "addedBy" : this.userId
+            "addedBy" : userId
         }
 
         console.log(new Date().getTime(), "pushing track onto playlist: ", track["name"], " expires at ", nextTrackExpiresAt);
 
         this.db.list('Playlist').push(playlistEntry);
 
+    }
+
+    addSomeTrack() {
+
+        let track = 
+        {
+            "album" : {"name" : "placeholder",
+                       "images" : [{"url":"poop"}, {"url":"poop"}, {"url": "placholder"}]},
+            "artists" : [{name: "placeholder"}],
+            "duration_ms" : 6000,
+            "name" : "placeholder",
+            "uri" : "spotify:track:0RbfwabR0mycfvZOduSIOO"
+        }
+
+        this.pushTrack(track, "robot");
     }
 }

@@ -59,6 +59,7 @@ export class PlaylistService {
         let playlistEntry = 
         {
             "albumName" : track["album"]["name"],
+            "albumUrl" : track["album"]["external_urls"]["spotify"],
             "artistName" : track["artists"][0]["name"],
             "addedAt" : new Date().getTime(),
             "duration" : track["duration_ms"],

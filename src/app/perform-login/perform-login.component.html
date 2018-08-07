@@ -4,7 +4,7 @@
 
 
     <div class="panel-body" *ngIf="user">
-      <img src="{{ user.images[0].url }}" class="pull-left" style="margin-right: 10px" *ngIf="user.images">
+      <img *ngIf="user.images?.length" src="{{ user.images[0].url }}" class="pull-left" style="margin-right: 10px">
       <h5> You've got {{ user.product }} access.</h5>
       <h5><a href (click)="killToken()">Sign Out</a></h5>
       <h5><a href="http://localhost:4200/#access_token={{ accessTokenNew ? accessTokenNew : accessTokenStored}}">Apply to localhost</a></h5>

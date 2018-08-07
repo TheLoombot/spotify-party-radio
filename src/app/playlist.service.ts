@@ -81,7 +81,8 @@ export class PlaylistService {
         let track = 
         {
             "album" : {"name" : "placeholder",
-                       "images" : [{"url":"poop"}, {"url":"poop"}, {"url": "placholder"}]},
+                       "images" : [{"url":"poop"}, {"url":"poop"}, {"url": "placholder"}],
+                       "external_urls" : {"spotify" : "https://open.spotify.com/album/6hoAjrSXyYJlJ0p9g3QjT1"}},
             "artists" : [{name: "placeholder"}],
             "duration_ms" : 6000,
             "name" : "placeholder",

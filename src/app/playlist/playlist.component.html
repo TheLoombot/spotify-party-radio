@@ -5,15 +5,17 @@
 
 		<app-error-alert *ngIf="playBackResponseError" [error]="playBackResponseError"></app-error-alert>
 
-		<div class="panel panel-default" *ngFor="let track of tracks | slice:1" >
-				<div class="panel-body" >   
-					<img src="{{ track.imageUrl }}" class="pull-left" style="margin-right: 10px">
-					<h4>{{ track.trackName }} </h4>
-					<h5> {{ track.artistName }} - {{ track.albumName }} </h5>
-				</div>
+
+		<div class="panel panel-default" *ngFor="let track of tracks | slice:1; index as i; last as isLast" >
+			<div class="panel-body">
+				<img src="{{ track.imageUrl }}" class="pull-left" style="margin-right: 10px">
+				<h4> {{ track.trackName }} </h4>
+				<h5> {{ track.artistName }} - {{ track.albumName }} </h5>
+				<span class="glyphicon glyphicon-remove pull-right" *ngIf="isLast" (click)="removeTrack(track)"></span>
+			</div>
 		</div>
 
-		<H5 *ngIf="tracks.length<2">👈🏽 Add something, will ya</H5>
+		<H5 *ngIf="tracks.length < 2">👈🏽 Add something, will ya</H5>
 
 	</div>
 </div>

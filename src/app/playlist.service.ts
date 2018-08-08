@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { SpotifyService } from './spotify.service';
+import { map } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -36,19 +37,25 @@ export class PlaylistService {
     }
 
     remove(key: string) {
-        this.db.list('Playlist').remove(key)
+        this.db.list('Playlist').remove(key);
     }
 
     getAllTracks() {
-        return this.db.list('Playlist')
+        const tracksRef = this.db.list('Playlist');
+        const tracks = tracksRef.snapshotChanges().pipe(
+            map( changes => 
+                changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
+            )
+        );
+        return tracks;
     }
 
     getFirstTracks(i: number) {
-        return this.db.list('Playlist', ref => ref.limitToFirst(i))
+        return this.db.list('Playlist', ref => ref.limitToFirst(i));
     }
 
     getLastTracks(i: number) {
-        return this.db.list('Playlist', ref => ref.limitToLast(i))
+        return this.db.list('Playlist', ref => ref.limitToLast(i));
     }
 
     pushTrack(track: Object, userId = this.userId) {

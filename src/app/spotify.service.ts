@@ -80,7 +80,7 @@ export class SpotifyService {
 	}
 
 	getTopTracks() {
-		return this.http.get(this.baseUrl + "/me/top/tracks?limit=5")
+		return this.http.get(this.baseUrl + "/me/top/tracks?limit=5&time_range=short_term")
 	}
 
 }

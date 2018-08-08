@@ -20,10 +20,10 @@ export class PlaylistComponent implements OnInit {
 			.subscribe(
 				data => {
 					this.tracks = data;
-					console.log(this.tracks);
+					// console.log(this.tracks);
 				},
 				error => {
-					console.log("Playlist retrieve error: ", error)
+					console.log("Playlist retrieves error: ", error);
 				}
 			);
 	}
@@ -33,7 +33,7 @@ export class PlaylistComponent implements OnInit {
 	}
 
 	removeTrack(track: any): void {
-		console.log('Remove Track:', track);
+		// console.log('Remove Track:', track);
 		this.playlistSvc.remove(track.key);
 	}
 

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
 import { SpotifyService } from '../spotify.service';
 import { PlaylistService } from '../playlist.service';
 
@@ -11,22 +10,31 @@ import { PlaylistService } from '../playlist.service';
 export class PlaylistComponent implements OnInit {
 
 	tracks: Object;
-	playBackResponseError; 
+	playBackResponseError: any;
 
-	constructor(private spotify: SpotifyService, private playlistSvc: PlaylistService ) { 
-		playlistSvc.getAllTracks().valueChanges().subscribe 
-		(data => {
-			this.tracks = data
-			// console.log(this.tracks)
-		},
-		error => {
-			console.log("playlist retrieve error: ", error)
-		}
-		);
+	constructor(
+		private spotify: SpotifyService,
+		private playlistSvc: PlaylistService
+	) {
+		playlistSvc.getAllTracks()
+			.subscribe(
+				data => {
+					this.tracks = data;
+					// console.log(this.tracks);
+				},
+				error => {
+					console.log("Playlist retrieves error: ", error);
+				}
+			);
 	}
 
 	ngOnInit() {
 
+	}
+
+	removeTrack(track: any): void {
+		// console.log('Remove Track:', track);
+		this.playlistSvc.remove(track.key);
 	}
 
 }

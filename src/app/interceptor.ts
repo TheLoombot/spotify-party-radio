@@ -1,4 +1,4 @@
-import { Injectable, Injector } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -12,7 +12,7 @@ export class Interceptor implements HttpInterceptor {
 			// console.log("stored access token is", window.localStorage.getItem("access_token"));
 			const authReq = req.clone({
 				setHeaders: {
-					Authorization: `Bearer ${window.localStorage.getItem("access_token")}`
+					Authorization: `Bearer ${window.localStorage.getItem('access_token')}`
 				}
 			});
 			return next.handle(authReq);

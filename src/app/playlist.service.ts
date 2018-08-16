@@ -10,7 +10,7 @@ export class PlaylistService {
 
     lastTrack;
     firstTrack
-    userId;
+    displayName;
 
     constructor(private db: AngularFireDatabase, private spotifySvc: SpotifyService) { 
         this.getLastTracks(1).snapshotChanges().subscribe
@@ -27,7 +27,7 @@ export class PlaylistService {
 
         this.spotifySvc.user().subscribe(
             data => { 
-                this.userId = data["id"]
+                this.displayName = data["display_name"]
             },
             error => {
                 console.log("error getting user ID for playlist push", error)
@@ -58,7 +58,7 @@ export class PlaylistService {
         return this.db.list('Playlist', ref => ref.limitToLast(i));
     }
 
-    pushTrack(track: Object, userId = this.userId) {
+    pushTrack(track: Object, displayName = this.displayName) {
 
         let lastTrackExpiresAt = (this.lastTrack) ? this.lastTrack["expiresAt"] : new Date().getTime()
         let nextTrackExpiresAt = lastTrackExpiresAt + track["duration_ms"] + 1500 // introducing some fudge here
@@ -74,7 +74,7 @@ export class PlaylistService {
             "imageUrl" : track["album"]["images"][2]["url"],
             "trackName" : track["name"],
             "uri" : track["uri"],
-            "addedBy" : userId
+            "addedBy" : displayName
         }
 
         console.log(new Date().getTime(), "pushing track onto playlist: ", track["name"], " expires at ", nextTrackExpiresAt);

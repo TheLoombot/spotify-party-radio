@@ -35,7 +35,7 @@ export class PlayerComponent implements OnInit {
           if (data[0]) {
             this.firstTrackKey = data[0].key;
             this.firstTrack = data[0].payload.val();
-            console.log(`First track ${this.firstTrackKey} is:`, this.firstTrack);
+            // console.log(`First track ${this.firstTrackKey} is:`, this.firstTrack);
             this.checkFirstTrack();
           } else {
             this.playlistSvc.addSomeTrack();

@@ -84,7 +84,7 @@ export class PlaylistService {
 
   /** Method to save track in Firebase secondary list */
   saveTrack(track: any): any {
-    console.log('Track to save in Secondary List:', track);
+    // console.log('Track to save in Secondary List:', track);
     const trackUri = track.uri.split(':track:')[1]; // Track id based on album url
     /* Verify if it's default robot track */
     if (trackUri === '0RbfwabR0mycfvZOduSIOO') {

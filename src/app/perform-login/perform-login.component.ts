@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SpotifyService } from '../spotify.service';
+import { User } from '../shared/models/user';
 
 @Component({
   selector: 'app-perform-login',
@@ -42,8 +43,8 @@ export class PerformLoginComponent implements OnInit {
 
     this.spotify.user()
       .subscribe(
-        data => {
-          this.user = data;
+        (user: User) => {
+          this.user = user;
         },
         error => {
           window.localStorage.removeItem('access_token');

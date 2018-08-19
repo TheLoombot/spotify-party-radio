@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HttpModule } from '@angular/http';
 import { SpotifyService } from '../spotify.service';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-perform-login',

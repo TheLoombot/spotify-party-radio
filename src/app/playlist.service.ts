@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { SpotifyService } from './spotify.service';
 import { map } from 'rxjs/operators';
+import { User } from './shared/models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ import { map } from 'rxjs/operators';
 export class PlaylistService {
   lastTrack;
   firstTrack;
-  displayName;
+  userName: string;
 
   constructor(
     private db: AngularFireDatabase,
@@ -29,15 +30,20 @@ export class PlaylistService {
         }
       );
 
-      this.spotifySvc.user()
-        .subscribe(
-          data => {
-            this.displayName = data['display_name'];
-          },
-          error => {
-            console.log('error getting user ID for playlist push', error);
+    this.spotifySvc.user()
+      .subscribe(
+        (user: User) => {
+          console.log(user);
+          if (user.display_name) {
+            this.userName = user.display_name;
+          } else {
+            this.userName = user.id;
           }
-        );
+        },
+        error => {
+          console.log('error getting user ID for playlist push', error);
+        }
+      );
   }
 
   remove(key: string) {
@@ -62,7 +68,7 @@ export class PlaylistService {
     return this.db.list('Playlist', ref => ref.limitToLast(i));
   }
 
-  pushTrack(track: Object, displayName = this.displayName) {
+  pushTrack(track: Object, userName = this.userName) {
     const lastTrackExpiresAt = (this.lastTrack) ? this.lastTrack['expiresAt'] : new Date().getTime();
     const nextTrackExpiresAt = lastTrackExpiresAt + track['duration_ms'] + 1500; // introducing some fudge here
 
@@ -76,7 +82,7 @@ export class PlaylistService {
       imageUrl : track['album']['images'][2]['url'],
       trackName : track['name'],
       uri : track['uri'],
-      addedBy : displayName
+      addedBy : userName
     };
     console.log(new Date().getTime(), 'pushing track onto playlist: ', track['name'], ' expires at ', nextTrackExpiresAt);
     this.db.list('Playlist').push(playlistEntry);

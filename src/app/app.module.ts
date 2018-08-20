@@ -10,7 +10,7 @@ import { AppComponent } from './app.component';
 
 import { AppRoutingModule } from './app-routing.module';
 import { PerformLoginComponent } from './perform-login/perform-login.component';
-import { SpotifyService } from './spotify.service'
+import { SpotifyService } from './spotify.service';
 
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';

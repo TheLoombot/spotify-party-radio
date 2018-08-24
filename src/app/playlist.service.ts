@@ -94,15 +94,14 @@ export class PlaylistService {
   /** Method to save track in Firebase secondary list */
   saveTrack(track: Track): any {
     // console.log('Track to save in Secondary List:', track);
-    const trackUri = track.uri.split(':track:')[1]; // Track id based on album url
     /* Verify if it's default robot track */
-    if (trackUri === '0RbfwabR0mycfvZOduSIOO') {
+    if (track.id === '0RbfwabR0mycfvZOduSIOO') {
       console.log('Default track does not need to be saved in previous played tracks');
     } else {
       /* Clean track Object */
       delete track.expires_at;
       /* Save track in previous played list */
-      this.db.list('Previouslist').set(trackUri, track);
+      this.db.list('Previouslist').set(track.id, track);
     }
   }
 
@@ -113,7 +112,7 @@ export class PlaylistService {
         'images' : [
           {'url': 'poop'},
           {'url': 'poop'},
-          {'url': 'placholder'}
+          {'url': 'placeholder'}
         ],
         'external_urls' : {
           'spotify' : 'https://open.spotify.com/album/6hoAjrSXyYJlJ0p9g3QjT1'
@@ -124,6 +123,7 @@ export class PlaylistService {
       ],
       duration_ms : 6000,
       name : 'placeholder',
+      id: '0RbfwabR0mycfvZOduSIOO',
       uri : 'spotify:track:0RbfwabR0mycfvZOduSIOO'
     };
 

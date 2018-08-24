@@ -3,6 +3,7 @@ import { SpotifyService } from '../spotify.service';
 import { PlaylistService } from '../playlist.service';
 import { interval } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { Track } from '../shared/models/track';
 
 @Component({
   selector: 'app-player',
@@ -13,7 +14,7 @@ export class PlayerComponent implements OnInit {
   nowPlaying;
   playerError;
   playlistRef;
-  firstTrack;
+  firstTrack: Track;
   firstTrackKey;
   pendingCheck: boolean;
   progress: number;
@@ -26,12 +27,14 @@ export class PlayerComponent implements OnInit {
     this.progress = 0;
 
     this.playlistRef = playlistSvc.getFirstTracks(1);
+  }
 
+  ngOnInit() {
     this.playlistRef.snapshotChanges()
       .pipe(debounceTime(300))
       .subscribe(
         data => {
-          // console.log('player data:', data);
+          // console.log('Player data:', data);
           if (data[0]) {
             this.firstTrackKey = data[0].key;
             this.firstTrack = data[0].payload.val();
@@ -56,15 +59,16 @@ export class PlayerComponent implements OnInit {
       );
   }
 
-  ngOnInit() {
-  }
-
-  private calcProgress (firstTrack: any): number {
-    return Math.floor( 100 * ( 1 - (firstTrack.expiresAt - new Date().getTime() ) / firstTrack.duration) );
+  private calcProgress(firstTrack: Track): number {
+    return Math.floor( 100 * ( 1 - (firstTrack.expires_at - this.getTime() ) / firstTrack.duration_ms) );
   }
 
   private getTime(): number {
     return new Date().getTime();
+  }
+
+  private showDate(date: number): any {
+    return new Date(date).toString();
   }
 
   /**
@@ -77,13 +81,15 @@ export class PlayerComponent implements OnInit {
     * If it's not playing, play it, ya done
   **/
   checkFirstTrack() {
-    console.log('checking first track: ', this.firstTrack);
-    const timeToExpiration = this.getTime() - this.firstTrack.expiresAt;
-    console.log('time to first track expiration: ', timeToExpiration);
+    // console.log('checking first track: ', this.firstTrack);
+    const timeToExpiration = this.getTime() - this.firstTrack.expires_at;
+    // console.log('First track expires at: ', this.showDate(this.firstTrack.expires_at));
+    console.log('Time to first track expiration: ', timeToExpiration);
 
     if (timeToExpiration > 0) {
       // Track has expired
-      console.log(this.getTime(), this.firstTrack.trackName, ' track expired, expected expiration time was ', this.firstTrack.expiresAt);
+      console.log(this.getTime(), this.firstTrack.name, 'track expired, expected expiration time was', this.firstTrack.expires_at);
+      console.log(this.showDate(this.getTime()), 'expected expiration time was', this.showDate(this.firstTrack.expires_at));
       this.playlistSvc.remove(this.firstTrackKey);
       this.playlistSvc.saveTrack(this.firstTrack); // Save track in secondary list
       return;
@@ -91,19 +97,19 @@ export class PlayerComponent implements OnInit {
 
     this.spotify.getNowPlaying()
       .subscribe(
-        (data) => {
-          this.nowPlaying = data;
-          // console.log('now playing ', this.nowPlaying);
+        (data: any) => {
+          this.nowPlaying = data ? data.item : null;
+          // console.log('NowPlaying data:', data);
           // console.log('track 1 ', this.firstTrack);
           if (this.nowPlaying == null) {
             // this.playerError = 'poopie';
-          } else if (this.nowPlaying['is_playing'] && this.nowPlaying.item.uri == this.firstTrack.uri) {
-            console.log(this.getTime(), this.nowPlaying.item.name, ' Now playing matches position 0, expires in ', timeToExpiration);
+          } else if (data['is_playing'] && this.nowPlaying.uri === this.firstTrack.uri) {
+            console.log(this.getTime(), this.nowPlaying.name, ' Now playing matches position 0, expires in ', timeToExpiration);
             if (!this.pendingCheck) {
               // only schedule the check if there's not one pending already
               // when we support deletes, we'll have to handle cancelling
               // the pending check and replacing it instead. later.
-              console.log(this.getTime(), ' Scheduling check in ', timeToExpiration);
+              console.log(this.getTime(), 'Scheduling check in', timeToExpiration);
               this.pendingCheck = true;
               setTimeout( () => {
                 this.checkFirstTrack();
@@ -117,14 +123,14 @@ export class PlayerComponent implements OnInit {
               .subscribe(
                 (response) => {
                   // this.playerError = response
-                  console.log(this.getTime(), this.firstTrack.trackName, ' Requested playback, scheduled check in 1500ms ')
+                  console.log(this.getTime(), this.firstTrack.name, ' Requested playback, scheduled check in 1500ms');
                   setTimeout(() => {
                     this.checkFirstTrack();
                   }, 1500);
                   // playTrack doesn't give us an affirmative response on the play request
                   // so we have to wait a bit (fudge = 1.5s) before we try check the 'now
                   // playing status' again
-                  this.spotify.seekTrack(this.getTime() - this.firstTrack.expiresAt + this.firstTrack.duration)
+                  this.spotify.seekTrack(this.getTime() - this.firstTrack.expires_at + this.firstTrack.duration_ms)
                     .subscribe(
                       () => {
                         // no op

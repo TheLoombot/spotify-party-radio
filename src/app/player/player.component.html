@@ -7,8 +7,9 @@
 	<div class="panel-body" *ngIf="nowPlaying">
 		<img src="{{ nowPlaying.album.images[1].url }}" class="pull-left" style="margin-right: 10px">
 		<h4>{{ nowPlaying.name }} </h4>
-		<h5> {{ nowPlaying.artists[0].name }} - <a target="_blank" href="{{ nowPlaying.album.external_urls.spotify }}">
-		{{ nowPlaying.album.name }} </a></h5>
+		<h5> {{ nowPlaying.artists[0].name }} - 
+			<a target="_blank" href="{{ nowPlaying.album.external_urls.spotify }}">{{ nowPlaying.album.name }}</a>
+		</h5>
 		<div class="progress">
 			<div class="progress-bar " role="progressbar" [style.width]="progress + '%'" aria-valuemin="0" aria-valuemax="100"></div>
 		</div>

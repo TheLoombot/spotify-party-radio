@@ -34,7 +34,7 @@ export class PlaylistService {
     this.spotifySvc.user()
       .subscribe(
         (user: User) => {
-          console.log(user);
+          // console.log(user);
           if (user.display_name) {
             this.userName = user.display_name;
           } else {
@@ -70,11 +70,13 @@ export class PlaylistService {
   }
 
   pushTrack(track: any, userName = this.userName) {
-    const lastTrackExpiresAt = (this.lastTrack) ? this.lastTrack.expires_at : new Date().getTime();
+    const lastTrackExpiresAt = (this.lastTrack) ? this.lastTrack.expires_at : this.getTime();
     const nextTrackExpiresAt = lastTrackExpiresAt + track.duration_ms + 1500; // introducing some fudge here
+    // console.log('last track expires at:', this.showDate(lastTrackExpiresAt));
+    // console.log('next track expires at:', this.showDate(nextTrackExpiresAt));
 
     const additionalData = {
-      added_at: new Date().getTime(),
+      added_at: this.getTime(),
       added_by: userName,
       album_name: track['album']['name'],
       album_url: track['album']['external_urls']['spotify'],
@@ -84,9 +86,8 @@ export class PlaylistService {
     };
 
     const playlistEntry = {...track, ...additionalData};
-    console.log(playlistEntry);
 
-    console.log(new Date().getTime(), 'pushing track onto playlist: ', track['name'], ' expires at ', nextTrackExpiresAt);
+    console.log(this.getTime(), 'pushing track onto playlist:', playlistEntry.name , 'expires at', playlistEntry.expires_at);
     this.db.list('Playlist').push(playlistEntry);
   }
 
@@ -127,5 +128,13 @@ export class PlaylistService {
     };
 
     this.pushTrack(track, 'robot');
+  }
+
+  private getTime(): number {
+    return new Date().getTime();
+  }
+
+  private showDate(date: number): any {
+    return new Date(date).toString();
   }
 }

@@ -14,14 +14,16 @@ export class ToptracksComponent implements OnInit {
 
   constructor(private spotify: SpotifyService, private playlistSvc: PlaylistService) {
     this.spotify.getTopTracks()
-    .subscribe(data => {
-      console.log(data);
-      this.topTracks = data;
-      this.clicked = -1;
-    },
-    error => {
-      this.topTracksError = error.error.error;
-    });
+    .subscribe(
+      topTracks => {
+        // console.log(data);
+        this.topTracks = topTracks;
+        this.clicked = -1;
+      },
+      error => {
+        this.topTracksError = error.error.error;
+      }
+    );
   }
 
   ngOnInit() {

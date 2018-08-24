@@ -1,7 +1,7 @@
 export class Track {
   added_at: number;
   added_by: string;
-  album?: Array<any>;
+  album?: any;
   album_name: string;
   album_url: string;
   artists?: Array<any>;
@@ -21,6 +21,7 @@ export class Track {
   id: string;
   image_url: string;
   is_local?: boolean;
+  is_playable?: boolean;
   name: string;
   popularity?: number;
   preview_url?: string;

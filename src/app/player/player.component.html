@@ -5,15 +5,15 @@
 	<app-error-alert *ngIf="playerError" [error]="playerError">poop</app-error-alert>
 
 	<div class="panel-body" *ngIf="nowPlaying">
-		<img src="{{ nowPlaying.item.album.images[1].url }}" class="pull-left" style="margin-right: 10px">
-		<h4>{{ nowPlaying.item.name }} </h4>
-		<h5> {{ nowPlaying.item.artists[0].name }} - <a target="_blank" href="{{ nowPlaying.item.album.external_urls.spotify }}">
-		{{ nowPlaying.item.album.name }} </a></h5>
+		<img src="{{ nowPlaying.album.images[1].url }}" class="pull-left" style="margin-right: 10px">
+		<h4>{{ nowPlaying.name }} </h4>
+		<h5> {{ nowPlaying.artists[0].name }} - <a target="_blank" href="{{ nowPlaying.album.external_urls.spotify }}">
+		{{ nowPlaying.album.name }} </a></h5>
 		<div class="progress">
 			<div class="progress-bar " role="progressbar" [style.width]="progress + '%'" aria-valuemin="0" aria-valuemax="100"></div>
 		</div>
 
- 		<small class="text-muted small pull-right"> selected by {{firstTrack.addedBy}} </small>
+ 		<small class="text-muted small pull-right"> selected by {{firstTrack.added_by}} </small>
 
 	</div>
 

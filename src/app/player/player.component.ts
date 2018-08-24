@@ -3,6 +3,7 @@ import { SpotifyService } from '../spotify.service';
 import { PlaylistService } from '../playlist.service';
 import { interval } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { Track } from '../shared/models/track';
 
 @Component({
   selector: 'app-player',
@@ -13,7 +14,7 @@ export class PlayerComponent implements OnInit {
   nowPlaying;
   playerError;
   playlistRef;
-  firstTrack;
+  firstTrack: Track;
   firstTrackKey;
   pendingCheck: boolean;
   progress: number;
@@ -59,8 +60,8 @@ export class PlayerComponent implements OnInit {
   ngOnInit() {
   }
 
-  private calcProgress (firstTrack: any): number {
-    return Math.floor( 100 * ( 1 - (firstTrack.expiresAt - new Date().getTime() ) / firstTrack.duration) );
+  private calcProgress (firstTrack: Track): number {
+    return Math.floor( 100 * ( 1 - (firstTrack.expires_at - new Date().getTime() ) / firstTrack.duration_ms) );
   }
 
   private getTime(): number {
@@ -78,12 +79,12 @@ export class PlayerComponent implements OnInit {
   **/
   checkFirstTrack() {
     console.log('checking first track: ', this.firstTrack);
-    const timeToExpiration = this.getTime() - this.firstTrack.expiresAt;
+    const timeToExpiration = this.getTime() - this.firstTrack.expires_at;
     console.log('time to first track expiration: ', timeToExpiration);
 
     if (timeToExpiration > 0) {
       // Track has expired
-      console.log(this.getTime(), this.firstTrack.trackName, ' track expired, expected expiration time was ', this.firstTrack.expiresAt);
+      console.log(this.getTime(), this.firstTrack.name, ' track expired, expected expiration time was ', this.firstTrack.expires_at);
       this.playlistSvc.remove(this.firstTrackKey);
       this.playlistSvc.saveTrack(this.firstTrack); // Save track in secondary list
       return;
@@ -91,14 +92,14 @@ export class PlayerComponent implements OnInit {
 
     this.spotify.getNowPlaying()
       .subscribe(
-        (data) => {
-          this.nowPlaying = data;
-          // console.log('now playing ', this.nowPlaying);
+        (data: any) => {
+          this.nowPlaying = data.item as Track;
+          console.log('now playing ', this.nowPlaying);
           // console.log('track 1 ', this.firstTrack);
           if (this.nowPlaying == null) {
             // this.playerError = 'poopie';
-          } else if (this.nowPlaying['is_playing'] && this.nowPlaying.item.uri == this.firstTrack.uri) {
-            console.log(this.getTime(), this.nowPlaying.item.name, ' Now playing matches position 0, expires in ', timeToExpiration);
+          } else if (this.nowPlaying['is_playing'] && this.nowPlaying.uri == this.firstTrack.uri) {
+            console.log(this.getTime(), this.nowPlaying.name, ' Now playing matches position 0, expires in ', timeToExpiration);
             if (!this.pendingCheck) {
               // only schedule the check if there's not one pending already
               // when we support deletes, we'll have to handle cancelling
@@ -117,14 +118,14 @@ export class PlayerComponent implements OnInit {
               .subscribe(
                 (response) => {
                   // this.playerError = response
-                  console.log(this.getTime(), this.firstTrack.trackName, ' Requested playback, scheduled check in 1500ms ')
+                  console.log(this.getTime(), this.firstTrack.name, ' Requested playback, scheduled check in 1500ms ')
                   setTimeout(() => {
                     this.checkFirstTrack();
                   }, 1500);
                   // playTrack doesn't give us an affirmative response on the play request
                   // so we have to wait a bit (fudge = 1.5s) before we try check the 'now
                   // playing status' again
-                  this.spotify.seekTrack(this.getTime() - this.firstTrack.expiresAt + this.firstTrack.duration)
+                  this.spotify.seekTrack(this.getTime() - this.firstTrack.expires_at + this.firstTrack.duration_ms)
                     .subscribe(
                       () => {
                         // no op

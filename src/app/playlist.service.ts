@@ -3,6 +3,7 @@ import { AngularFireDatabase } from 'angularfire2/database';
 import { SpotifyService } from './spotify.service';
 import { map } from 'rxjs/operators';
 import { User } from './shared/models/user';
+import { Track } from './shared/models/track';
 
 @Injectable({
   providedIn: 'root'
@@ -68,28 +69,29 @@ export class PlaylistService {
     return this.db.list('Playlist', ref => ref.limitToLast(i));
   }
 
-  pushTrack(track: Object, userName = this.userName) {
-    const lastTrackExpiresAt = (this.lastTrack) ? this.lastTrack['expiresAt'] : new Date().getTime();
-    const nextTrackExpiresAt = lastTrackExpiresAt + track['duration_ms'] + 1500; // introducing some fudge here
+  pushTrack(track: any, userName = this.userName) {
+    const lastTrackExpiresAt = (this.lastTrack) ? this.lastTrack.expires_at : new Date().getTime();
+    const nextTrackExpiresAt = lastTrackExpiresAt + track.duration_ms + 1500; // introducing some fudge here
 
-    const playlistEntry = {
-      albumName : track['album']['name'],
-      albumUrl : track['album']['external_urls']['spotify'],
-      artistName : track['artists'][0]['name'],
-      addedAt : new Date().getTime(),
-      duration : track['duration_ms'],
-      expiresAt : nextTrackExpiresAt,
-      imageUrl : track['album']['images'][2]['url'],
-      trackName : track['name'],
-      uri : track['uri'],
-      addedBy : userName
+    const additionalData = {
+      added_at: new Date().getTime(),
+      added_by: userName,
+      album_name: track['album']['name'],
+      album_url: track['album']['external_urls']['spotify'],
+      artist_name: track['artists'][0]['name'],
+      expires_at: nextTrackExpiresAt,
+      image_url: track['album']['images'][2]['url'],
     };
+
+    const playlistEntry = {...track, ...additionalData};
+    console.log(playlistEntry);
+
     console.log(new Date().getTime(), 'pushing track onto playlist: ', track['name'], ' expires at ', nextTrackExpiresAt);
     this.db.list('Playlist').push(playlistEntry);
   }
 
   /** Method to save track in Firebase secondary list */
-  saveTrack(track: any): any {
+  saveTrack(track: Track): any {
     // console.log('Track to save in Secondary List:', track);
     const trackUri = track.uri.split(':track:')[1]; // Track id based on album url
     /* Verify if it's default robot track */
@@ -97,7 +99,7 @@ export class PlaylistService {
       console.log('Default track does not need to be saved in previous played tracks');
     } else {
       /* Clean track Object */
-      delete track.expiresAt;
+      delete track.expires_at;
       /* Save track in previous played list */
       this.db.list('Previouslist').set(trackUri, track);
     }

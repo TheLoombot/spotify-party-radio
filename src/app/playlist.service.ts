@@ -4,24 +4,29 @@ import { SpotifyService } from './spotify.service';
 import { map } from 'rxjs/operators';
 import { User } from './shared/models/user';
 import { Track } from './shared/models/track';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlaylistService {
-  lastTrack;
+  lastTrack: Track;
   firstTrack;
   userName: string;
+  playlistUrl: string;
+  previouslistUrl: string;
 
   constructor(
     private db: AngularFireDatabase,
     private spotifySvc: SpotifyService
   ) {
+    this.setLists();
+
     this.getLastTracks(1).snapshotChanges()
       .subscribe(
         data => {
           if (data[0]) {
-            this.lastTrack = data[0].payload.val();
+            this.lastTrack = data[0].payload.val() as Track;
           } else {
             this.lastTrack = null;
           }
@@ -48,11 +53,11 @@ export class PlaylistService {
   }
 
   remove(key: string) {
-    this.db.list('Playlist').remove(key);
+    this.db.list(this.playlistUrl).remove(key);
   }
 
   getAllTracks() {
-    const tracksRef = this.db.list('Playlist');
+    const tracksRef = this.db.list(this.playlistUrl);
     const tracks = tracksRef.snapshotChanges().pipe(
       map( changes =>
         changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
@@ -62,11 +67,11 @@ export class PlaylistService {
   }
 
   getFirstTracks(i: number) {
-    return this.db.list('Playlist', ref => ref.limitToFirst(i));
+    return this.db.list(this.playlistUrl, ref => ref.limitToFirst(i));
   }
 
   getLastTracks(i: number) {
-    return this.db.list('Playlist', ref => ref.limitToLast(i));
+    return this.db.list(this.playlistUrl, ref => ref.limitToLast(i));
   }
 
   pushTrack(track: any, userName = this.userName) {
@@ -88,7 +93,7 @@ export class PlaylistService {
     const playlistEntry = {...track, ...additionalData};
 
     console.log(this.getTime(), 'pushing track onto playlist:', playlistEntry.name , 'expires at', playlistEntry.expires_at);
-    this.db.list('Playlist').push(playlistEntry);
+    this.db.list(this.playlistUrl).push(playlistEntry);
   }
 
   /** Method to save track in Firebase secondary list */
@@ -101,7 +106,7 @@ export class PlaylistService {
       /* Clean track Object */
       delete track.expires_at;
       /* Save track in previous played list */
-      this.db.list('Previouslist').set(track.id, track);
+      this.db.list(this.previouslistUrl).set(track.id, track);
     }
   }
 
@@ -136,5 +141,16 @@ export class PlaylistService {
 
   private showDate(date: number): any {
     return new Date(date).toString();
+  }
+
+  private setLists() {
+    console.log('Environment:', environment);
+    if (environment.production) {
+      this.playlistUrl = `prod/playlist`;
+      this.previouslistUrl = `prod/previouslist`;
+    } else {
+      this.playlistUrl = `dev/playlist`;
+      this.previouslistUrl = `dev/previouslist`;
+    }
   }
 }

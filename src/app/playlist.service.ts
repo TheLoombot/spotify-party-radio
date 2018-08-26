@@ -66,16 +66,6 @@ export class PlaylistService {
     return tracks;
   }
 
-  getAllPreviousTracks() {
-    const tracksRef = this.db.list(this.previouslistUrl);
-    const tracks = tracksRef.snapshotChanges().pipe(
-      map( changes =>
-        changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
-      )
-    );
-    return tracks;
-  }
-
   getFirstTracks(i: number) {
     return this.db.list(this.playlistUrl, ref => ref.limitToFirst(i));
   }

@@ -13,8 +13,10 @@
 		<div class="progress">
 			<div class="progress-bar " role="progressbar" [style.width]="progress + '%'" aria-valuemin="0" aria-valuemax="100"></div>
 		</div>
-
- 		<small class="text-muted small pull-right"> selected by {{firstTrack.added_by}} </small>
+ 		<small class="text-muted small pull-right"> 
+			 <span *ngIf="firstTrack?.player.auto">automatically added by Robot,</span>
+			 selected by {{firstTrack.added_by}} 
+		</small>
 
 	</div>
 

@@ -66,6 +66,16 @@ export class PlaylistService {
     return tracks;
   }
 
+  getAllPreviousTracks() {
+    const tracksRef = this.db.list(this.previouslistUrl);
+    const tracks = tracksRef.snapshotChanges().pipe(
+      map( changes =>
+        changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
+      )
+    );
+    return tracks;
+  }
+
   getFirstTracks(i: number) {
     return this.db.list(this.playlistUrl, ref => ref.limitToFirst(i));
   }
@@ -74,20 +84,24 @@ export class PlaylistService {
     return this.db.list(this.playlistUrl, ref => ref.limitToLast(i));
   }
 
-  pushTrack(track: any, userName = this.userName) {
-    const lastTrackExpiresAt = (this.lastTrack) ? this.lastTrack.expires_at : this.getTime();
+  pushTrack(track: any, userName = this.userName): void {
+    const now = this.getTime();
+    const lastTrackExpiresAt = (this.lastTrack) ? this.lastTrack.expires_at : now;
     const nextTrackExpiresAt = lastTrackExpiresAt + track.duration_ms + 1500; // introducing some fudge here
-    // console.log('last track expires at:', this.showDate(lastTrackExpiresAt));
-    // console.log('next track expires at:', this.showDate(nextTrackExpiresAt));
+    console.log('last track expires at:', this.showDate(lastTrackExpiresAt));
+    console.log('next track expires at:', this.showDate(nextTrackExpiresAt));
 
     const additionalData = {
-      added_at: this.getTime(),
+      added_at: now,
       added_by: userName,
       album_name: track['album']['name'],
       album_url: track['album']['external_urls']['spotify'],
       artist_name: track['artists'][0]['name'],
       expires_at: nextTrackExpiresAt,
       image_url: track['album']['images'][2]['url'],
+      player: {
+        auto: false
+      }
     };
 
     const playlistEntry = {...track, ...additionalData};
@@ -96,12 +110,29 @@ export class PlaylistService {
     this.db.list(this.playlistUrl).push(playlistEntry);
   }
 
+  pushRandomTrack(track: any) {
+    const now = this.getTime();
+    const lastTrackExpiresAt = (this.lastTrack) ? this.lastTrack.expires_at : now;
+    const nextTrackExpiresAt = lastTrackExpiresAt + track.duration_ms + 1500; // introducing some fudge here
+    console.log('last track expires at:', this.showDate(lastTrackExpiresAt));
+    console.log('next track expires at:', this.showDate(nextTrackExpiresAt));
+
+    track.added_at = now;
+    track.player.auto = true;
+    track.expires_at = nextTrackExpiresAt;
+
+    console.log(this.getTime(), 'pushing track onto playlist:', track.name , 'expires at', track.expires_at);
+    this.db.list(this.playlistUrl).push(track);
+  }
+
   /** Method to save track in Firebase secondary list */
   saveTrack(track: Track): any {
-    // console.log('Track to save in Secondary List:', track);
-    /* Verify if it's default robot track */
+    console.log('Track to save in Secondary List:', track);
     if (track.id === '0RbfwabR0mycfvZOduSIOO') {
+      // Verify if it's default robot track
       console.log('Default track does not need to be saved in previous played tracks');
+    } else if (track.player.auto) {
+      console.log('Random track does not need to be saved again in previous played tracks');
     } else {
       /* Clean track Object */
       delete track.expires_at;
@@ -110,7 +141,7 @@ export class PlaylistService {
     }
   }
 
-  addSomeTrack() {
+  addDefaultTrack() {
     const track = {
       album : {
         'name' : 'placeholder',
@@ -132,7 +163,7 @@ export class PlaylistService {
       uri : 'spotify:track:0RbfwabR0mycfvZOduSIOO'
     };
 
-    this.pushTrack(track, 'robot');
+    this.pushTrack(track, 'Robot');
   }
 
   private getTime(): number {

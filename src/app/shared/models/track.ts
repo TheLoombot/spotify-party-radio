@@ -23,6 +23,11 @@ export class Track {
   is_local?: boolean;
   is_playable?: boolean;
   name: string;
+  player: {
+    auto?: boolean,
+    added_at: any,
+    added_by: any
+  };
   popularity?: number;
   preview_url?: string;
   track_number?: number;

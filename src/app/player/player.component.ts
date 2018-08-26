@@ -41,7 +41,25 @@ export class PlayerComponent implements OnInit {
             // console.log(`First track ${this.firstTrackKey} is:`, this.firstTrack);
             this.checkFirstTrack();
           } else {
-            this.playlistSvc.addSomeTrack();
+            // Robot adds the music now
+            this.playlistSvc.getAllPreviousTracks()
+              .subscribe(
+                tracks => {
+                  console.log(tracks.length, 'tracks:', tracks);
+                  if (tracks.length > 0) {
+                    const randomTrack = tracks[Math.floor(Math.random() * tracks.length)];
+                    console.log('Random previous track:', randomTrack);
+                    this.playlistSvc.pushRandomTrack(randomTrack);
+                  } else {
+                    this.playlistSvc.addDefaultTrack(); // Add Default track
+                  }
+                },
+                error => console.error(error),
+                () => {
+                  console.log('Robot selection has finished');
+                }
+              );
+            // Add random track from pool
           }
         },
         error => {

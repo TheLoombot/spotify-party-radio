@@ -29,11 +29,23 @@ export class SearchComponent implements OnInit {
     .subscribe(
       (results: any) => {
         this.results = results;
+        // console.log('Results:', this.results);
         this.searchResults = results.tracks;
-        this.tracks = results.tracks.items as Array<Track>;
+        if (results.tracks.items) {
+          this.tracks = results.tracks.items as Array<Track>;
+          // console.log('Tracks:', this.tracks);
+          this.tracks.forEach( (track: Track) => {
+            if (track.album.images.length > 0) {
+              const images = track.album.images.slice(-1); // Select smallest size
+              track.image_url = images[0].url;
+            } else {
+              track.image_url = 'assets/record.png'; // Use default image
+            }
+          });
+        } else {
+          this.tracks = [];
+        }
         this.clicked = -1;
-        console.log('Results:', this.results);
-        console.log('Tracks:', this.tracks);
       },
       error => {
         this.searchError = error.error.error;

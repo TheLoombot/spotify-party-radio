@@ -11,9 +11,13 @@ import { Track } from '../shared/models/track';
   providers: [SpotifyService]
 })
 export class SearchComponent implements OnInit {
+<<<<<<< HEAD
   results: Object;
   searchResults: any;
   tracks: Array<Track>;
+=======
+  results: any;
+>>>>>>> 13dac51d5bb58400371bcb698522b011a70184be
   searchTerm$ = new Subject<string>();
   searchError;
   clicked: number;
@@ -22,6 +26,7 @@ export class SearchComponent implements OnInit {
     private spotify: SpotifyService,
     private playlistSvc: PlaylistService
   ) {
+<<<<<<< HEAD
   }
 
   ngOnInit() {
@@ -46,6 +51,14 @@ export class SearchComponent implements OnInit {
           this.tracks = [];
         }
         this.clicked = -1;
+=======
+    this.spotify.search(this.searchTerm$)
+    .subscribe(
+      data => {
+        this.results = data;
+        this.clicked = -1;
+        // console.log(this.results)
+>>>>>>> 13dac51d5bb58400371bcb698522b011a70184be
       },
       error => {
         this.searchError = error.error.error;
@@ -53,6 +66,12 @@ export class SearchComponent implements OnInit {
     );
   }
 
+<<<<<<< HEAD
+=======
+  ngOnInit() {
+  }
+
+>>>>>>> 13dac51d5bb58400371bcb698522b011a70184be
   pushTrack(track: Object, i: number) {
     this.clicked = i;
     this.playlistSvc.pushTrack(track);

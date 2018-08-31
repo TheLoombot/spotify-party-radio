@@ -16,8 +16,11 @@ To run the app locally:
 
 1. Check out the project
 2. Use npm to install the angular cli (to build) and firebase tools (to deploy)
-3. Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. (You can get an access token [from a deployed instance of the app](https://poop-a1c0e.firebaseapp.com/))
-4. Run `ng build; firebase deploy` to build and deploy the project. 
+3. Run `ng serve` for a dev server. This will work with `dev` environment by default. (You can also work with `prod` environment using `ng serve --prod` instead)
+4. Navigate to `http://localhost:4200/`. (You can get an access token [from a deployed instance of the app](https://poop-a1c0e.firebaseapp.com/))
+
+To build and deploy the app
+1. Run `ng build --prod; firebase deploy`. 
 
 # Planning
 

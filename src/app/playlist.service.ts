@@ -87,7 +87,7 @@ export class PlaylistService {
       album_url: track['album']['external_urls']['spotify'],
       artist_name: track['artists'][0]['name'],
       expires_at: nextTrackExpiresAt,
-      image_url: track['album']['images'][2]['url'],
+      image_url: track.image_url,
     };
 
     const playlistEntry = {...track, ...additionalData};

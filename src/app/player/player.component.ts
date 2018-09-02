@@ -99,8 +99,8 @@ export class PlayerComponent implements OnInit {
       .subscribe(
         (data: any) => {
           this.nowPlaying = data ? data.item : null;
-          // console.log('NowPlaying data:', data);
-          // console.log('track 1 ', this.firstTrack);
+          console.log('NowPlaying data:', data);
+          console.log('track 1 ', this.firstTrack);
           if (this.nowPlaying == null) {
             // this.playerError = 'poopie';
           } else if (data['is_playing'] && this.nowPlaying.uri === this.firstTrack.uri) {

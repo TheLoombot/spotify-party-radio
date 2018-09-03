@@ -80,6 +80,15 @@ export class PlaylistService {
     // console.log('last track expires at:', this.showDate(lastTrackExpiresAt));
     // console.log('next track expires at:', this.showDate(nextTrackExpiresAt));
 
+    // Select Track Img
+    let trackImg = 'assets/record.png';
+    if (track.image_url) {
+      trackImg = track.image_url;
+    } else {
+      const images = track.album.images.slice(-1); // Select smallest size
+      trackImg = images[0].url;
+    }
+
     const additionalData = {
       added_at: this.getTime(),
       added_by: userName,
@@ -87,10 +96,11 @@ export class PlaylistService {
       album_url: track['album']['external_urls']['spotify'],
       artist_name: track['artists'][0]['name'],
       expires_at: nextTrackExpiresAt,
-      image_url: track['album']['images'][2]['url'],
+      image_url: trackImg,
     };
 
     const playlistEntry = {...track, ...additionalData};
+    // console.log(playlistEntry);
 
     console.log(this.getTime(), 'pushing track onto playlist:', playlistEntry.name , 'expires at', playlistEntry.expires_at);
     this.db.list(this.playlistUrl).push(playlistEntry);

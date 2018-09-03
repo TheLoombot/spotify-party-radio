@@ -31,7 +31,7 @@ export class SearchComponent implements OnInit {
         this.results = results;
         // console.log('Results:', this.results);
         this.searchResults = results.tracks;
-        if (results.tracks.items) {
+        if (results.tracks) {
           this.tracks = results.tracks.items as Array<Track>;
           // console.log('Tracks:', this.tracks);
           this.tracks.forEach( (track: Track) => {

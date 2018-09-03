@@ -19,9 +19,6 @@
         </div>
       </div>
     </div>
-    <div *ngIf="tracks?.length === 0" class="text-primary">
-      No results were found
-    </div>
-    <app-recos *ngIf="!results?.tracks"></app-recos>
+    <app-recos *ngIf="!tracks?.length"></app-recos>
   </div>
 </div>

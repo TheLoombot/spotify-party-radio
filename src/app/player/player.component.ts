@@ -1,8 +1,12 @@
+/* Core */
 import { Component, OnInit } from '@angular/core';
-import { SpotifyService } from '../spotify.service';
-import { PlaylistService } from '../playlist.service';
+/* RxJs */
 import { interval } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+/* Services */
+import { SpotifyService } from '../spotify.service';
+import { PlaylistService } from '../playlist.service';
+/* Models */
 import { Track } from '../shared/models/track';
 
 @Component({
@@ -34,14 +38,14 @@ export class PlayerComponent implements OnInit {
       .pipe(debounceTime(300))
       .subscribe(
         data => {
-          // console.log('Player data:', data);
+          console.log('Player data:', data);
           if (data[0]) {
             this.firstTrackKey = data[0].key;
             this.firstTrack = data[0].payload.val();
-            // console.log(`First track ${this.firstTrackKey} is:`, this.firstTrack);
+            console.log(`First track ${this.firstTrackKey} is:`, this.firstTrack);
             this.checkFirstTrack();
           } else {
-            this.playlistSvc.addSomeTrack();
+            this.playlistSvc.manageEmptyPlaylist(); // handle empty playlist
           }
         },
         error => {

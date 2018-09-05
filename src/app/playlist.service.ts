@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { SpotifyService } from './spotify.service';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { User } from './shared/models/user';
 import { Track } from './shared/models/track';
 import { environment } from '../environments/environment';
@@ -15,11 +15,13 @@ export class PlaylistService {
   userName: string;
   playlistUrl: string;
   previouslistUrl: string;
+  stationName: string;
 
   constructor(
     private db: AngularFireDatabase,
     private spotifySvc: SpotifyService
   ) {
+    this.setStation();
     this.setLists();
 
     this.getLastTracks(1).snapshotChanges()
@@ -66,6 +68,16 @@ export class PlaylistService {
     return tracks;
   }
 
+  getAllPreviousTracks() {
+    const tracksRef = this.db.list(this.previouslistUrl);
+    const tracks = tracksRef.snapshotChanges().pipe(
+      map( changes =>
+        changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
+      )
+    );
+    return tracks;
+  }
+
   getFirstTracks(i: number) {
     return this.db.list(this.playlistUrl, ref => ref.limitToFirst(i));
   }
@@ -103,7 +115,50 @@ export class PlaylistService {
     // console.log(playlistEntry);
 
     console.log(this.getTime(), 'pushing track onto playlist:', playlistEntry.name , 'expires at', playlistEntry.expires_at);
-    this.db.list(this.playlistUrl).push(playlistEntry);
+    this.db.list(this.playlistUrl)
+      .push(playlistEntry)
+      .then(
+        (result) => {
+          console.log('Push track result:', result);
+          this.updateQueueState(false);
+        }
+      );
+  }
+
+  pushRandomTrack() {
+    this.getAllPreviousTracks()
+      .subscribe(
+        (tracks: Array<any>) => {
+          // console.log(tracks.length, 'previous tracks:', tracks);
+          const randomTrack: Track = tracks[Math.floor( Math.random() * tracks.length)] as Track;
+          console.log('Random Track:', randomTrack);
+          const now = this.getTime();
+          const lastTrackExpiresAt = (this.lastTrack) ? this.lastTrack.expires_at : now;
+          const nextTrackExpiresAt = lastTrackExpiresAt + randomTrack.duration_ms + 1500; // introducing some fudge here
+          console.log('last track expires at:', this.showDate(lastTrackExpiresAt));
+          console.log('next track expires at:', this.showDate(nextTrackExpiresAt));
+
+          randomTrack.added_at = now;
+          randomTrack.player = {
+            auto: true
+          };
+          randomTrack.expires_at = nextTrackExpiresAt;
+
+          console.log(this.getTime(), 'pushing track onto playlist:', randomTrack.name , 'expires at', randomTrack.expires_at);
+          this.db.list(this.playlistUrl)
+            .push(randomTrack)
+            .then(
+              (result) => {
+                console.log('Push track result:', result);
+                this.updateQueueState(false);
+              }
+            );
+        },
+        error => console.error(error),
+        () => {
+
+        }
+      );
   }
 
   /** Method to save track in Firebase secondary list */
@@ -112,15 +167,18 @@ export class PlaylistService {
     /* Verify if it's default robot track */
     if (track.id === '0RbfwabR0mycfvZOduSIOO') {
       console.log('Default track does not need to be saved in previous played tracks');
+    } else if (track.player.auto) {
+      console.log('Random track does not need to be saved again in previous played tracks');
     } else {
       /* Clean track Object */
       delete track.expires_at;
       /* Save track in previous played list */
       this.db.list(this.previouslistUrl).set(track.id, track);
+      this.isQueueEmpty(false); // Queue is not empty
     }
   }
 
-  addSomeTrack() {
+  addDefaultTrack() {
     const track = {
       album : {
         'name' : 'placeholder',
@@ -134,7 +192,9 @@ export class PlaylistService {
         }
       },
       artists : [
-        {name: 'placeholder'}
+        {
+          name: 'placeholder'
+        }
       ],
       duration_ms : 6000,
       name : 'placeholder',
@@ -153,14 +213,92 @@ export class PlaylistService {
     return new Date(date).toString();
   }
 
-  private setLists() {
+  private setStation(): void {
+    this.stationName = 'default';
+  }
+
+  private setLists(): void {
     console.log('Environment:', environment);
     if (environment.production) {
-      this.playlistUrl = `prod/playlist`;
-      this.previouslistUrl = `prod/previouslist`;
+      this.playlistUrl = `${this.stationName}/lists/prod/playlist`;
+      this.previouslistUrl = `${this.stationName}/lists/prod/previouslist`;
     } else {
-      this.playlistUrl = `dev/playlist`;
-      this.previouslistUrl = `dev/previouslist`;
+      this.playlistUrl = `${this.stationName}/lists/dev/playlist`;
+      this.previouslistUrl = `${this.stationName}/lists/dev/previouslist`;
     }
+  }
+
+  /** Method to manage empty playlist */
+  manageEmptyPlaylist() {
+    this.isQueueEmpty(true); // Queue is possibly empty
+  }
+
+  getRandomTrack(): any {
+    this.getAllPreviousTracks()
+      .subscribe(
+        (tracks) => {
+          // console.log(tracks.length, 'previous tracks:', tracks);
+          const randomTrack = tracks[Math.floor( Math.random() * tracks.length)];
+          console.log('Random Track:', randomTrack);
+          return randomTrack;
+        }
+      );
+  }
+
+  queueState() {
+    return this.db.object(`${this.stationName}/empty_queue`).valueChanges().pipe(take(1));
+  }
+
+  isQueueEmpty(newState: boolean) {
+    this.queueState()
+      .subscribe(
+        dbState => {
+          console.log('queue states:', dbState, newState);
+          if (!dbState && newState) {
+            this.db.object(`${this.stationName}/empty_queue`).query.ref
+              .transaction(
+                (state: boolean) => {
+                  console.log(`${this.playlistUrl}/empty_queue is:`, state);
+                  return newState;
+                })
+              .then(
+                (result) => {
+                  console.log('Transaction finished:', result);
+                  if (result.committed) {
+                    const queueState = result.snapshot.node_.value_;
+                    console.log(`${this.playlistUrl}/empty_queue is:`, queueState);
+                    if (queueState) {
+                      this.pushRandomTrack();
+                    }
+                  }
+                }
+              );
+          }
+        },
+        error => {
+          console.error(error);
+        },
+        () => {
+          console.log('Automatic addition finished');
+        }
+      );
+  }
+
+  updateQueueState(newState: boolean) {
+    this.db.object(`${this.stationName}/empty_queue`).query.ref
+      .transaction(
+        (state: boolean) => {
+          console.log(`${this.playlistUrl}/empty_queue is:`, state);
+          return newState;
+        })
+      .then(
+        (result) => {
+          console.log('Transaction finished:', result);
+          if (result.committed) {
+            const queueState = result.snapshot.node_.value_;
+            console.log(`${this.playlistUrl}/empty_queue is:`, queueState);
+          }
+        }
+      );
   }
 }

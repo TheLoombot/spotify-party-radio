@@ -1,6 +1,6 @@
 <div class="panel panel-default">
 
-  <div class="panel-heading">Now playing</div>
+  <div class="panel-heading">Now playing: <b>{{ station }} station</b></div>
 
   <app-error-alert *ngIf="playerError" [error]="playerError">poop</app-error-alert>
 
@@ -19,9 +19,9 @@
       <div class="progress-bar " role="progressbar" [style.width]="progress + '%'" aria-valuemin="0" aria-valuemax="100"></div>
     </div>
 
-    <span *ngIf="firstTrack?.player.auto" class="text-muted small pull-right">automatically added by Robot,</span>
+    <span *ngIf="firstTrack?.player?.auto" class="text-muted small pull-right">automatically added by Robot,</span>
     <small class="text-muted small pull-right"> 
-      selected by {{firstTrack.added_by}} 
+      selected by {{ firstTrack.added_by }} 
     </small>
 
   </div>

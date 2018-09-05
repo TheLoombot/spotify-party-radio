@@ -54,6 +54,14 @@ export class PlaylistService {
       );
   }
 
+  private setStation(): void {
+    this.stationName = 'default';
+  }
+
+  getStation(): string {
+    return this.stationName;
+  }
+
   remove(key: string) {
     this.db.list(this.playlistUrl).remove(key);
   }
@@ -167,8 +175,10 @@ export class PlaylistService {
     /* Verify if it's default robot track */
     if (track.id === '0RbfwabR0mycfvZOduSIOO') {
       console.log('Default track does not need to be saved in previous played tracks');
-    } else if (track.player.auto) {
-      console.log('Random track does not need to be saved again in previous played tracks');
+    } else if (track.player) {
+      if (track.player.auto) {
+        console.log('Random track does not need to be saved again in previous played tracks');
+      }
     } else {
       /* Clean track Object */
       delete track.expires_at;
@@ -211,10 +221,6 @@ export class PlaylistService {
 
   private showDate(date: number): any {
     return new Date(date).toString();
-  }
-
-  private setStation(): void {
-    this.stationName = 'default';
   }
 
   private setLists(): void {

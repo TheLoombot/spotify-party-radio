@@ -22,6 +22,7 @@ export class PlayerComponent implements OnInit {
   firstTrackKey;
   pendingCheck: boolean;
   progress: number;
+  station: string;
 
   constructor(
     private spotify: SpotifyService,
@@ -34,6 +35,8 @@ export class PlayerComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.station = this.playlistSvc.getStation();
+
     this.playlistRef.snapshotChanges()
       .pipe(debounceTime(300))
       .subscribe(

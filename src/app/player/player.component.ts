@@ -46,10 +46,10 @@ export class PlayerComponent implements OnInit {
           if (data[0]) {
             this.firstTrackKey = data[0].key;
             this.firstTrack = data[0].payload.val();
-            console.log(`First track ${this.firstTrackKey} is:`, this.firstTrack);
+            // console.log(`First track ${this.firstTrackKey} is:`, this.firstTrack);
             this.checkFirstTrack();
           } else {
-            // this.playlistSvc.manageEmptyPlaylist(); // handle empty playlist
+            this.playlistSvc.autoUpdatePlaylist(); // handle empty playlist
           }
         },
         error => {
@@ -126,8 +126,8 @@ export class PlayerComponent implements OnInit {
       .subscribe(
         (data: any) => {
           this.nowPlaying = data ? data.item : null;
-          console.log('NowPlaying data:', data);
-          console.log('track 1 ', this.firstTrack);
+          // console.log('NowPlaying data:', data);
+          // console.log('track 1 ', this.firstTrack);
           if (this.nowPlaying == null) {
             // this.playerError = 'poopie';
             console.warn('There is nothing being played');
@@ -137,7 +137,7 @@ export class PlayerComponent implements OnInit {
               // only schedule the check if there's not one pending already
               // when we support deletes, we'll have to handle cancelling
               // the pending check and replacing it instead. later.
-              console.log(this.getTime(), 'Scheduling check in', timeToExpiration);
+              console.log(this.getTime(), `Scheduling check in ${timeToExpiration}`);
               this.pendingCheck = true;
               setTimeout( () => {
                 this.checkFirstTrack();

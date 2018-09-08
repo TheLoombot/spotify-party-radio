@@ -206,17 +206,17 @@ export class PlaylistService {
       .transaction(
         (player: any) => {
           const now = this.getTime();
-          console.log(now, 'player', player);
+          // console.log(now, 'player', player);
           if (player) {
-            console.log(now, player.last_updated, player.last_added, now - player.last_updated, now - player.last_added);
+            // console.log(now, player.last_updated, player.last_added, now - player.last_updated, now - player.last_added);
             if ( (now - player.last_added) < 7000 ) {
-              console.warn('PlaylistCounter+ transaction should not update');
+              // console.warn('PlaylistCounter+ transaction should not update');
               return undefined;
             } else {
               player.queue = player.queue + 1;
               player.last_added = now;
               player.last_updated = now;
-              console.log('Update', player);
+              // console.log('Update', player);
               return player;
             }
           } else {
@@ -236,17 +236,17 @@ export class PlaylistService {
       .transaction(
         (player: any) => {
           const now = this.getTime();
-          console.log(now, 'player', player);
+          // console.log(now, 'player', player);
           if (player) {
-            console.log(now, player.last_updated, player.last_removed, now - player.last_updated, now - player.last_removed);
+            // console.log(now, player.last_updated, player.last_removed, now - player.last_updated, now - player.last_removed);
             if ( (now - player.last_removed) < 7000 ) {
-              console.warn('PlaylistCounter- transaction should not update');
+              // console.warn('PlaylistCounter- transaction should not update');
               return undefined;
             } else {
               player.queue = player.queue - 1;
-              player.last_removed = now; // ???
+              player.last_removed = now;
               player.last_updated = now;
-              console.log('Update', player);
+              // console.log('Update', player);
               return player;
             }
           } else {
@@ -324,11 +324,49 @@ export class PlaylistService {
     }
   }
 
+  /** Method to increase counter */
+  autoUpdatePlaylist() {
+    this.playerMetaRef
+      .transaction(
+        (player: any) => {
+          const now = this.getTime();
+          // console.log(now, 'player', player);
+          if (player) {
+            console.log(now, player.last_updated, player.last_auto_added, now - player.last_updated, now - player.last_auto_added);
+            if ( (now - player.last_auto_added) < 15151 ) {
+              console.warn('autoUpdatePlaylist transaction should not update');
+              return undefined;
+            } else {
+              player.last_auto_added = now;
+              // player.last_updated = now;
+              // console.log('Update', player);
+              return player;
+            }
+          } else {
+            return player;
+          }
+        }
+      )
+      .then(
+        result => {
+          console.log('autoUpdatePlaylist transaction finished:', result);
+          if (result.committed) {
+            console.log('Add song');
+            this.pushRandomTrack();
+          } else {
+            console.error('Do NOT Add Song');
+          }
+        }
+
+      );
+  }
+
+
   /** Method to manage empty playlist */
   manageEmptyPlaylist() {
     this.db.list(this.playlistUrl).valueChanges()
       .pipe(
-        debounceTime(300),
+        // debounceTime(300),
         take(1)
       )
       .subscribe(
@@ -368,9 +406,5 @@ export class PlaylistService {
           return randomTrack;
         }
       );
-  }
-
-  queueState() {
-    return this.db.object(`${this.stationName}/empty_queue`).valueChanges().pipe(take(1));
   }
 }

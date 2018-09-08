@@ -62,25 +62,6 @@ export class PlayerComponent implements OnInit {
         () => {
           if (this.firstTrack) {
             this.progress = this.calcProgress(this.firstTrack);
-            /*
-            this.playlistSvc.getPlaylistValueChanges()
-              .subscribe(
-                data => console.log('valueChanges:', data)
-              );
-            this.playlistSvc.getPlaylistSnapshotChanges()
-              .subscribe(
-                data => console.log('snapshotChanges:', data)
-              );
-            this.playlistSvc.getPlaylistStateChanges()
-              .subscribe(
-                data => console.log('stateChanges:', data)
-              );
-            this.playlistSvc.getPlaylistAuditTrail()
-              .subscribe(
-                data => console.log('auditTrail:', data)
-              );
-            */
-            this.now = this.getTime();
           }
         }
       );

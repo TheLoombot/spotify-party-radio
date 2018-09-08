@@ -90,22 +90,6 @@ export class PlaylistService {
     return tracks;
   }
 
-  getPlaylistValueChanges() {
-    return this.db.list(this.playlistUrl).valueChanges();
-  }
-
-  getPlaylistSnapshotChanges() {
-    return this.db.list(this.playlistUrl).snapshotChanges();
-  }
-
-  getPlaylistStateChanges() {
-    return this.db.list(this.playlistUrl).stateChanges();
-  }
-
-  getPlaylistAuditTrail() {
-    return this.db.list(this.playlistUrl).auditTrail();
-  }
-
   getAllPreviousTracks() {
     const tracksRef = this.db.list(this.previouslistUrl);
     const tracks = tracksRef.snapshotChanges().pipe(
@@ -358,41 +342,6 @@ export class PlaylistService {
           }
         }
 
-      );
-  }
-
-
-  /** Method to manage empty playlist */
-  manageEmptyPlaylist() {
-    this.db.list(this.playlistUrl).valueChanges()
-      .pipe(
-        // debounceTime(300),
-        take(1)
-      )
-      .subscribe(
-        tracks => {
-          const queue = tracks.length;
-          console.log('tracks in queue:', tracks);
-          if (queue === 0) {
-            console.log('Queue is empty');
-            // Check when was the playlist last changed
-            this.db.object(`${this.stationName}/player/last_updated`)
-              .valueChanges()
-              .subscribe(
-                (last_updated: any) => {
-                  const now: number = this.getTime();
-                  // console.log(last_updated, now, now - last_updated);
-                  if ((now - last_updated) > 3000) {
-                    console.warn('I should add a song');
-                  } else {
-                    console.log('I should not add a song');
-                  }
-                }
-              );
-          } else {
-            console.error('Queue is not empty');
-          }
-        }
       );
   }
 

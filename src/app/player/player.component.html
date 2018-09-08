@@ -1,6 +1,6 @@
 <div class="panel panel-default">
 
-  <div class="panel-heading">Now playing: <b>{{ station }} station</b></div>
+  <div class="panel-heading">Now playing: <b>{{ station }} station</b> - {{ now }}</div>
 
   <app-error-alert *ngIf="playerError" [error]="playerError">poop</app-error-alert>
 

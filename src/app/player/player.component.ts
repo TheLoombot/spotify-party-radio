@@ -16,6 +16,7 @@ import { Track } from '../shared/models/track';
 })
 export class PlayerComponent implements OnInit {
   nowPlaying;
+  now: number;
   playerError;
   playlistRef;
   firstTrack: Track;
@@ -61,6 +62,25 @@ export class PlayerComponent implements OnInit {
         () => {
           if (this.firstTrack) {
             this.progress = this.calcProgress(this.firstTrack);
+            /*
+            this.playlistSvc.getPlaylistValueChanges()
+              .subscribe(
+                data => console.log('valueChanges:', data)
+              );
+            this.playlistSvc.getPlaylistSnapshotChanges()
+              .subscribe(
+                data => console.log('snapshotChanges:', data)
+              );
+            this.playlistSvc.getPlaylistStateChanges()
+              .subscribe(
+                data => console.log('stateChanges:', data)
+              );
+            this.playlistSvc.getPlaylistAuditTrail()
+              .subscribe(
+                data => console.log('auditTrail:', data)
+              );
+            */
+            this.now = this.getTime();
           }
         }
       );
@@ -106,12 +126,13 @@ export class PlayerComponent implements OnInit {
       .subscribe(
         (data: any) => {
           this.nowPlaying = data ? data.item : null;
-          // console.log('NowPlaying data:', data);
-          // console.log('track 1 ', this.firstTrack);
+          console.log('NowPlaying data:', data);
+          console.log('track 1 ', this.firstTrack);
           if (this.nowPlaying == null) {
             // this.playerError = 'poopie';
-          } else if (data['is_playing'] && this.nowPlaying.uri === this.firstTrack.uri) {
-            console.log(this.getTime(), this.nowPlaying.name, ' Now playing matches position 0, expires in ', timeToExpiration);
+            console.warn('There is nothing being played');
+          } else if (data.is_playing && this.nowPlaying.uri === this.firstTrack.uri) {
+            console.log( this.getTime(), `${this.nowPlaying.name} expires in ${timeToExpiration}`);
             if (!this.pendingCheck) {
               // only schedule the check if there's not one pending already
               // when we support deletes, we'll have to handle cancelling
@@ -156,7 +177,7 @@ export class PlayerComponent implements OnInit {
         },
         error => {
           this.playerError = error.error.error;
-          console.log('now playing error  ', this.playerError);
+          console.log('now playing error', this.playerError);
         }
       );
   }

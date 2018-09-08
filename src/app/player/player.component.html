@@ -21,12 +21,12 @@
 
     <ng-template [ngIf]="firstTrack?.player?.auto" [ngIfElse]="userInfo">
       <small class="text-muted small pull-right"> 
-        selected by robot (via {{ firstTrack.added_by }})
+        robot (via {{ firstTrack.added_by }})
       </small>
     </ng-template>
     <ng-template #userInfo>
       <small class="text-muted small pull-right"> 
-        selected by {{ firstTrack.added_by }} 
+        {{ firstTrack.added_by }} 
       </small>
     </ng-template>
   </div>

@@ -49,7 +49,7 @@ export class PlayerComponent implements OnInit {
             console.log(`First track ${this.firstTrackKey} is:`, this.firstTrack);
             this.checkFirstTrack();
           } else {
-            this.playlistSvc.manageEmptyPlaylist(); // handle empty playlist
+            // this.playlistSvc.manageEmptyPlaylist(); // handle empty playlist
           }
         },
         error => {

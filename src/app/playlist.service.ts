@@ -205,19 +205,23 @@ export class PlaylistService {
     this.playerMetaRef
       .transaction(
         (player: any) => {
-          console.log('player', player);
           const now = this.getTime();
+          console.log(now, 'player', player);
           if (player) {
-            if ( (now - player.last_added) < 33333 ) {
+            console.log(now, player.last_updated, player.last_added, now - player.last_updated, now - player.last_added);
+            if ( (now - player.last_added) < 7000 ) {
               console.warn('PlaylistCounter+ transaction should not update');
+              return undefined;
             } else {
               player.queue = player.queue + 1;
               player.last_added = now;
               player.last_updated = now;
               console.log('Update', player);
+              return player;
             }
+          } else {
+            return player;
           }
-          return player;
         }
       )
       .then(
@@ -231,19 +235,23 @@ export class PlaylistService {
     this.playerMetaRef
       .transaction(
         (player: any) => {
-          console.log('player', player);
           const now = this.getTime();
+          console.log(now, 'player', player);
           if (player) {
-            if ( (now - player.last_removed) < 33333 ) {
+            console.log(now, player.last_updated, player.last_removed, now - player.last_updated, now - player.last_removed);
+            if ( (now - player.last_removed) < 7000 ) {
               console.warn('PlaylistCounter- transaction should not update');
+              return undefined;
             } else {
               player.queue = player.queue - 1;
-              player.last_added = now;
+              player.last_removed = now; // ???
               player.last_updated = now;
               console.log('Update', player);
+              return player;
             }
+          } else {
+            return player;
           }
-          return player;
         }
       )
       .then(
@@ -335,7 +343,7 @@ export class PlaylistService {
               .subscribe(
                 (last_updated: any) => {
                   const now: number = this.getTime();
-                  console.log(last_updated, now, now - last_updated);
+                  // console.log(last_updated, now, now - last_updated);
                   if ((now - last_updated) > 3000) {
                     console.warn('I should add a song');
                   } else {

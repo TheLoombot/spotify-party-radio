@@ -317,7 +317,7 @@ export class PlaylistService {
           // console.log(now, 'player', player);
           if (player) {
             console.log(now, player.last_updated, player.last_auto_added, now - player.last_updated, now - player.last_auto_added);
-            if ( (now - player.last_auto_added) < 15151 ) {
+            if ( (now - player.last_auto_added) < 1000 ) {
               console.warn('autoUpdatePlaylist transaction should not update');
               return undefined;
             } else {

@@ -28,7 +28,7 @@ export class PlaylistComponent implements OnInit {
   ngOnInit() { }
 
   removeTrack(track: any): void {
-    // console.log('Remove Track:', track);
+    console.log('Remove Track:', track);
     this.playlistSvc.remove(track.key);
   }
 }

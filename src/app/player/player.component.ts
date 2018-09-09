@@ -1,8 +1,12 @@
+/* Core */
 import { Component, OnInit } from '@angular/core';
-import { SpotifyService } from '../spotify.service';
-import { PlaylistService } from '../playlist.service';
+/* RxJs */
 import { interval } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+/* Services */
+import { SpotifyService } from '../spotify.service';
+import { PlaylistService } from '../playlist.service';
+/* Models */
 import { Track } from '../shared/models/track';
 
 @Component({
@@ -12,12 +16,14 @@ import { Track } from '../shared/models/track';
 })
 export class PlayerComponent implements OnInit {
   nowPlaying;
+  now: number;
   playerError;
   playlistRef;
   firstTrack: Track;
   firstTrackKey;
   pendingCheck: boolean;
   progress: number;
+  station: string;
 
   constructor(
     private spotify: SpotifyService,
@@ -30,18 +36,20 @@ export class PlayerComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.station = this.playlistSvc.getStation();
+
     this.playlistRef.snapshotChanges()
       .pipe(debounceTime(300))
       .subscribe(
         data => {
-          // console.log('Player data:', data);
+          console.log('Player data:', data);
           if (data[0]) {
             this.firstTrackKey = data[0].key;
             this.firstTrack = data[0].payload.val();
             // console.log(`First track ${this.firstTrackKey} is:`, this.firstTrack);
             this.checkFirstTrack();
           } else {
-            this.playlistSvc.addSomeTrack();
+            this.playlistSvc.autoUpdatePlaylist(); // handle empty playlist
           }
         },
         error => {
@@ -103,13 +111,14 @@ export class PlayerComponent implements OnInit {
           // console.log('track 1 ', this.firstTrack);
           if (this.nowPlaying == null) {
             // this.playerError = 'poopie';
-          } else if (data['is_playing'] && this.nowPlaying.uri === this.firstTrack.uri) {
-            console.log(this.getTime(), this.nowPlaying.name, ' Now playing matches position 0, expires in ', timeToExpiration);
+            console.warn('There is nothing being played');
+          } else if (data.is_playing && this.nowPlaying.uri === this.firstTrack.uri) {
+            console.log( this.getTime(), `${this.nowPlaying.name} expires in ${timeToExpiration}`);
             if (!this.pendingCheck) {
               // only schedule the check if there's not one pending already
               // when we support deletes, we'll have to handle cancelling
               // the pending check and replacing it instead. later.
-              console.log(this.getTime(), 'Scheduling check in', timeToExpiration);
+              console.log(this.getTime(), `Scheduling check in ${timeToExpiration}`);
               this.pendingCheck = true;
               setTimeout( () => {
                 this.checkFirstTrack();
@@ -149,7 +158,7 @@ export class PlayerComponent implements OnInit {
         },
         error => {
           this.playerError = error.error.error;
-          console.log('now playing error  ', this.playerError);
+          console.log('now playing error', this.playerError);
         }
       );
   }

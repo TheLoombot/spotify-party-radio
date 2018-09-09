@@ -193,7 +193,7 @@ export class PlaylistService {
           // console.log(now, 'player', player);
           if (player) {
             // console.log(now, player.last_updated, player.last_added, now - player.last_updated, now - player.last_added);
-            if ( (now - player.last_added) < 7000 ) {
+            if ( (now - player.last_added) < 3000 ) {
               // console.warn('PlaylistCounter+ transaction should not update');
               return undefined;
             } else {

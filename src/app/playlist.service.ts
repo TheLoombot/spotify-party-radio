@@ -1,17 +1,20 @@
 import { Injectable } from '@angular/core';
-import { AngularFireDatabase } from 'angularfire2/database';
+/* Services */
 import { SpotifyService } from './spotify.service';
-import { map, take } from 'rxjs/operators';
-import { debounceTime } from 'rxjs/operators';
+/* RxJs */
+import { map } from 'rxjs/operators';
+/* Models */
 import { User } from './shared/models/user';
 import { Track } from './shared/models/track';
+/* Others */
+import { AngularFireDatabase } from 'angularfire2/database';
 import { environment } from '../environments/environment';
-
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlaylistService {
+  environment: string;
   lastTrack: Track;
   firstTrack;
   userName: string;
@@ -25,9 +28,6 @@ export class PlaylistService {
     private spotifySvc: SpotifyService
   ) {
     this.setStation();
-    this.setLists();
-
-    this.playerMetaRef = this.db.object(`${this.stationName}/player`).query.ref;
 
     this.getLastTracks(1).snapshotChanges()
       .subscribe(
@@ -62,6 +62,15 @@ export class PlaylistService {
   /** Method to set station data */
   private setStation(): void {
     this.stationName = 'default'; // There is only 1 station at the moment
+    this.environment = environment.production ? 'prod' : 'dev';
+    this.setLists();
+    this.playerMetaRef = this.db.object(`${this.stationName}/${this.environment}/player`).query.ref;
+  }
+
+  /** Method to set station lists */
+  private setLists(): void {
+    this.playlistUrl = `${this.stationName}/${this.environment}/lists/playlist`;
+    this.previouslistUrl = `${this.stationName}/${this.environment}/lists/previouslist`;
   }
 
   /** Method to get station data */
@@ -71,13 +80,7 @@ export class PlaylistService {
 
   /** Method used to delete a track from the playlist given its id */
   remove(key: string) {
-    this.db.list(this.playlistUrl)
-      .remove(key)
-      .then(
-        (result) => {
-          this.decreasePlaylistCounter();
-        }
-      );
+    this.db.list(this.playlistUrl).remove(key);
   }
 
   getAllTracks() {
@@ -135,17 +138,9 @@ export class PlaylistService {
     };
 
     const playlistEntry = {...track, ...additionalData};
-    // console.log(playlistEntry);
 
     console.log(now, 'pushing track onto playlist:', playlistEntry.name , 'expires at', playlistEntry.expires_at);
-    this.db.list(this.playlistUrl)
-      .push(playlistEntry)
-      .then(
-        (result) => {
-          console.log('Push track result:', result);
-          this.increasePlaylistCounter();
-        }
-      );
+    this.db.list(this.playlistUrl).push(playlistEntry);
   }
 
   pushRandomTrack() {
@@ -168,14 +163,7 @@ export class PlaylistService {
           randomTrack.expires_at = nextTrackExpiresAt;
 
           console.log(this.getTime(), 'pushing track onto playlist:', randomTrack.name , 'expires at', randomTrack.expires_at);
-          this.db.list(this.playlistUrl)
-            .push(randomTrack)
-            .then(
-              (result) => {
-                console.log('Push track result:', result);
-                this.increasePlaylistCounter();
-              }
-            );
+          this.db.list(this.playlistUrl).push(randomTrack);
         },
         error => console.error(error),
         () => {
@@ -184,110 +172,23 @@ export class PlaylistService {
       );
   }
 
-  /** Method to increase counter */
-  increasePlaylistCounter() {
-    this.playerMetaRef
-      .transaction(
-        (player: any) => {
-          const now = this.getTime();
-          // console.log(now, 'player', player);
-          if (player) {
-            // console.log(now, player.last_updated, player.last_added, now - player.last_updated, now - player.last_added);
-            if ( (now - player.last_added) < 3000 ) {
-              // console.warn('PlaylistCounter+ transaction should not update');
-              return undefined;
-            } else {
-              player.queue = player.queue + 1;
-              player.last_added = now;
-              player.last_updated = now;
-              // console.log('Update', player);
-              return player;
-            }
-          } else {
-            return player;
-          }
-        }
-      )
-      .then(
-        result => console.log('PlaylistCounter+ transaction finished:', result)
-      );
-  }
-
-  // This is triggered for every client!!!
-  /** Method to decrease counter */
-  decreasePlaylistCounter() {
-    this.playerMetaRef
-      .transaction(
-        (player: any) => {
-          const now = this.getTime();
-          // console.log(now, 'player', player);
-          if (player) {
-            // console.log(now, player.last_updated, player.last_removed, now - player.last_updated, now - player.last_removed);
-            if ( (now - player.last_removed) < 7000 ) {
-              // console.warn('PlaylistCounter- transaction should not update');
-              return undefined;
-            } else {
-              player.queue = player.queue - 1;
-              player.last_removed = now;
-              player.last_updated = now;
-              // console.log('Update', player);
-              return player;
-            }
-          } else {
-            return player;
-          }
-        }
-      )
-      .then(
-        result => console.log('PlaylistCounter- transaction finished:', result)
-      );
-  }
-
   /** Method to save track in Firebase secondary list */
   saveTrack(track: Track): any {
-    console.log('Track to save in Secondary List:', track);
-    /* Verify if it's default robot track */
+    // console.log('Track to save in Secondary List:', track);
+    // Verify if it's default robot track
     if (track.id === '0RbfwabR0mycfvZOduSIOO') {
-      console.log('Default track does not need to be saved in previous played tracks');
+      // console.log('Default track does not need to be saved in previous played tracks');
     } else if (track.player) {
       if (track.player.auto) {
         console.log('Random track does not need to be saved again in previous played tracks');
       }
     } else {
-      /* Clean track Object */
+      // Clean track Object
       delete track.expires_at;
-      /* Save track in previous played list */
+      // Save track in previous played list
       this.db.list(this.previouslistUrl).set(track.id, track);
     }
   }
-
-  /*
-  addDefaultTrack() {
-    const track = {
-      album : {
-        'name' : 'placeholder',
-        'images' : [
-          {'url': 'poop'},
-          {'url': 'poop'},
-          {'url': 'placeholder'}
-        ],
-        'external_urls' : {
-          'spotify' : 'https://open.spotify.com/album/6hoAjrSXyYJlJ0p9g3QjT1'
-        }
-      },
-      artists : [
-        {
-          name: 'placeholder'
-        }
-      ],
-      duration_ms : 6000,
-      name : 'placeholder',
-      id: '0RbfwabR0mycfvZOduSIOO',
-      uri : 'spotify:track:0RbfwabR0mycfvZOduSIOO'
-    };
-    this.pushTrack(track, 'robot');
-  }
-  */
 
   private getTime(): number {
     return new Date().getTime();
@@ -295,17 +196,6 @@ export class PlaylistService {
 
   private showDate(date: number): any {
     return new Date(date).toString();
-  }
-
-  private setLists(): void {
-    console.log('Environment:', environment);
-    if (environment.production) {
-      this.playlistUrl = `${this.stationName}/lists/prod/playlist`;
-      this.previouslistUrl = `${this.stationName}/lists/prod/previouslist`;
-    } else {
-      this.playlistUrl = `${this.stationName}/lists/dev/playlist`;
-      this.previouslistUrl = `${this.stationName}/lists/dev/previouslist`;
-    }
   }
 
   /** Method to increase counter */
@@ -316,9 +206,9 @@ export class PlaylistService {
           const now = this.getTime();
           // console.log(now, 'player', player);
           if (player) {
-            console.log(now, player.last_updated, player.last_auto_added, now - player.last_updated, now - player.last_auto_added);
+            // console.log(now, player.last_updated, player.last_auto_added, now - player.last_updated, now - player.last_auto_added);
             if ( (now - player.last_auto_added) < 3000 ) {
-              console.warn('autoUpdatePlaylist transaction should not update');
+              // console.warn('autoUpdatePlaylist transaction should not update');
               return undefined;
             } else {
               player.last_auto_added = now;
@@ -333,12 +223,10 @@ export class PlaylistService {
       )
       .then(
         result => {
-          console.log('autoUpdatePlaylist transaction finished:', result);
+          // console.log('autoUpdatePlaylist transaction finished:', result);
           if (result.committed) {
-            console.log('Add song');
             this.pushRandomTrack();
           } else {
-            console.error('Do NOT Add Song');
           }
         }
 
@@ -348,12 +236,7 @@ export class PlaylistService {
   getRandomTrack(): any {
     this.getAllPreviousTracks()
       .subscribe(
-        (tracks) => {
-          // console.log(tracks.length, 'previous tracks:', tracks);
-          const randomTrack = tracks[Math.floor( Math.random() * tracks.length)];
-          console.log('Random Track:', randomTrack);
-          return randomTrack;
-        }
+        tracks => tracks[Math.floor( Math.random() * tracks.length)]
       );
   }
 }

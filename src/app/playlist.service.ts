@@ -144,7 +144,7 @@ export class PlaylistService {
   }
 
   pushRandomTrack() {
-    this.getAllPreviousTracks()
+    const getAllPreviousTracksSubscription = this.getAllPreviousTracks()
       .subscribe(
         (tracks: Array<any>) => {
           // console.log(tracks.length, 'previous tracks:', tracks);
@@ -163,11 +163,18 @@ export class PlaylistService {
           randomTrack.expires_at = nextTrackExpiresAt;
 
           console.log(this.getTime(), 'pushing track onto playlist:', randomTrack.name , 'expires at', randomTrack.expires_at);
-          this.db.list(this.playlistUrl).push(randomTrack);
+          this.db.list(this.playlistUrl)
+            .push(randomTrack)
+            .then(
+              result => {
+                console.log(result);
+                getAllPreviousTracksSubscription.unsubscribe();
+              }
+            );
         },
         error => console.error(error),
         () => {
-
+          console.log('pushRandomTrack finished', this.getTime());
         }
       );
   }
@@ -229,14 +236,6 @@ export class PlaylistService {
           } else {
           }
         }
-
-      );
-  }
-
-  getRandomTrack(): any {
-    this.getAllPreviousTracks()
-      .subscribe(
-        tracks => tracks[Math.floor( Math.random() * tracks.length)]
       );
   }
 }

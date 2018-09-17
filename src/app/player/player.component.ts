@@ -42,7 +42,7 @@ export class PlayerComponent implements OnInit {
       .pipe(debounceTime(300))
       .subscribe(
         data => {
-          console.log('Player data:', data);
+          // console.log('Player data:', data);
           if (data[0]) {
             this.firstTrackKey = data[0].key;
             this.firstTrack = data[0].payload.val();
@@ -92,12 +92,12 @@ export class PlayerComponent implements OnInit {
     // console.log('checking first track: ', this.firstTrack);
     const timeToExpiration = this.getTime() - this.firstTrack.expires_at;
     // console.log('First track expires at: ', this.showDate(this.firstTrack.expires_at));
-    console.log('Time to first track expiration: ', timeToExpiration);
+    // console.log('Time to first track expiration: ', timeToExpiration);
 
     if (timeToExpiration > 0) {
       // Track has expired
       console.log(this.getTime(), this.firstTrack.name, 'track expired, expected expiration time was', this.firstTrack.expires_at);
-      console.log(this.showDate(this.getTime()), 'expected expiration time was', this.showDate(this.firstTrack.expires_at));
+      // console.log(this.showDate(this.getTime()), 'expected expiration time was', this.showDate(this.firstTrack.expires_at));
       this.playlistSvc.remove(this.firstTrackKey);
       this.playlistSvc.saveTrack(this.firstTrack); // Save track in secondary list
       return;
@@ -118,7 +118,7 @@ export class PlayerComponent implements OnInit {
               // only schedule the check if there's not one pending already
               // when we support deletes, we'll have to handle cancelling
               // the pending check and replacing it instead. later.
-              console.log(this.getTime(), `Scheduling check in ${timeToExpiration}`);
+              // console.log(this.getTime(), `Scheduling check in ${timeToExpiration}`);
               this.pendingCheck = true;
               setTimeout( () => {
                 this.checkFirstTrack();

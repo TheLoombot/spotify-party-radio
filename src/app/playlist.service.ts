@@ -149,12 +149,12 @@ export class PlaylistService {
         (tracks: Array<any>) => {
           // console.log(tracks.length, 'previous tracks:', tracks);
           const randomTrack: Track = tracks[Math.floor( Math.random() * tracks.length)] as Track;
-          console.log('Random Track:', randomTrack);
+          // console.log('Random Track:', randomTrack);
           const now = this.getTime();
           const lastTrackExpiresAt = (this.lastTrack) ? this.lastTrack.expires_at : now;
           const nextTrackExpiresAt = lastTrackExpiresAt + randomTrack.duration_ms + 1500; // introducing some fudge here
-          console.log('last track expires at:', this.showDate(lastTrackExpiresAt));
-          console.log('next track expires at:', this.showDate(nextTrackExpiresAt));
+          // console.log('last track expires at:', this.showDate(lastTrackExpiresAt));
+          // console.log('next track expires at:', this.showDate(nextTrackExpiresAt));
 
           randomTrack.added_at = now;
           randomTrack.player = {
@@ -162,12 +162,12 @@ export class PlaylistService {
           };
           randomTrack.expires_at = nextTrackExpiresAt;
 
-          console.log(this.getTime(), 'pushing track onto playlist:', randomTrack.name , 'expires at', randomTrack.expires_at);
+          console.log(this.getTime(), 'pushing random track onto playlist:', randomTrack.name , 'expires at', randomTrack.expires_at);
           this.db.list(this.playlistUrl)
             .push(randomTrack)
             .then(
               result => {
-                console.log(result);
+                // console.log(result);
                 getAllPreviousTracksSubscription.unsubscribe();
               }
             );
@@ -187,13 +187,14 @@ export class PlaylistService {
       // console.log('Default track does not need to be saved in previous played tracks');
     } else if (track.player) {
       if (track.player.auto) {
-        console.log('Random track does not need to be saved again in previous played tracks');
+        // console.log('Random track does not need to be saved again in previous played tracks');
       }
     } else {
       // Clean track Object
       delete track.expires_at;
       // Save track in previous played list
       this.db.list(this.previouslistUrl).set(track.id, track);
+      console.log(this.getTime(), track.name, ' saved to previous list');
     }
   }
 

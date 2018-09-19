@@ -1,6 +1,6 @@
-<div *ngIf="topTracks?.items" class="panel panel-primary">
+<div *ngIf="topTracksEnabled" class="panel panel-primary">
   <div class="panel-heading">Your top Spotify tracks:</div>
-  <div class="panel-body text-primary">
+  <div class="panel-body text-primary" *ngIf="topTracks?.items">
     <div class="panel panel-primary" *ngFor="let track of topTracks.items; let i = index" >
       <div (click)="pushTrack(track, i)" class="panel-body" style="cursor: pointer">   
         <img src="{{ track.album.images[2].url }}" class="pull-left" style="margin-right: 10px">

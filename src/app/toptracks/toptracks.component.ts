@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { SpotifyService } from '../spotify.service';
-import { PlaylistService } from '../playlist.service';
+/* Services */
+import { SpotifyService } from '../shared/services/spotify.service';
+import { PlaylistService } from '../shared/services/playlist.service';
 
 @Component({
   selector: 'app-toptracks',
@@ -11,22 +12,28 @@ export class ToptracksComponent implements OnInit {
   topTracks;
   topTracksError;
   clicked = -1;
+  topTracksEnabled: boolean;
 
-  constructor(private spotify: SpotifyService, private playlistSvc: PlaylistService) {
-    this.spotify.getTopTracks()
-    .subscribe(
-      topTracks => {
-        // console.log(data);
-        this.topTracks = topTracks;
-        this.clicked = -1;
-      },
-      error => {
-        this.topTracksError = error.error.error;
-      }
-    );
+  constructor(
+    private spotifyService: SpotifyService,
+    private playlistSvc: PlaylistService
+  ) {
+    this.topTracksEnabled = this.spotifyService.isTokenAvailable();
   }
 
   ngOnInit() {
+    if (this.topTracksEnabled) {
+      this.spotifyService.getTopTracks()
+        .subscribe(
+          topTracks => {
+            this.topTracks = topTracks;
+            this.clicked = -1;
+          },
+          error => {
+            this.topTracksError = error.error.error;
+          }
+        );
+    }
   }
 
   pushTrack(track: Object, i: number) {

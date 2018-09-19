@@ -4,8 +4,8 @@ import { Component, OnInit } from '@angular/core';
 import { interval } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 /* Services */
-import { SpotifyService } from '../spotify.service';
-import { PlaylistService } from '../playlist.service';
+import { SpotifyService } from '../shared/services/spotify.service';
+import { PlaylistService } from '../shared/services/playlist.service';
 /* Models */
 import { Track } from '../shared/models/track';
 
@@ -16,7 +16,6 @@ import { Track } from '../shared/models/track';
 })
 export class PlayerComponent implements OnInit {
   nowPlaying;
-  now: number;
   playerError;
   playlistRef;
   firstTrack: Track;
@@ -158,7 +157,7 @@ export class PlayerComponent implements OnInit {
         },
         error => {
           this.playerError = error.error.error;
-          console.log('now playing error', this.playerError);
+          console.error('Now playing error:', this.playerError);
         }
       );
   }

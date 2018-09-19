@@ -6,9 +6,6 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./error-alert.component.css']
 })
 export class ErrorAlertComponent implements OnInit {
-
-  errorMessage: String;
-
   @Input() error;
 
   constructor() {
@@ -16,5 +13,4 @@ export class ErrorAlertComponent implements OnInit {
 
   ngOnInit() {
   }
-
 }

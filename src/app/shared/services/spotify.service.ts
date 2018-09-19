@@ -1,16 +1,23 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+/* RxJs */
 import { Observable } from 'rxjs';
 import { map, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
+/* Models */
+import { User } from '../models/user';
+/* Others */
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SpotifyService {
+  token: string;
+  user: User;
   authorizeURL = 'https://accounts.spotify.com/authorize';
-  clientId = '7fafbce74b0b4d78868fbdc6d6b1858b';
-  responseType = 'token';
+  clientId: string;
+  responseType: string;
   redirectURI = 'https://' + window.location.hostname;
   scope = [
     'user-read-email',
@@ -19,14 +26,42 @@ export class SpotifyService {
     'streaming',
     'user-read-playback-state',
     'user-read-private',
-    'user-top-read',
-    'user-read-email'
+    'user-top-read'
   ].join('%20');
-  baseUrl: string = 'https://api.spotify.com/v1';
+  baseUrl: string;
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient
+  ) {
+    this.token = '';
+    this.clientId = environment.spotify.clientId;
+    this.responseType = 'token';
+    this.baseUrl = environment.spotify.apiURL;
+  }
 
-  user() {
+  setToken(token: string): void {
+    this.token = token;
+    console.log(this.token);
+  }
+
+  getToken(): string {
+    return this.token;
+  }
+
+  isTokenAvailable(): boolean {
+    return this.token ? true : false;
+  }
+
+  setUser(user: User): void {
+    this.user = user;
+  }
+
+  getUser(): User {
+    return this.user;
+  }
+
+  /** Get Current User's Profile */
+  getUserProfile() {
     return this.http.get(this.baseUrl + '/me');
   }
 
@@ -34,7 +69,7 @@ export class SpotifyService {
     return this.http.get(this.baseUrl + '/me/player/currently-playing');
   }
 
-  getAuthUrl() {
+  getAuthUrl(): string {
     this.authorizeURL += '?' + 'client_id=' + this.clientId;
     this.authorizeURL += '&response_type=' + this.responseType;
     this.authorizeURL += '&redirect_uri=' + this.redirectURI;
@@ -44,12 +79,11 @@ export class SpotifyService {
 
   search(terms: Observable<string>) {
     return terms.pipe(debounceTime(400), distinctUntilChanged())
-    .pipe(switchMap(
-      term => (term && term.trim().length > 0) ?
-      this.searchEntries(term)
-      :
-      of([])
-      ));
+    .pipe(
+      switchMap(
+        term => (term && term.trim().length > 0) ? this.searchEntries(term) : of([])
+      )
+    );
   }
 
   searchEntries(term) {

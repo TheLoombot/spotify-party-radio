@@ -1,24 +1,28 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { SpotifyService } from '../spotify.service';
+/* Models */
 import { User } from '../shared/models/user';
+/* Services */
+import { SpotifyService } from '../shared/services/spotify.service';
 
 @Component({
   selector: 'app-perform-login',
   templateUrl: './perform-login.component.html',
-  styleUrls: ['./perform-login.component.css'],
-  providers: [SpotifyService]
+  styleUrls: ['./perform-login.component.css']
 })
 export class PerformLoginComponent implements OnInit {
-  user: Object;
-  accessTokenNew: string;        // a new token from URL hash fragment params
-  accessTokenStored: string;     // an old token from localStorage
-  hasToken = true;
+  user: User;
+  accessTokenNew: string; // a new token from URL hash fragment params
+  accessTokenStored: string; // an old token from localStorage
+  availableToken: boolean;
 
   constructor(
     private route: ActivatedRoute,
-    private spotify: SpotifyService
-  ) { }
+    private spotifyService: SpotifyService
+  ) {
+    this.availableToken = true; // Default state
+    this.cleanLocalStorage();
+  }
 
   ngOnInit() {
     // The "fragment" is hash fragment, which we can access only as a string
@@ -36,33 +40,44 @@ export class PerformLoginComponent implements OnInit {
     // Otherwise we get the locally-stored token
     } else if (window.localStorage.getItem('access_token')) {
       this.accessTokenStored = window.localStorage.getItem('access_token');
+      this.spotifyService.setToken(this.accessTokenStored);
       // Other otherwise we show the login button
     } else {
-      this.hasToken = false;
+      this.availableToken = false;
+      // Service should be alerted
+      this.spotifyService.setToken(null);
     }
 
-    this.spotify.user()
+    this.spotifyService.getUserProfile()
       .subscribe(
         (user: User) => {
+          console.log('User:', user);
+          this.spotifyService.setUser(user);
           this.user = user;
         },
         error => {
+          console.error('getUserProfile:', error);
           window.localStorage.removeItem('access_token');
+          this.spotifyService.setUser(null);
           this.accessTokenStored = null;
-          this.hasToken = false;
+          this.availableToken = false;
         }
       );
-
   }
 
-authSpotify() {
-  window.location.href  = this.spotify.getAuthUrl();
-}
+  private cleanLocalStorage(): void {
+    this.accessTokenNew = '';
+    this.accessTokenStored = '';
+  }
+
+  authSpotify() {
+    window.location.href  = this.spotifyService.getAuthUrl();
+  }
 
   killToken() {
     window.localStorage.removeItem('access_token');
     this.accessTokenStored = null;
-    this.hasToken = false;
+    this.availableToken = false;
     this.user = null;
   }
 }

@@ -1,26 +1,29 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Interceptor } from './interceptor';
-
-import { AppComponent } from './app.component';
-
+/* Custom Modules */
 import { AppRoutingModule } from './app-routing.module';
-import { PerformLoginComponent } from './perform-login/perform-login.component';
-import { SpotifyService } from './spotify.service';
-
+/* External Modules */
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
-import { environment } from '../environments/environment';
+
+/* Components */
+import { AppComponent } from './app.component';
+import { PerformLoginComponent } from './perform-login/perform-login.component';
 import { SearchComponent } from './search/search.component';
 import { PlaylistComponent } from './playlist/playlist.component';
 import { ErrorAlertComponent } from './error-alert/error-alert.component';
 import { PlayerComponent } from './player/player.component';
 import { RecosComponent } from './recos/recos.component';
 import { ToptracksComponent } from './toptracks/toptracks.component';
+
+/* Services */
+import { SpotifyService } from './shared/services/spotify.service';
+
+/* Others */
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -39,7 +42,6 @@ import { ToptracksComponent } from './toptracks/toptracks.component';
     FormsModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireDatabaseModule,
-    HttpModule,
     HttpClientModule
   ],
   providers: [
@@ -47,7 +49,8 @@ import { ToptracksComponent } from './toptracks/toptracks.component';
       provide: HTTP_INTERCEPTORS,
       useClass: Interceptor,
       multi: true
-    }
+    },
+    SpotifyService
   ],
   bootstrap: [AppComponent]
 })

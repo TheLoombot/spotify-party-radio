@@ -4,11 +4,11 @@ import { SpotifyService } from './spotify.service';
 /* RxJs */
 import { map } from 'rxjs/operators';
 /* Models */
-import { User } from './shared/models/user';
-import { Track } from './shared/models/track';
+import { User } from '../models/user';
+import { Track } from '../models/track';
 /* Others */
 import { AngularFireDatabase } from 'angularfire2/database';
-import { environment } from '../environments/environment';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -22,12 +22,14 @@ export class PlaylistService {
   previouslistUrl: string;
   stationName: string;
   playerMetaRef: any;
+  user: User;
 
   constructor(
     private db: AngularFireDatabase,
     private spotifySvc: SpotifyService
   ) {
     this.setStation();
+    this.setUsername();
 
     this.getLastTracks(1).snapshotChanges()
       .subscribe(
@@ -42,26 +44,11 @@ export class PlaylistService {
           console.log('playlist retrieve error:', error);
         }
       );
-
-    this.spotifySvc.user()
-      .subscribe(
-        (user: User) => {
-          // console.log(user);
-          if (user.display_name) {
-            this.userName = user.display_name;
-          } else {
-            this.userName = user.id;
-          }
-        },
-        error => {
-          console.log('error getting user ID for playlist push', error);
-        }
-      );
   }
 
   /** Method to set station data */
   private setStation(): void {
-    this.stationName = 'default'; // There is only 1 station at the moment
+    this.stationName = 'pablovem'; // There is only 1 station at the moment
     this.environment = environment.production ? 'prod' : 'dev';
     this.setLists();
     this.playerMetaRef = this.db.object(`${this.stationName}/${this.environment}/player`).query.ref;
@@ -76,6 +63,21 @@ export class PlaylistService {
   /** Method to get station data */
   getStation(): string {
     return this.stationName;
+  }
+
+  /** Method to ser username */
+  setUsername(): void {
+    this.user = this.spotifySvc.getUser();
+    if (this.user) {
+      console.log('User:', this.user);
+      if (this.user.display_name) {
+        this.userName = this.user.display_name;
+      } else {
+        this.userName = this.user.id;
+      }
+    } else {
+      console.log('Error obtaining user:', this.user);
+    }
   }
 
   /** Method used to delete a track from the playlist given its id */
@@ -212,16 +214,11 @@ export class PlaylistService {
       .transaction(
         (player: any) => {
           const now = this.getTime();
-          // console.log(now, 'player', player);
           if (player) {
-            // console.log(now, player.last_updated, player.last_auto_added, now - player.last_updated, now - player.last_auto_added);
             if ( (now - player.last_auto_added) < 3000 ) {
-              // console.warn('autoUpdatePlaylist transaction should not update');
               return undefined;
             } else {
               player.last_auto_added = now;
-              // player.last_updated = now;
-              // console.log('Update', player);
               return player;
             }
           } else {
@@ -231,10 +228,8 @@ export class PlaylistService {
       )
       .then(
         result => {
-          // console.log('autoUpdatePlaylist transaction finished:', result);
           if (result.committed) {
             this.pushRandomTrack();
-          } else {
           }
         }
       );

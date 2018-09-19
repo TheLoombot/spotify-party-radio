@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
-import { SpotifyService } from '../spotify.service';
-import { PlaylistService } from '../playlist.service';
+/* Models */
 import { Track } from '../shared/models/track';
+/* Services */
+import { SpotifyService } from '../shared/services/spotify.service';
+import { PlaylistService } from '../shared/services/playlist.service';
 
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
-  styleUrls: ['./search.component.css'],
-  providers: [SpotifyService]
+  styleUrls: ['./search.component.css']
 })
 export class SearchComponent implements OnInit {
   results: Object;

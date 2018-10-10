@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { SpotifyService } from './spotify.service';
 /* RxJs */
 import { map } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 /* Models */
 import { User } from './shared/models/user';
 import { Track } from './shared/models/track';
@@ -79,8 +80,27 @@ export class PlaylistService {
   }
 
   /** Method used to delete a track from the playlist given its id */
-  remove(key: string) {
+  remove(key: string, i: number) {
+    console.log("Removing item at index ", i);
     this.db.list(this.playlistUrl).remove(key);
+    
+    // call this when the above completes successfully only!
+    this.recalcTimes(i);
+  }
+
+  // recalculation 
+  recalcTimes(i: number) {
+    this.getAllTracks()
+      .pipe(take(1)).subscribe(
+        data => {
+          const tracks = data;
+          console.log("Recalculating expiration times" );
+        },
+        error => {
+          console.log('Playlist retrieves error: ', error);
+        }
+      );
+
   }
 
   getAllTracks() {

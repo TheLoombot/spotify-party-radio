@@ -98,7 +98,7 @@ export class PlayerComponent implements OnInit {
       // Track has expired
       console.log(this.getTime(), this.firstTrack.name, 'track expired, expected expiration time was', this.firstTrack.expires_at);
       // console.log(this.showDate(this.getTime()), 'expected expiration time was', this.showDate(this.firstTrack.expires_at));
-      this.playlistSvc.remove(this.firstTrackKey);
+      this.playlistSvc.remove(this.firstTrackKey, 0);
       this.playlistSvc.saveTrack(this.firstTrack); // Save track in secondary list
       return;
     }

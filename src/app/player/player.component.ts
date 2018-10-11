@@ -67,6 +67,15 @@ export class PlayerComponent implements OnInit {
       );
   }
 
+  removeTrack(key: string, i: number): void {
+    console.log('Clicked to remove current track:', 0);
+    // ideally we'd clear out the actual pending checks... but we're not 
+    // actually tracking them rn
+    this.pendingCheck = false;
+    this.playlistSvc.remove(key, i);
+  }
+
+
   private calcProgress(firstTrack: Track): number {
     return Math.floor( 100 * ( 1 - (firstTrack.expires_at - this.getTime() ) / firstTrack.duration_ms) );
   }
@@ -98,7 +107,7 @@ export class PlayerComponent implements OnInit {
       // Track has expired
       console.log(this.getTime(), this.firstTrack.name, 'track expired, expected expiration time was', this.firstTrack.expires_at);
       // console.log(this.showDate(this.getTime()), 'expected expiration time was', this.showDate(this.firstTrack.expires_at));
-      this.playlistSvc.remove(this.firstTrackKey);
+      this.playlistSvc.remove(this.firstTrackKey, 0);
       this.playlistSvc.saveTrack(this.firstTrack); // Save track in secondary list
       return;
     }

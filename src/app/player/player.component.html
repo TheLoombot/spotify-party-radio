@@ -29,6 +29,11 @@
         {{ firstTrack.added_by }} 
       </small>
     </ng-template>
+
+    <br />
+
+    <span class="glyphicon glyphicon-fast-forward pull-right text-primary" style="cursor: pointer" (click)="removeTrack(firstTrackKey, 0)"></span>
+
   </div>
 
   <div class="panel-body" *ngIf="!nowPlaying">

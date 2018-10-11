@@ -67,6 +67,15 @@ export class PlayerComponent implements OnInit {
       );
   }
 
+  removeTrack(key: string, i: number): void {
+    console.log('Clicked to remove current track:', 0);
+    // ideally we'd clear out the actual pending checks... but we're not 
+    // actually tracking them rn
+    this.pendingCheck = false;
+    this.playlistSvc.remove(key, i);
+  }
+
+
   private calcProgress(firstTrack: Track): number {
     return Math.floor( 100 * ( 1 - (firstTrack.expires_at - this.getTime() ) / firstTrack.duration_ms) );
   }

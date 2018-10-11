@@ -81,7 +81,7 @@ export class PlaylistService {
 
   /** Method used to delete a track from the playlist given its id */
   remove(key: string, i: number) {
-    console.log("Removing item at index ", i);
+    console.log("Removing item at index ", i, "with key", key);
     this.db.list(this.playlistUrl).remove(key)
     .then(
       result => {
@@ -114,7 +114,11 @@ export class PlaylistService {
                   this.db.object(this.playlistUrl+"/"+data[j]["key"]).update({expires_at : new_expires_at});
                 }
               } else {
-                // console.log("no prior track? ", j);
+                // we reach here if we're evaluating track 0
+                // I guess we just always assume it's ok to set the expires_at?
+                var new_expires_at = this.getTime() + data[j]["duration_ms"] + 1500;
+                data[j]["expires_at"] = new_expires_at;
+                this.db.object(this.playlistUrl+"/"+data[j]["key"]).update({expires_at : new_expires_at});
               }
             }
           } else {

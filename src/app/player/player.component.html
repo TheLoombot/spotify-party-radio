@@ -32,7 +32,7 @@
 
     <br />
 
-    <span class="glyphicon glyphicon-fast-forward pull-right text-primary" style="cursor: pointer" (click)="removeTrack(firstTrackKey, 0)"></span>
+    <span class="glyphicon glyphicon-fast-forward pull-right text-primary" *ngIf="showSkip" style="cursor: pointer" (click)="skipTrack(firstTrackKey)"></span>
 
   </div>
 

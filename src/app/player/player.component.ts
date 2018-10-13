@@ -8,6 +8,8 @@ import { SpotifyService } from '../spotify.service';
 import { PlaylistService } from '../playlist.service';
 /* Models */
 import { Track } from '../shared/models/track';
+/* Others */
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-player',
@@ -24,9 +26,10 @@ export class PlayerComponent implements OnInit {
   pendingCheck: boolean;
   progress: number;
   station: string;
-  showSkip: boolean = false;
+  showSkip: boolean;
 
   constructor(
+    private titleService: Title,
     private spotify: SpotifyService,
     private playlistSvc: PlaylistService
   ) {
@@ -34,6 +37,7 @@ export class PlayerComponent implements OnInit {
     this.progress = 0;
 
     this.playlistRef = playlistSvc.getFirstTracks(1);
+    this.showSkip = false;
   }
 
   ngOnInit() {
@@ -62,7 +66,8 @@ export class PlayerComponent implements OnInit {
       .subscribe(
         () => {
           if (this.firstTrack) {
-            this.progress = this.calcProgress(this.firstTrack);
+
+            this.progress = this.calcProgress(this.firstTrack); // Update Progress
           }
         }
       );
@@ -70,13 +75,17 @@ export class PlayerComponent implements OnInit {
 
   skipTrack(key: string): void {
     console.log('Clicked to skip currently-playing track [track 0]');
-    // ideally we'd clear out the actual pending checks... but we're not 
+    // ideally we'd clear out the actual pending checks... but we're not
     // actually tracking them rn
     this.pendingCheck = false;
     this.playlistSvc.remove(key, 0);
     this.showSkip = false;
   }
 
+  public setTitle(title: string) {
+    // {artist name} - {track name}
+    this.titleService.setTitle(title);
+  }
 
   private calcProgress(firstTrack: Track): number {
     return Math.floor( 100 * ( 1 - (firstTrack.expires_at - this.getTime() ) / firstTrack.duration_ms) );
@@ -126,6 +135,7 @@ export class PlayerComponent implements OnInit {
             console.warn('There is nothing being played');
           } else if (data.is_playing && this.nowPlaying.uri === this.firstTrack.uri) {
             console.log( this.getTime(), `${this.nowPlaying.name} expires in ${timeToExpiration}`);
+            this.setTitle(`${this.firstTrack.artist_name} - ${this.firstTrack.name}`);
             this.showSkip = true;
             if (!this.pendingCheck) {
               // only schedule the check if there's not one pending already
@@ -138,7 +148,7 @@ export class PlayerComponent implements OnInit {
                 this.pendingCheck = false;
               }, -timeToExpiration);
             } else {
-              console.log(this.getTime(), ' NOT scheduling check, one is pending, yo ', timeToExpiration);
+              console.log(this.getTime(), 'NOT scheduling check, one is pending, yo', timeToExpiration);
             }
           } else {
             this.spotify.playTrack(this.firstTrack.uri)

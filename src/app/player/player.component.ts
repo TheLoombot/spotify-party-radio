@@ -27,6 +27,7 @@ export class PlayerComponent implements OnInit {
   progress: number;
   station: string;
   showSkip: boolean;
+  showNowPlaying: boolean;
 
   constructor(
     private titleService: Title,
@@ -38,6 +39,7 @@ export class PlayerComponent implements OnInit {
 
     this.playlistRef = playlistSvc.getFirstTracks(1);
     this.showSkip = false;
+    this.showNowPlaying = false;
   }
 
   ngOnInit() {
@@ -78,8 +80,10 @@ export class PlayerComponent implements OnInit {
     // ideally we'd clear out the actual pending checks... but we're not
     // actually tracking them rn
     this.pendingCheck = false;
+    this.showNowPlaying = false;
     this.playlistSvc.remove(key, 0);
     this.showSkip = false;
+    this.firstTrack = null;
   }
 
   public setTitle(title: string) {
@@ -109,6 +113,12 @@ export class PlayerComponent implements OnInit {
     * If it's not playing, play it, ya done
   **/
   checkFirstTrack() {
+    
+    if (this.firstTrack == null) {
+      console.warn('State of Brad: Sorry mate theres nothing to play');
+      return;
+    }
+
     // console.log('checking first track: ', this.firstTrack);
     const timeToExpiration = this.getTime() - this.firstTrack.expires_at;
     // console.log('First track expires at: ', this.showDate(this.firstTrack.expires_at));
@@ -121,6 +131,8 @@ export class PlayerComponent implements OnInit {
       this.playlistSvc.remove(this.firstTrackKey, 0);
       this.playlistSvc.saveTrack(this.firstTrack); // Save track in secondary list
       this.showSkip = false;
+      this.showNowPlaying = false;
+      this.firstTrack=null;
       return;
     }
 
@@ -133,8 +145,11 @@ export class PlayerComponent implements OnInit {
           if (this.nowPlaying == null) {
             // this.playerError = 'poopie';
             console.warn('There is nothing being played');
+          } else if (this.firstTrack == null) {
+            console.warn('Sorry mate theres nothing to play');
           } else if (data.is_playing && this.nowPlaying.uri === this.firstTrack.uri) {
             console.log( this.getTime(), `${this.nowPlaying.name} expires in ${timeToExpiration}`);
+            this.showNowPlaying = true;
             this.setTitle(`${this.firstTrack.artist_name} - ${this.firstTrack.name}`);
             this.showSkip = true;
             if (!this.pendingCheck) {

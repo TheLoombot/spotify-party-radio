@@ -118,6 +118,7 @@ export class PlaylistService {
                 // I guess we just always assume it's ok to set the expires_at?
                 var new_expires_at = this.getTime() + data[j]["duration_ms"] + 1500;
                 data[j]["expires_at"] = new_expires_at;
+                console.log ("Updating expiration time on ", data[j]["name"]);
                 this.db.object(this.playlistUrl+"/"+data[j]["key"]).update({expires_at : new_expires_at});
               }
             }
@@ -264,8 +265,8 @@ export class PlaylistService {
           // console.log(now, 'player', player);
           if (player) {
             // console.log(now, player.last_updated, player.last_auto_added, now - player.last_updated, now - player.last_auto_added);
-            if ( (now - player.last_auto_added) < 3000 ) {
-              // console.warn('autoUpdatePlaylist transaction should not update');
+            if ( (now - player.last_auto_added) < 1000 ) {
+              console.warn('autoUpdatePlaylist transaction should not update');
               return undefined;
             } else {
               player.last_auto_added = now;

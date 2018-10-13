@@ -5,34 +5,44 @@
   <app-error-alert *ngIf="playerError" [error]="playerError">poop</app-error-alert>
 
   <div class="panel-body" *ngIf="nowPlaying">
-    <ng-template [ngIf]="nowPlaying.album.images.length > 1" [ngIfElse]="fallbackImg">
-      <img src="{{ nowPlaying.album.images[1].url }}" class="pull-left" style="margin-right: 10px">
-    </ng-template>
-    <ng-template #fallbackImg>
-      <img src="{{ nowPlaying.album.images[0].url }}" class="pull-left" style="margin-right: 10px">
-    </ng-template>
-    <h4> {{ nowPlaying.name }} </h4>
-    <h5> {{ nowPlaying.artists[0].name }} - 
-      <a target="_blank" href="{{ nowPlaying.album.external_urls.spotify }}">{{ nowPlaying.album.name }}</a>
-    </h5>
-    <div class="progress">
-      <div class="progress-bar " role="progressbar" [style.width]="progress + '%'" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
 
-    <ng-template [ngIf]="firstTrack?.player?.auto" [ngIfElse]="userInfo">
-      <small class="text-muted small pull-right"> 
-        🤖 (via {{ firstTrack.added_by }})
-      </small>
-    </ng-template>
-    <ng-template #userInfo>
-      <small class="text-muted small pull-right"> 
-        {{ firstTrack.added_by }} 
-      </small>
-    </ng-template>
+    <ng-template [ngIf]="showNowPlaying" [ngIfElse]="showLoading">
+    
 
-    <br />
+      <ng-template [ngIf]="nowPlaying.album.images.length > 1" [ngIfElse]="fallbackImg">
+        <img *ngIf="showNowPlaying" src="{{ nowPlaying.album.images[1].url }}" class="pull-left" style="margin-right: 10px">
+      </ng-template>
+      <ng-template #fallbackImg>
+        <img src="{{ nowPlaying.album.images[0].url }}" class="pull-left" style="margin-right: 10px">
+      </ng-template>
+      <h4> {{ nowPlaying.name }} </h4>
+      <h5> {{ nowPlaying.artists[0].name }} - 
+        <a target="_blank" href="{{ nowPlaying.album.external_urls.spotify }}">{{ nowPlaying.album.name }}</a>
+      </h5>
+      <div class="progress">
+        <div class="progress-bar " role="progressbar" [style.width]="progress + '%'" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
 
-    <span class="glyphicon glyphicon-fast-forward pull-right text-primary" *ngIf="showSkip" style="cursor: pointer" (click)="skipTrack(firstTrackKey)"></span>
+      <ng-template [ngIf]="firstTrack?.player?.auto" [ngIfElse]="userInfo">
+        <small class="text-muted small pull-right"> 
+          🤖 (via {{ firstTrack.added_by }})
+        </small>
+      </ng-template>
+      <ng-template #userInfo>
+        <small class="text-muted small pull-right"> 
+          {{ firstTrack.added_by }} 
+        </small>
+      </ng-template>
+
+      <br />
+
+      <span class="glyphicon glyphicon-fast-forward pull-right text-primary" *ngIf="showSkip" style="cursor: pointer" (click)="skipTrack(firstTrackKey)"></span>
+    </ng-template>  
+
+    <ng-template #showLoading>
+      <img src="assets/placeholder_300.png" class="pull-left" style="margin-right: 10px">
+
+    </ng-template>
 
   </div>
 

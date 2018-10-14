@@ -212,7 +212,7 @@ export class PlaylistService {
           };
           randomTrack.expires_at = nextTrackExpiresAt;
 
-          console.log(this.getTime(), 'pushing random track onto playlist:', randomTrack.name , 'expires at', randomTrack.expires_at);
+          console.log(this.getTime(), '🤖 - Of', tracks.length, 'tracks, pushing', randomTrack.name , 'expires at', randomTrack.expires_at);
           this.db.list(this.playlistUrl)
             .push(randomTrack)
             .then(

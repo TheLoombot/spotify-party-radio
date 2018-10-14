@@ -22,7 +22,7 @@ export class RecosComponent implements OnInit {
 
         this.lastFivePlaylistRef = playlistSvc.getLastTracks(5)
 
-        this.lastFivePlaylistRef.valueChanges().pipe(debounceTime(300)).subscribe 
+        this.lastFivePlaylistRef.valueChanges().pipe(debounceTime(2000)).subscribe 
         (data => {
             let tracks = data
             this.lastFiveTrackUris = "";

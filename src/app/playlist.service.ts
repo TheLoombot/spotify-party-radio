@@ -107,7 +107,7 @@ export class PlaylistService {
                 // the expected delta is 1500ms, which is the fudge factor we add when you
                 // add a song to the playlist ... let's assume if the delta is > 2000ms we update
                 if (Math.abs(delta) > 2000) { 
-                  console.log ("Updating expiration time on ", data[j]["name"]);
+                  console.log ("Updating expiration time on ", data[j]["name"], ", delta was", delta);
                   var new_expires_at = data[j-1]["expires_at"] + data[j]["duration_ms"] + 1500;
                   data[j]["expires_at"] = new_expires_at;
                   // console.log(this.playlistUrl+"/"+data[j]["key"], "poop now expires at ", new_expires_at );
@@ -115,11 +115,14 @@ export class PlaylistService {
                 }
               } else {
                 // we reach here if we're evaluating track 0
-                // I guess we just always assume it's ok to set the expires_at?
-                var new_expires_at = this.getTime() + data[j]["duration_ms"] + 1500;
-                data[j]["expires_at"] = new_expires_at;
-                console.log ("Updating expiration time on ", data[j]["name"]);
-                this.db.object(this.playlistUrl+"/"+data[j]["key"]).update({expires_at : new_expires_at});
+                // this duplicates a lot of the above code but ¯\_(ツ)_/¯
+                var delta = this.getTime() + data[j]["duration_ms"] - data[j]["expires_at"]
+                if (Math.abs(delta) > 2000) { 
+                  console.log ("Updating expiration time on new track 0: ", data[j]["name"], ", delta was", delta);
+                  var new_expires_at = this.getTime() + data[j]["duration_ms"] + 1500;
+                  data[j]["expires_at"] = new_expires_at;
+                  this.db.object(this.playlistUrl+"/"+data[j]["key"]).update({expires_at : new_expires_at});
+                }
               }
             }
           } else {

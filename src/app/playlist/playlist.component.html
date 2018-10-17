@@ -1,7 +1,6 @@
 <div class="panel panel-default">
   <div class="panel-heading">Up next</div>
   <div class="panel-body" *ngIf="tracks">
-    <app-error-alert *ngIf="playBackResponseError" [error]="playBackResponseError"></app-error-alert>
     <div class="panel panel-default" *ngFor="let track of tracks | slice:1; index as i; last as isLast" >
       <div class="panel-body">
         <img src="{{ track.image_url }}" class="pull-left" style="margin-right: 10px">

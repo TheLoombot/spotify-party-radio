@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 /* RxJs */
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { map, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 /* Models */
@@ -14,6 +14,7 @@ import { environment } from '../../../environments/environment';
 })
 export class SpotifyService {
   token: string;
+  private tokenSubject: Subject<any>;
   user: User;
   authorizeURL = 'https://accounts.spotify.com/authorize';
   clientId: string;
@@ -34,6 +35,7 @@ export class SpotifyService {
     private http: HttpClient
   ) {
     this.token = '';
+    this.tokenSubject = new Subject<any>();
     this.clientId = environment.spotify.clientId;
     this.responseType = 'token';
     this.baseUrl = environment.spotify.apiURL;
@@ -41,7 +43,7 @@ export class SpotifyService {
 
   setToken(token: string): void {
     this.token = token;
-    console.log(this.token);
+    console.log('SpotifyService token:', this.token);
   }
 
   getToken(): string {
@@ -50,6 +52,20 @@ export class SpotifyService {
 
   isTokenAvailable(): boolean {
     return this.token ? true : false;
+  }
+
+  /** Method to send token using the tokenSubject */
+  sendToken(token: string): void {
+    console.log('New token:', token);
+    this.tokenSubject.next({ token: token });
+  }
+
+  clearToken(): void {
+    this.tokenSubject.next();
+  }
+
+  getTokens(): Observable<any> {
+    return this.tokenSubject.asObservable();
   }
 
   setUser(user: User): void {

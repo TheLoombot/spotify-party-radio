@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 /* Services */
 import { SpotifyService } from './spotify.service';
 /* RxJs */
+import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 /* Models */
 import { User } from '../models/user';
@@ -23,13 +24,27 @@ export class PlaylistService {
   stationName: string;
   playerMetaRef: any;
   user: User;
+  tokenSubscription: Subscription;
 
   constructor(
     private db: AngularFireDatabase,
-    private spotifySvc: SpotifyService
+    private spotifyService: SpotifyService
   ) {
+    this.tokenSubscription = this.spotifyService.getTokens()
+      .subscribe(
+        (token: string) => {
+          console.log('token from playlist component', token);
+          if (token) {
+            this.setUsername();
+          }
+        },
+        error => console.error(error),
+        () => {
+          console.log('get tokens finished');
+        }
+      );
+
     this.setStation();
-    this.setUsername();
 
     this.getLastTracks(1).snapshotChanges()
       .subscribe(
@@ -65,16 +80,12 @@ export class PlaylistService {
     return this.stationName;
   }
 
-  /** Method to ser username */
+  /** Method to set username */
   setUsername(): void {
-    this.user = this.spotifySvc.getUser();
+    this.user = this.spotifyService.getUser();
     if (this.user) {
       console.log('User:', this.user);
-      if (this.user.display_name) {
-        this.userName = this.user.display_name;
-      } else {
-        this.userName = this.user.id;
-      }
+      this.userName = this.user.display_name ? this.user.display_name : this.user.id;
     } else {
       console.log('Error obtaining user:', this.user);
     }
@@ -114,6 +125,7 @@ export class PlaylistService {
   }
 
   pushTrack(track: any, userName = this.userName) {
+    console.log();
     const now = this.getTime();
     const lastTrackExpiresAt = (this.lastTrack) ? this.lastTrack.expires_at : now;
     const nextTrackExpiresAt = lastTrackExpiresAt + track.duration_ms + 1500; // introducing some fudge here

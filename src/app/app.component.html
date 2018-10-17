@@ -1,11 +1,27 @@
 <div class="container">
   <h1>Deep State Radio 🗼 (<a href="https://github.com/TheLoombot/deep-strafe">GitHub</a>)</h1>
+
+  <!--
+  <app-alert *ngIf="!appEnabled"
+    [error]="state.error">
+  </app-alert>
+  -->
+
   <div class="row">
     <div class="col-md-6"><router-outlet></router-outlet></div>
-    <div class="col-md-6"><app-player></app-player></div>
+    <div class="col-md-6" *ngIf="appEnabled">
+      <app-player>
+      </app-player>
+    </div>
   </div>
-  <div class="row">
-    <div class="col-md-6"><app-search></app-search></div>
-    <div class="col-md-6"><app-playlist></app-playlist></div>
+  <div class="row" *ngIf="appEnabled">
+    <div class="col-md-6">
+      <app-search>
+      </app-search>
+    </div>
+    <div class="col-md-6">
+      <app-playlist>
+      </app-playlist>
+    </div>
   </div>
 </div>

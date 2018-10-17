@@ -1,7 +1,7 @@
 /* Core */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 /* RxJs */
-import { interval } from 'rxjs';
+import { interval, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 /* Services */
 import { SpotifyService } from '../shared/services/spotify.service';
@@ -23,6 +23,7 @@ export class PlayerComponent implements OnInit {
   pendingCheck: boolean;
   progress: number;
   station: string;
+  tokenSubscription: Subscription;
 
   constructor(
     private spotify: SpotifyService,
@@ -140,11 +141,9 @@ export class PlayerComponent implements OnInit {
                   // playing status' again
                   this.spotify.seekTrack(this.getTime() - this.firstTrack.expires_at + this.firstTrack.duration_ms)
                     .subscribe(
-                      () => {
-                        // no op
-                      },
+                      () => {},
                       error => {
-                        console.log('Brads error: failed on seek', error);
+                        console.error('Brads error: failed on seek', error);
                       }
                     );
                   },
@@ -156,6 +155,7 @@ export class PlayerComponent implements OnInit {
           }
         },
         error => {
+          console.error(error);
           this.playerError = error.error.error;
           console.error('Now playing error:', this.playerError);
         }

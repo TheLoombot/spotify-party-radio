@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { User } from '../shared/models/user';
 /* Services */
 import { SpotifyService } from '../shared/services/spotify.service';
+import { StateService } from '../shared/services/state.service';
 
 @Component({
   selector: 'app-perform-login',
@@ -18,13 +19,55 @@ export class PerformLoginComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private spotifyService: SpotifyService
+    private spotifyService: SpotifyService,
+    private stateService: StateService
   ) {
     this.availableToken = true; // Default state
     this.cleanLocalStorage();
   }
 
   ngOnInit() {
+    if (this.manageToken()) {
+      this.spotifyService.getUserProfile()
+        .subscribe(
+          (user: User) => {
+            console.log('User:', user);
+            this.spotifyService.setUser(user);
+            const state = {
+              enabled: true
+            };
+            this.user = user;
+            this.stateService.sendState(state);
+          },
+          error => {
+            console.error('getUserProfile:', error);
+            const state = {
+              enabled: false,
+              error: {
+                code: error.error.status,
+                message: `There is no available user, ${error.error.message}`
+              }
+            };
+            this.stateService.sendState(state);
+            window.localStorage.removeItem('access_token');
+            this.spotifyService.sendToken(null);
+            this.spotifyService.setUser(null);
+            this.accessTokenStored = null;
+            this.availableToken = false;
+          }
+        );
+    } else {
+      const state = {
+        enabled: false,
+        error: {
+          message: 'There is no available token'
+        }
+      };
+      this.stateService.sendState(state);
+    }
+  }
+
+  private manageToken(): boolean {
     // The "fragment" is hash fragment, which we can access only as a string
     // Its presence means we're getting a callback from Spotify
     if (this.route.snapshot.fragment) {
@@ -41,28 +84,14 @@ export class PerformLoginComponent implements OnInit {
     } else if (window.localStorage.getItem('access_token')) {
       this.accessTokenStored = window.localStorage.getItem('access_token');
       this.spotifyService.setToken(this.accessTokenStored);
+      this.spotifyService.sendToken(this.accessTokenStored);
       // Other otherwise we show the login button
     } else {
       this.availableToken = false;
       // Service should be alerted
       this.spotifyService.setToken(null);
     }
-
-    this.spotifyService.getUserProfile()
-      .subscribe(
-        (user: User) => {
-          console.log('User:', user);
-          this.spotifyService.setUser(user);
-          this.user = user;
-        },
-        error => {
-          console.error('getUserProfile:', error);
-          window.localStorage.removeItem('access_token');
-          this.spotifyService.setUser(null);
-          this.accessTokenStored = null;
-          this.availableToken = false;
-        }
-      );
+    return this.availableToken;
   }
 
   private cleanLocalStorage(): void {

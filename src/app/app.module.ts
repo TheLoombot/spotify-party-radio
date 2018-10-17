@@ -1,3 +1,4 @@
+/* Core Modules */
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
@@ -18,9 +19,11 @@ import { ErrorAlertComponent } from './error-alert/error-alert.component';
 import { PlayerComponent } from './player/player.component';
 import { RecosComponent } from './recos/recos.component';
 import { ToptracksComponent } from './toptracks/toptracks.component';
+import { AlertComponent } from './shared/components/alert/alert.component';
 
 /* Services */
 import { SpotifyService } from './shared/services/spotify.service';
+import { StateService } from './shared/services/state.service';
 
 /* Others */
 import { environment } from '../environments/environment';
@@ -34,7 +37,8 @@ import { environment } from '../environments/environment';
     ErrorAlertComponent,
     PlayerComponent,
     RecosComponent,
-    ToptracksComponent
+    ToptracksComponent,
+    AlertComponent
   ],
   imports: [
     BrowserModule,
@@ -50,7 +54,8 @@ import { environment } from '../environments/environment';
       useClass: Interceptor,
       multi: true
     },
-    SpotifyService
+    SpotifyService,
+    StateService
   ],
   bootstrap: [AppComponent]
 })

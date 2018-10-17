@@ -9,27 +9,23 @@ import { PlaylistService } from '../shared/services/playlist.service';
 })
 export class PlaylistComponent implements OnInit {
   tracks: Object;
-  playBackResponseError: any;
 
   constructor(
-    private playlistSvc: PlaylistService
+    private playlistService: PlaylistService
   ) {
-    playlistSvc.getAllTracks()
+    playlistService.getAllTracks()
       .subscribe(
-        data => {
-          this.tracks = data;
-          // console.log(this.tracks);
+        tracks => {
+          this.tracks = tracks;
         },
-        error => {
-          console.log('Playlist retrieves error: ', error);
-        }
+        error => console.error('Playlist retrieves error: ', error)
       );
   }
 
   ngOnInit() { }
 
   removeTrack(track: any): void {
-    console.log('Remove Track:', track);
-    this.playlistSvc.remove(track.key);
+    console.warn('Remove Track:', track);
+    this.playlistService.remove(track.key);
   }
 }

@@ -1,3 +1,4 @@
+/* Core */
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 /* Models */
@@ -33,22 +34,12 @@ export class PerformLoginComponent implements OnInit {
           (user: User) => {
             console.log('User:', user);
             this.spotifyService.setUser(user);
-            const state = {
-              enabled: true
-            };
             this.user = user;
-            this.stateService.sendState(state);
+            this.stateService.sendState({ enabled: true });
           },
           error => {
             console.error('getUserProfile:', error);
-            const state = {
-              enabled: false,
-              error: {
-                code: error.error.status,
-                message: `There is no available user, ${error.error.message}`
-              }
-            };
-            this.stateService.sendState(state);
+            this.stateService.sendError(`There is no available user, ${error.error.message}`, error.error.status);
             window.localStorage.removeItem('access_token');
             this.spotifyService.sendToken(null);
             this.spotifyService.setUser(null);
@@ -57,13 +48,7 @@ export class PerformLoginComponent implements OnInit {
           }
         );
     } else {
-      const state = {
-        enabled: false,
-        error: {
-          message: 'There is no available token'
-        }
-      };
-      this.stateService.sendState(state);
+      this.stateService.sendError('There is no available token');
     }
   }
 
@@ -100,10 +85,12 @@ export class PerformLoginComponent implements OnInit {
   }
 
   authSpotify() {
-    window.location.href  = this.spotifyService.getAuthUrl();
+    window.location.href = this.spotifyService.getAuthUrl();
   }
 
   killToken() {
+    console.warn('Removing Token');
+    this.stateService.sendError(`There is no available token`);
     window.localStorage.removeItem('access_token');
     this.accessTokenStored = null;
     this.availableToken = false;

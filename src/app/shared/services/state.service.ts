@@ -32,4 +32,16 @@ export class StateService {
     return this.stateSubject.asObservable();
   }
 
+  /** Method to create an error state and broadcast it using the state subject */
+  sendError(message: string, code?: number): void {
+    const errorState: State = {
+      enabled: false,
+      error: {
+        code: code,
+        message: message
+      }
+    };
+    this.sendState(errorState);
+  }
+
 }

@@ -20,12 +20,13 @@ export class SearchComponent implements OnInit {
   curOffset = 0;
   searchError;
   clicked: number;
-  pageSize: number = 5;
+  pageSize: number;
 
   constructor(
     private spotify: SpotifyService,
     private playlistSvc: PlaylistService
   ) {
+    this.pageSize = 5;
   }
 
   ngOnInit() {

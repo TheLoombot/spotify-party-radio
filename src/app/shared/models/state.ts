@@ -1,10 +1,8 @@
+import { Error } from './error';
+
 export class State {
   enabled: boolean;
   token?: string;
-  error?: {
-    code?: number,
-    message: string
-  };
+  error?: Error;
 }
 
-// Invalid access token -- Refresh and Sign In

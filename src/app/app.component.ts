@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 /* Services */
 import { StateService } from './shared/services/state.service';
 /* Models */
@@ -7,14 +7,16 @@ import { State } from './shared/models/state';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit {
   appEnabled: boolean;
   state: State;
 
   constructor (
-    private stateService: StateService
+    private cdr: ChangeDetectorRef,
+    private stateService: StateService,
   ) {
     this.appEnabled = false; // Disable components
   }
@@ -35,6 +37,7 @@ export class AppComponent implements OnInit {
         error => console.error(error),
         () => {
           console.warn('New State processed');
+          this.cdr.detectChanges();
         }
       );
   }

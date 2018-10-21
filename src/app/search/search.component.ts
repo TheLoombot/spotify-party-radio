@@ -29,10 +29,6 @@ export class SearchComponent implements OnInit {
   }
 
   ngOnInit() {
-<<<<<<< HEAD
-=======
-
->>>>>>> 0846440b393f2b3f17e992a7273bbfb3b303df50
     this.spotify.search(this.searchTerm$, this.offset$)
     .subscribe(
       (results: any) => {

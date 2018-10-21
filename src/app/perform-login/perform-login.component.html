@@ -4,18 +4,14 @@
     <div class="panel-heading" *ngIf="user.display_name">{{ user.display_name }}</div>
 
     <div class="panel-body">
-<<<<<<< HEAD
       <img *ngIf="user.images?.length" src="{{ user.images[0].url }}" class="pull-left" id="user-img">
-=======
-      <img *ngIf="user.images?.length" src="{{ user.images[0].url }}" class="pull-left" style="margin-right: 10px; height: 64px">
->>>>>>> 0846440b393f2b3f17e992a7273bbfb3b303df50
       <h5> You've got {{ user.product }} access.</h5>
       <h5><a href (click)="killToken()">Sign Out</a></h5>
       <h5><a href="http://localhost:4200/#access_token={{ accessTokenNew ? accessTokenNew : accessTokenStored}}">Apply to localhost</a></h5>
     </div>
   </ng-template>
 
-  <div class="panel-body" *ngIf="!hasToken">
+  <div class="panel-body" *ngIf="!availableToken">
     <button (click)="authSpotify()">Sign in with Spotify</button>
   </div>
 </div> 

@@ -40,6 +40,8 @@ export class PlayerComponent implements OnInit {
     this.showNowPlaying = false;
 
     this.playlistRef = playlistSvc.getFirstTracks(1);
+    this.showSkip = false;
+    this.showNowPlaying = false;
   }
 
   ngOnInit() {

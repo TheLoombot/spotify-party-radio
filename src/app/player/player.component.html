@@ -1,4 +1,4 @@
-<div class="panel panel-default">
+<div class="panel panel-default" style="min-height: 375px">
 
   <div class="panel-heading">Now playing: <b>{{ station }} station</b></div>
 
@@ -35,6 +35,7 @@
     <ng-template #showLoading>
       <img src="assets/placeholder_300.png" class="pull-left" style="margin-right: 10px">
     </ng-template>
+
   </div>
 
   <div class="panel-body" *ngIf="!nowPlaying">

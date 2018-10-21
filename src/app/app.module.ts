@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 /* Core Modules */
+=======
+>>>>>>> 0846440b393f2b3f17e992a7273bbfb3b303df50
 import { NgModule } from '@angular/core';
 import { BrowserModule, Title  } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';

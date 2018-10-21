@@ -7,8 +7,7 @@ import { State } from './shared/models/state';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
   appEnabled: boolean;
@@ -26,17 +25,11 @@ export class AppComponent implements OnInit {
       .subscribe(
         (state: State) => {
           this.state = state;
+          this.appEnabled = state.enabled;
           console.log('State obtained in app:', this.state);
-          if (state.enabled) {
-            this.appEnabled = true;
-          } else {
-            this.appEnabled = false;
-            console.error(this.state.error);
-          }
         },
         error => console.error(error),
         () => {
-          console.warn('New State processed');
           this.cdr.detectChanges();
         }
       );

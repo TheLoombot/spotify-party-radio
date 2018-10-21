@@ -64,7 +64,7 @@ export class PlaylistService {
 
   /** Method to set station data */
   private setStation(): void {
-    this.stationName = 'pablovem'; // There is only 1 station at the moment
+    this.stationName = 'default'; // There is only 1 station at the moment
     this.environment = environment.production ? 'prod' : 'dev';
     this.setLists();
     this.playerMetaRef = this.db.object(`${this.stationName}/${this.environment}/player`).query.ref;

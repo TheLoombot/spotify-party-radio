@@ -52,6 +52,7 @@ export class PerformLoginComponent implements OnInit {
     }
   }
 
+  /** Method to manage Spotify token within the application */
   private manageToken(): boolean {
     // The "fragment" is hash fragment, which we can access only as a string
     // Its presence means we're getting a callback from Spotify
@@ -79,6 +80,7 @@ export class PerformLoginComponent implements OnInit {
     return this.availableToken;
   }
 
+  /** Method to clean token from local storage */
   private cleanLocalStorage(): void {
     this.accessTokenNew = '';
     this.accessTokenStored = '';
@@ -88,6 +90,7 @@ export class PerformLoginComponent implements OnInit {
     window.location.href = this.spotifyService.getAuthUrl();
   }
 
+  /** Method kill token */
   killToken() {
     console.warn('Removing Token');
     this.stateService.sendError(`There is no available token`);

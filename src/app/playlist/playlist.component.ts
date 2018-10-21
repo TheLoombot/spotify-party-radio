@@ -17,6 +17,7 @@ export class PlaylistComponent implements OnInit {
       .subscribe(
         tracks => {
           this.tracks = tracks;
+          console.log('Playlist update:', this.tracks['length'], 'tracks');
         },
         error => console.error('Playlist retrieves error: ', error)
       );
@@ -24,8 +25,11 @@ export class PlaylistComponent implements OnInit {
 
   ngOnInit() { }
 
-  removeTrack(track: any): void {
+  removeTrack(track: any, i: number): void {
+    // add 1 to the index because we slice off the first track
+    i++;
+    console.log('Clicked to remove track:', i);
     console.warn('Remove Track:', track);
-    this.playlistService.remove(track.key);
+    this.playlistService.remove(track.key, i);
   }
 }

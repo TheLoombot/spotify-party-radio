@@ -4,6 +4,7 @@ import { SpotifyService } from './spotify.service';
 /* RxJs */
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 /* Models */
 import { User } from '../models/user';
 import { Track } from '../models/track';
@@ -91,9 +92,60 @@ export class PlaylistService {
     }
   }
 
-  /** Method used to delete a track from the playlist given its id */
-  remove(key: string) {
-    this.db.list(this.playlistUrl).remove(key);
+  /** Method used to delete a track from the playlist given its id and index */
+  remove(key: string, i: number) {
+    console.log('Removing item at index', i, 'with key', key);
+    this.db.list(this.playlistUrl).remove(key)
+      .then(
+        result => {
+          // call this when the above completes successfully only!
+          this.recalcTimes(i);
+        }
+      );
+  }
+
+  // recalculates expiration times for all tracks in the playlist starting at index i
+  recalcTimes(i: number) {
+    this.getAllTracks()
+      .pipe(take(1)).subscribe(
+        data => {
+          const tracks = data;
+          // console.log('Recalculating expiration times for ', data.length, 'tracks, from ', i, 'onwards  ' );
+          if (data.length && (i < data.length)) {
+            for (let j = i ; j < data.length ; j++) {
+              if (data[j - 1]) {
+                // console.log('track ', j, ' expiration time is', data[j]['expires_at'], ' with duration ', data[j]['duration_ms']);
+                // console.log('prior track expires at: ', data[j-1]['expires_at']);
+                const delta = +data[ j - 1]['expires_at'] + +data[j]['duration_ms'] - +data[j]['expires_at'];
+                // the expected delta is 1500ms, which is the fudge factor we add when you
+                // add a song to the playlist ... let's assume if the delta is > 2000ms we update
+                if (Math.abs(delta) > 2000) {
+                  console.log ('Updating expiration time on ', data[j]['name'], ', delta was', delta);
+                  var new_expires_at = data[j-1]['expires_at'] + data[j]['duration_ms'] + 1500;
+                  data[j]['expires_at'] = new_expires_at;
+                  // console.log(this.playlistUrl+'/'+data[j]['key'], 'poop now expires at ', new_expires_at );
+                  this.db.object(this.playlistUrl+'/'+data[j]['key']).update({expires_at : new_expires_at});
+                }
+              } else {
+                // we reach here if we're evaluating track 0
+                // this duplicates a lot of the above code but ¯\_(ツ)_/¯
+                var delta = this.getTime() + data[j]['duration_ms'] - data[j]['expires_at']
+                if (Math.abs(delta) > 2000) { 
+                  console.log ('Updating expiration time on new track 0: ', data[j]['name'], ', delta was', delta);
+                  var new_expires_at = this.getTime() + data[j]['duration_ms'] + 1500;
+                  data[j]['expires_at'] = new_expires_at;
+                  this.db.object(this.playlistUrl+'/'+data[j]['key']).update({expires_at : new_expires_at});
+                }
+              }
+            }
+          } else {
+            // console.log('no tracks to recalc!' )
+          }
+        },
+        error => {
+          console.log('Playlist retrieves error: ', error);
+        }
+      );
   }
 
   getAllTracks() {
@@ -176,7 +228,7 @@ export class PlaylistService {
           };
           randomTrack.expires_at = nextTrackExpiresAt;
 
-          console.log(this.getTime(), 'pushing random track onto playlist:', randomTrack.name , 'expires at', randomTrack.expires_at);
+          console.log(this.getTime(), '<U+1F916> - Of', tracks.length, 'tracks, pushing', randomTrack.name , 'expires at', randomTrack.expires_at);
           this.db.list(this.playlistUrl)
             .push(randomTrack)
             .then(
@@ -227,7 +279,8 @@ export class PlaylistService {
         (player: any) => {
           const now = this.getTime();
           if (player) {
-            if ( (now - player.last_auto_added) < 3000 ) {
+            if ( (now - player.last_auto_added) < 1000 ) {
+              console.warn('autoUpdatePlaylist transaction should not update');
               return undefined;
             } else {
               player.last_auto_added = now;

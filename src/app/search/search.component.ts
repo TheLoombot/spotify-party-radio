@@ -16,8 +16,11 @@ export class SearchComponent implements OnInit {
   searchResults: any;
   tracks: Array<Track>;
   searchTerm$ = new Subject<string>();
+  offset$ = new Subject<number>();
+  curOffset = 0;
   searchError;
   clicked: number;
+  pageSize: number = 5;
 
   constructor(
     private spotify: SpotifyService,
@@ -26,7 +29,7 @@ export class SearchComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.spotify.search(this.searchTerm$)
+    this.spotify.search(this.searchTerm$, this.offset$)
     .subscribe(
       (results: any) => {
         this.results = results;
@@ -34,7 +37,7 @@ export class SearchComponent implements OnInit {
         this.searchResults = results.tracks;
         if (results.tracks) {
           this.tracks = results.tracks.items as Array<Track>;
-          // console.log('Tracks:', this.tracks);
+          // console.log('Tracks:', this.tracks, 'total: ', results.tracks.total);
           this.tracks.forEach( (track: Track) => {
             if (track.album.images.length > 0) {
               const images = track.album.images.slice(-1); // Select smallest size
@@ -52,6 +55,29 @@ export class SearchComponent implements OnInit {
         this.searchError = error.error.error;
       }
     );
+
+    // it's important that these emit values once each after the subscription 
+    // because if that hasn't happened, combineLatest won't work!
+    this.searchTerm$.next('');
+    this.offset$.next(this.curOffset);
+  }
+
+  newSearch(eventValue: string, newOffset = this.curOffset) {
+    this.searchTerm$.next(eventValue);
+    if (newOffset != this.curOffset) {
+      this.curOffset = newOffset;
+      this.offset$.next(this.curOffset);
+    }
+  }
+
+  nextPage() {
+    this.curOffset += this.pageSize;
+    this.offset$.next(this.curOffset);
+  }
+
+  prevPage() {
+    this.curOffset -= this.pageSize;
+    this.offset$.next(this.curOffset);
   }
 
   pushTrack(track: Object, i: number) {

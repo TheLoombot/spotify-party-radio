@@ -26,7 +26,7 @@ export class RecosComponent implements OnInit {
   ) {
     this.lastFivePlaylistRef = playlistSvc.getLastTracks(5);
     this.lastFivePlaylistRef.valueChanges()
-      .pipe(debounceTime(300))
+      .pipe(debounceTime(2000))
       .subscribe(
         tracks => {
           this.lastFiveTrackUris = '';

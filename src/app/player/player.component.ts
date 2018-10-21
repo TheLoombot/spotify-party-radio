@@ -8,6 +8,8 @@ import { SpotifyService } from '../shared/services/spotify.service';
 import { PlaylistService } from '../shared/services/playlist.service';
 /* Models */
 import { Track } from '../shared/models/track';
+/* Others */
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-player',
@@ -24,13 +26,18 @@ export class PlayerComponent implements OnInit {
   progress: number;
   station: string;
   tokenSubscription: Subscription;
+  showSkip: boolean;
+  showNowPlaying: boolean;
 
   constructor(
+    private titleService: Title,
     private spotify: SpotifyService,
     private playlistSvc: PlaylistService
   ) {
     this.pendingCheck = false;
     this.progress = 0;
+    this.showSkip = false;
+    this.showNowPlaying = false;
 
     this.playlistRef = playlistSvc.getFirstTracks(1);
   }
@@ -61,10 +68,25 @@ export class PlayerComponent implements OnInit {
       .subscribe(
         () => {
           if (this.firstTrack) {
-            this.progress = this.calcProgress(this.firstTrack);
+            this.progress = this.calcProgress(this.firstTrack); // Update Progress
           }
         }
       );
+  }
+
+  skipTrack(key: string): void {
+    console.log('Clicked to skip currently-playing track [track 0]');
+    // ideally we'd clear out the actual pending checks... but we're not
+    // actually tracking them rn
+    this.pendingCheck = false;
+    this.showNowPlaying = false;
+    this.playlistSvc.remove(key, 0);
+    this.showSkip = false;
+    this.firstTrack = null;
+  }
+
+  private setTitle(title: string) {
+    this.titleService.setTitle(title);
   }
 
   private calcProgress(firstTrack: Track): number {
@@ -89,6 +111,11 @@ export class PlayerComponent implements OnInit {
     * If it's not playing, play it, ya done
   **/
   checkFirstTrack() {
+    if (this.firstTrack == null) {
+      console.warn('State of Brad: Sorry mate theres nothing to play');
+      return;
+    }
+
     // console.log('checking first track: ', this.firstTrack);
     const timeToExpiration = this.getTime() - this.firstTrack.expires_at;
     // console.log('First track expires at: ', this.showDate(this.firstTrack.expires_at));
@@ -98,8 +125,11 @@ export class PlayerComponent implements OnInit {
       // Track has expired
       console.log(this.getTime(), this.firstTrack.name, 'track expired, expected expiration time was', this.firstTrack.expires_at);
       // console.log(this.showDate(this.getTime()), 'expected expiration time was', this.showDate(this.firstTrack.expires_at));
-      this.playlistSvc.remove(this.firstTrackKey);
+      this.playlistSvc.remove(this.firstTrackKey, 0);
       this.playlistSvc.saveTrack(this.firstTrack); // Save track in secondary list
+      this.showSkip = false;
+      this.showNowPlaying = false;
+      this.firstTrack = null;
       return;
     }
 
@@ -112,8 +142,13 @@ export class PlayerComponent implements OnInit {
           if (this.nowPlaying == null) {
             // this.playerError = 'poopie';
             console.warn('There is nothing being played');
+          } else if (this.firstTrack == null) {
+            console.warn('Sorry mate theres nothing to play');
           } else if (data.is_playing && this.nowPlaying.uri === this.firstTrack.uri) {
             console.log( this.getTime(), `${this.nowPlaying.name} expires in ${timeToExpiration}`);
+            this.showNowPlaying = true;
+            this.setTitle(`${this.firstTrack.artist_name} - ${this.firstTrack.name}`);
+            this.showSkip = true;
             if (!this.pendingCheck) {
               // only schedule the check if there's not one pending already
               // when we support deletes, we'll have to handle cancelling
@@ -125,19 +160,19 @@ export class PlayerComponent implements OnInit {
                 this.pendingCheck = false;
               }, -timeToExpiration);
             } else {
-              console.log(this.getTime(), ' NOT scheduling check, one is pending, yo ', timeToExpiration);
+              console.log(this.getTime(), 'NOT scheduling check, one is pending, yo', timeToExpiration);
             }
           } else {
             this.spotify.playTrack(this.firstTrack.uri)
               .subscribe(
                 (response) => {
                   // this.playerError = response
-                  console.log(this.getTime(), this.firstTrack.name, ' Requested playback, scheduled check in 1500ms');
+                  console.log(this.getTime(), this.firstTrack.name, ' Requested playback, scheduled check in 1000ms');
                   setTimeout(() => {
                     this.checkFirstTrack();
-                  }, 1500);
+                  }, 1000);
                   // playTrack doesn't give us an affirmative response on the play request
-                  // so we have to wait a bit (fudge = 1.5s) before we try check the 'now
+                  // so we have to wait a bit (fudge = 1.0s) before we try check the 'now
                   // playing status' again
                   this.spotify.seekTrack(this.getTime() - this.firstTrack.expires_at + this.firstTrack.duration_ms)
                     .subscribe(

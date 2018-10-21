@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { map, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { combineLatest } from 'rxjs';
 /* Models */
 import { User } from '../models/user';
 /* Others */
@@ -93,17 +94,18 @@ export class SpotifyService {
     return this.authorizeURL;
   }
 
-  search(terms: Observable<string>) {
-    return terms.pipe(debounceTime(400), distinctUntilChanged())
-    .pipe(
-      switchMap(
-        term => (term && term.trim().length > 0) ? this.searchEntries(term) : of([])
-      )
-    );
+  search(terms: Observable<string>, offset: Observable<number>) {
+    return combineLatest(offset, terms.pipe(debounceTime(400), distinctUntilChanged()))
+    .pipe(switchMap(([offset, term]) => (term && term.trim().length > 0) ?
+    this.searchEntries(term, offset)
+    :
+    of([])
+    ));
   }
 
-  searchEntries(term) {
-    return this.http.get(this.baseUrl + '/search?type=track,album,artist&limit=10&q=' + term);
+  searchEntries(term: string, offset: number) {
+    console.log('🕵🏽‍♀️', term, 'offset', offset);
+    return this.http.get(this.baseUrl + '/search?type=track,album,artist&offset=' + offset + '&limit=5&q=' + term);
   }
 
   playTrack(uri: string) {

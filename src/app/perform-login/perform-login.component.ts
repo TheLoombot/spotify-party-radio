@@ -1,26 +1,59 @@
+/* Core */
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { SpotifyService } from '../spotify.service';
+/* Models */
 import { User } from '../shared/models/user';
+/* Services */
+import { SpotifyService } from '../shared/services/spotify.service';
+import { StateService } from '../shared/services/state.service';
 
 @Component({
   selector: 'app-perform-login',
   templateUrl: './perform-login.component.html',
-  styleUrls: ['./perform-login.component.css'],
-  providers: [SpotifyService]
+  styleUrls: ['./perform-login.component.css']
 })
 export class PerformLoginComponent implements OnInit {
-  user: Object;
-  accessTokenNew: string;        // a new token from URL hash fragment params
-  accessTokenStored: string;     // an old token from localStorage
-  hasToken = true;
+  user: User;
+  accessTokenNew: string; // a new token from URL hash fragment params
+  accessTokenStored: string; // an old token from localStorage
+  availableToken: boolean;
 
   constructor(
     private route: ActivatedRoute,
-    private spotify: SpotifyService
-  ) { }
+    private spotifyService: SpotifyService,
+    private stateService: StateService
+  ) {
+    this.availableToken = true; // Default state
+    this.cleanLocalStorage();
+  }
 
   ngOnInit() {
+    if (this.manageToken()) {
+      this.spotifyService.getUserProfile()
+        .subscribe(
+          (user: User) => {
+            console.log('User:', user);
+            this.spotifyService.setUser(user);
+            this.user = user;
+            this.stateService.sendState({ enabled: true });
+          },
+          error => {
+            console.error('getUserProfile:', error);
+            this.stateService.sendError(`There is no available user, ${error.error.message}`, error.error.status);
+            window.localStorage.removeItem('access_token');
+            this.spotifyService.sendToken(null);
+            this.spotifyService.setUser(null);
+            this.accessTokenStored = null;
+            this.availableToken = false;
+          }
+        );
+    } else {
+      this.stateService.sendError('There is no available token');
+    }
+  }
+
+  /** Method to manage Spotify token within the application */
+  private manageToken(): boolean {
     // The "fragment" is hash fragment, which we can access only as a string
     // Its presence means we're getting a callback from Spotify
     if (this.route.snapshot.fragment) {
@@ -36,33 +69,34 @@ export class PerformLoginComponent implements OnInit {
     // Otherwise we get the locally-stored token
     } else if (window.localStorage.getItem('access_token')) {
       this.accessTokenStored = window.localStorage.getItem('access_token');
+      this.spotifyService.setToken(this.accessTokenStored);
+      this.spotifyService.sendToken(this.accessTokenStored);
       // Other otherwise we show the login button
     } else {
-      this.hasToken = false;
+      this.availableToken = false;
+      // Service should be alerted
+      this.spotifyService.setToken(null);
     }
-
-    this.spotify.user()
-      .subscribe(
-        (user: User) => {
-          this.user = user;
-        },
-        error => {
-          window.localStorage.removeItem('access_token');
-          this.accessTokenStored = null;
-          this.hasToken = false;
-        }
-      );
-
+    return this.availableToken;
   }
 
-authSpotify() {
-  window.location.href  = this.spotify.getAuthUrl();
-}
+  /** Method to clean token from local storage */
+  private cleanLocalStorage(): void {
+    this.accessTokenNew = '';
+    this.accessTokenStored = '';
+  }
 
+  authSpotify() {
+    window.location.href = this.spotifyService.getAuthUrl();
+  }
+
+  /** Method kill token */
   killToken() {
+    console.warn('Removing Token');
+    this.stateService.sendError(`There is no available token`);
     window.localStorage.removeItem('access_token');
     this.accessTokenStored = null;
-    this.hasToken = false;
+    this.availableToken = false;
     this.user = null;
   }
 }

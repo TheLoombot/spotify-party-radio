@@ -1,7 +1,6 @@
 <div class="panel panel-default">
   <div class="panel-heading">Up next</div>
   <div class="panel-body" *ngIf="tracks">
-    <app-error-alert *ngIf="playBackResponseError" [error]="playBackResponseError"></app-error-alert>
     <div class="panel panel-default" *ngFor="let track of tracks | slice:1; index as i; last as isLast" >
       <div class="panel-body">
         <img src="{{ track.image_url }}" class="pull-left" style="margin-right: 10px">
@@ -10,6 +9,6 @@
         <span class="glyphicon glyphicon-remove pull-right text-primary" style="cursor: pointer" (click)="removeTrack(track, i)"></span>
       </div>
     </div>
-    <h5 *ngIf="tracks.length < 2">Add a track 👉🏽 or else the job goes to a robot</h5>
+    <h5 *ngIf="tracks.length<2">Add a track or else the job goes to a robot</h5>
   </div>
 </div>

@@ -1,11 +1,11 @@
 /* Core */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 /* RxJs */
-import { interval } from 'rxjs';
+import { interval, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 /* Services */
-import { SpotifyService } from '../spotify.service';
-import { PlaylistService } from '../playlist.service';
+import { SpotifyService } from '../shared/services/spotify.service';
+import { PlaylistService } from '../shared/services/playlist.service';
 /* Models */
 import { Track } from '../shared/models/track';
 /* Others */
@@ -18,7 +18,6 @@ import { Title } from '@angular/platform-browser';
 })
 export class PlayerComponent implements OnInit {
   nowPlaying;
-  now: number;
   playerError;
   playlistRef;
   firstTrack: Track;
@@ -26,6 +25,7 @@ export class PlayerComponent implements OnInit {
   pendingCheck: boolean;
   progress: number;
   station: string;
+  tokenSubscription: Subscription;
   showSkip: boolean;
   showNowPlaying: boolean;
 
@@ -36,6 +36,8 @@ export class PlayerComponent implements OnInit {
   ) {
     this.pendingCheck = false;
     this.progress = 0;
+    this.showSkip = false;
+    this.showNowPlaying = false;
 
     this.playlistRef = playlistSvc.getFirstTracks(1);
     this.showSkip = false;
@@ -68,7 +70,6 @@ export class PlayerComponent implements OnInit {
       .subscribe(
         () => {
           if (this.firstTrack) {
-
             this.progress = this.calcProgress(this.firstTrack); // Update Progress
           }
         }
@@ -86,8 +87,7 @@ export class PlayerComponent implements OnInit {
     this.firstTrack = null;
   }
 
-  public setTitle(title: string) {
-    // {artist name} - {track name}
+  private setTitle(title: string) {
     this.titleService.setTitle(title);
   }
 
@@ -113,7 +113,6 @@ export class PlayerComponent implements OnInit {
     * If it's not playing, play it, ya done
   **/
   checkFirstTrack() {
-    
     if (this.firstTrack == null) {
       console.warn('State of Brad: Sorry mate theres nothing to play');
       return;
@@ -132,7 +131,7 @@ export class PlayerComponent implements OnInit {
       this.playlistSvc.saveTrack(this.firstTrack); // Save track in secondary list
       this.showSkip = false;
       this.showNowPlaying = false;
-      this.firstTrack=null;
+      this.firstTrack = null;
       return;
     }
 
@@ -179,11 +178,9 @@ export class PlayerComponent implements OnInit {
                   // playing status' again
                   this.spotify.seekTrack(this.getTime() - this.firstTrack.expires_at + this.firstTrack.duration_ms)
                     .subscribe(
-                      () => {
-                        // no op
-                      },
+                      () => {},
                       error => {
-                        console.log('Brads error: failed on seek', error);
+                        console.error('Brads error: failed on seek', error);
                       }
                     );
                   },
@@ -195,8 +192,9 @@ export class PlayerComponent implements OnInit {
           }
         },
         error => {
+          console.error(error);
           this.playerError = error.error.error;
-          console.log('now playing error', this.playerError);
+          console.error('Now playing error:', this.playerError);
         }
       );
   }

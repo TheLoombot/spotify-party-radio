@@ -1,24 +1,23 @@
-
 <div *ngIf="recos?.tracks?.length > 0" class="panel panel-primary">
-
-	<div class="panel-heading">Some recommendations:
-		<span style="cursor: pointer" 
-		class="pull-right glyphicon glyphicon-refresh"
-		(click)="refreshRecos()"></span></div>
-
-	<div class="panel-body text-primary">
-
-		<div class="panel panel-primary" *ngFor="let track of recos.tracks; let i = index" >
-			<div (click)="pushTrack(track, i)" class="panel-body" style="cursor: pointer">   
-				<img src="{{ track.album.images[2].url }}" class="pull-left" style="margin-right: 10px">
-				<span class="pull-right glyphicon" [class.glyphicon-plus]="clicked !== i"
-				[class.glyphicon-ok]="clicked === i"></span>
-				<h4>{{ track.name }} </h4>
-				<h5> {{ track.artists[0].name }} - {{ track.album.name }} </h5>
-			</div>
-		</div>
-	</div>
+  <div class="panel-heading">Some recommendations:
+    <span style="cursor: pointer" 
+    class="pull-right glyphicon glyphicon-refresh"
+    (click)="refreshRecos()">
+    </span>
+  </div>
+  <div class="panel-body text-primary">
+    <div class="panel panel-primary" *ngFor="let track of recos.tracks; let i = index" >
+      <div class="panel-body" style="cursor: pointer" (click)="pushTrack(track, i)">   
+        <img src="{{ track.album.images[2].url }}" class="pull-left">
+        <span class="pull-right glyphicon" 
+          [class.glyphicon-plus]="clicked !== i"
+          [class.glyphicon-ok]="clicked === i">
+        </span>
+        <h4>{{ track.name }} </h4>
+        <h5> {{ track.artists[0].name }} - {{ track.album.name }} </h5>
+      </div>
+    </div>
+  </div>
 </div>
-
 <app-toptracks></app-toptracks>
 

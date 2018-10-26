@@ -1,17 +1,25 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+/* RxJs */
+import { Observable, Subject } from 'rxjs';
 import { map, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { combineLatest } from 'rxjs'
+import { combineLatest } from 'rxjs';
+/* Models */
+import { User } from '../models/user';
+/* Others */
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SpotifyService {
+  token: string;
+  private tokenSubject: Subject<any>;
+  user: User;
   authorizeURL = 'https://accounts.spotify.com/authorize';
-  clientId = '7fafbce74b0b4d78868fbdc6d6b1858b';
-  responseType = 'token';
+  clientId: string;
+  responseType: string;
   redirectURI = 'https://' + window.location.hostname;
   scope = [
     'user-read-email',
@@ -20,14 +28,57 @@ export class SpotifyService {
     'streaming',
     'user-read-playback-state',
     'user-read-private',
-    'user-top-read',
-    'user-read-email'
+    'user-top-read'
   ].join('%20');
-  baseUrl: string = 'https://api.spotify.com/v1';
+  baseUrl: string;
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient
+  ) {
+    this.token = '';
+    this.tokenSubject = new Subject<any>();
+    this.clientId = environment.spotify.clientId;
+    this.responseType = 'token';
+    this.baseUrl = environment.spotify.apiURL;
+  }
 
-  user() {
+  setToken(token: string): void {
+    this.token = token;
+    console.log('SpotifyService token:', this.token);
+  }
+
+  getToken(): string {
+    return this.token;
+  }
+
+  isTokenAvailable(): boolean {
+    return this.token ? true : false;
+  }
+
+  /** Method to send token using the tokenSubject */
+  sendToken(token: string): void {
+    console.log('New token:', token);
+    this.tokenSubject.next({ token: token });
+  }
+
+  clearToken(): void {
+    this.tokenSubject.next();
+  }
+
+  getTokens(): Observable<any> {
+    return this.tokenSubject.asObservable();
+  }
+
+  setUser(user: User): void {
+    this.user = user;
+  }
+
+  getUser(): User {
+    return this.user;
+  }
+
+  /** Get Current User's Profile */
+  getUserProfile() {
     return this.http.get(this.baseUrl + '/me');
   }
 
@@ -35,7 +86,7 @@ export class SpotifyService {
     return this.http.get(this.baseUrl + '/me/player/currently-playing');
   }
 
-  getAuthUrl() {
+  getAuthUrl(): string {
     this.authorizeURL += '?' + 'client_id=' + this.clientId;
     this.authorizeURL += '&response_type=' + this.responseType;
     this.authorizeURL += '&redirect_uri=' + this.redirectURI;
@@ -53,7 +104,7 @@ export class SpotifyService {
   }
 
   searchEntries(term: string, offset: number) {
-    console.log("🕵🏽‍♀️", term, "offset ", offset);
+    console.log('🕵🏽‍♀️', term, 'offset', offset);
     return this.http.get(this.baseUrl + '/search?type=track,album,artist&offset=' + offset + '&limit=5&q=' + term);
   }
 

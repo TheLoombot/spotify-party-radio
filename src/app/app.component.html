@@ -1,16 +1,35 @@
+<nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Deep State Radio</a>
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="https://github.com/TheLoombot/deep-strafe">Github</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
 <div class="container">
-
-	<h1>Deep State Radio (<a href="https://github.com/TheLoombot/deep-strafe">GitHub</a>)</h1>
-
-	<div class="row">
-		<div class="col-md-6"> 
-			<div class="row">
-				<div class="col-md-12"><app-player></app-player></div>
-				<div class="col-md-12"><app-playlist></app-playlist></div>
-			</div>
-		</div>
-		<div class="col-md-6"><router-outlet></router-outlet></div>
-		<div class="col-md-6"><app-search></app-search></div>
-	</div>
-
+  <app-alert *ngIf="!appEnabled"></app-alert>
+  <div class="row">
+    <div class="col-md-6"> 
+      <div class="row">
+        <div class="col-md-12" *ngIf="appEnabled">
+          <app-player></app-player>
+        </div>
+        <div class="col-md-12" *ngIf="appEnabled">
+          <app-playlist></app-playlist>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <router-outlet></router-outlet>
+    </div>
+    <div class="col-md-6" *ngIf="appEnabled">
+      <app-search></app-search>
+    </div>
+  </div>
 </div>
+

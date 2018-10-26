@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
-import { SpotifyService } from '../spotify.service';
-import { PlaylistService } from '../playlist.service';
+/* Models */
 import { Track } from '../shared/models/track';
+/* Services */
+import { SpotifyService } from '../shared/services/spotify.service';
+import { PlaylistService } from '../shared/services/playlist.service';
 
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
-  styleUrls: ['./search.component.css'],
-  providers: [SpotifyService]
+  styleUrls: ['./search.component.css']
 })
 export class SearchComponent implements OnInit {
   results: Object;
@@ -19,16 +20,16 @@ export class SearchComponent implements OnInit {
   curOffset = 0;
   searchError;
   clicked: number;
-  pageSize: number = 5;
+  pageSize: number;
 
   constructor(
     private spotify: SpotifyService,
     private playlistSvc: PlaylistService
   ) {
+    this.pageSize = 5;
   }
 
   ngOnInit() {
-
     this.spotify.search(this.searchTerm$, this.offset$)
     .subscribe(
       (results: any) => {
@@ -75,7 +76,7 @@ export class SearchComponent implements OnInit {
     this.offset$.next(this.curOffset);
   }
 
-  prevPage() { 
+  prevPage() {
     this.curOffset -= this.pageSize;
     this.offset$.next(this.curOffset);
   }

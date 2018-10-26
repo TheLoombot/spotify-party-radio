@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { PlaylistService } from '../playlist.service';
+/* Services */
+import { PlaylistService } from '../shared/services/playlist.service';
 
 @Component({
   selector: 'app-playlist',
@@ -8,22 +9,19 @@ import { PlaylistService } from '../playlist.service';
 })
 export class PlaylistComponent implements OnInit {
   tracks: Object;
-  playBackResponseError: any;
 
   constructor(
-    private playlistSvc: PlaylistService
+    private playlistService: PlaylistService
   ) {
-    playlistSvc.getAllTracks()
+    playlistService.getAllTracks()
       .subscribe(
-        data => {
-          this.tracks = data;
-          console.log("Playlist update:", this.tracks["length"], "tracks");
+        tracks => {
+          this.tracks = tracks;
+          console.log('Playlist update:', this.tracks['length'], 'tracks');
         },
-        error => {
-          console.log('Playlist retrieves error: ', error);
-        }
+        error => console.error('Playlist retrieves error: ', error)
       );
-  } 
+  }
 
   ngOnInit() { }
 
@@ -31,6 +29,7 @@ export class PlaylistComponent implements OnInit {
     // add 1 to the index because we slice off the first track
     i++;
     console.log('Clicked to remove track:', i);
-    this.playlistSvc.remove(track.key, i);
+    console.warn('Remove Track:', track);
+    this.playlistService.remove(track.key, i);
   }
 }

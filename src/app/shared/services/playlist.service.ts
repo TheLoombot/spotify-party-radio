@@ -31,6 +31,8 @@ export class PlaylistService {
     private db: AngularFireDatabase,
     private spotifyService: SpotifyService
   ) {
+
+    console.log("about to call token subscription")
     this.tokenSubscription = this.spotifyService.getTokens()
       .subscribe(
         (token: string) => {
@@ -85,8 +87,9 @@ export class PlaylistService {
   setUsername(): void {
     this.user = this.spotifyService.getUser();
     if (this.user) {
-      console.log('User:', this.user);
+      console.log('USER ISSSS:', this.user);
       this.userName = this.user.display_name ? this.user.display_name : this.user.id;
+      console.log("YOOOOOO", this.userName);
     } else {
       console.log('Error obtaining user:', this.user);
     }
@@ -177,7 +180,7 @@ export class PlaylistService {
   }
 
   pushTrack(track: any, userName = this.userName) {
-    console.log();
+    console.log('username is', userName);
     const now = this.getTime();
     const lastTrackExpiresAt = (this.lastTrack) ? this.lastTrack.expires_at : now;
     const nextTrackExpiresAt = lastTrackExpiresAt + track.duration_ms + 1500; // introducing some fudge here

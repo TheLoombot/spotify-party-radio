@@ -66,6 +66,7 @@ export class SpotifyService {
   }
 
   getTokens(): Observable<any> {
+    console.log("returning token observable", this.tokenSubject)
     return this.tokenSubject.asObservable();
   }
 

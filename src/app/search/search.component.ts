@@ -83,6 +83,6 @@ export class SearchComponent implements OnInit {
 
   pushTrack(track: Object, i: number) {
     this.clicked = i;
-    this.playlistSvc.pushTrack(track);
+    this.playlistSvc.pushTrack(track, 'searchrobot');
   }
 }

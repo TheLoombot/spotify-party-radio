@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+/* RxJs */
 import { Subject } from 'rxjs';
 /* Models */
 import { Track } from '../shared/models/track';
@@ -23,14 +24,14 @@ export class SearchComponent implements OnInit {
   pageSize: number;
 
   constructor(
-    private spotify: SpotifyService,
-    private playlistSvc: PlaylistService
+    private spotifyService: SpotifyService,
+    private playlistService: PlaylistService
   ) {
     this.pageSize = 5;
   }
 
   ngOnInit() {
-    this.spotify.search(this.searchTerm$, this.offset$)
+    this.spotifyService.search(this.searchTerm$, this.offset$)
     .subscribe(
       (results: any) => {
         this.results = results;
@@ -65,7 +66,7 @@ export class SearchComponent implements OnInit {
 
   newSearch(eventValue: string, newOffset = this.curOffset) {
     this.searchTerm$.next(eventValue);
-    if (newOffset != this.curOffset) {
+    if (newOffset !== this.curOffset) {
       this.curOffset = newOffset;
       this.offset$.next(this.curOffset);
     }
@@ -82,7 +83,8 @@ export class SearchComponent implements OnInit {
   }
 
   pushTrack(track: Object, i: number) {
+    const user = this.spotifyService.getUser();
     this.clicked = i;
-    this.playlistSvc.pushTrack(track, 'searchrobot');
+    this.playlistService.pushTrack(track, user.display_name || user.id);
   }
 }

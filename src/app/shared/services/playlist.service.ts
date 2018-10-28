@@ -66,7 +66,7 @@ export class PlaylistService {
 
   /** Method to set station data */
   private setStation(): void {
-    this.stationName = 'pablovem'; // There is only 1 station at the moment
+    this.stationName = 'default'; // There is only 1 station at the moment
     this.environment = environment.production ? 'prod' : 'dev';
     this.setLists();
     this.playerMetaRef = this.db.object(`${this.stationName}/${this.environment}/player`).query.ref;
@@ -230,7 +230,7 @@ export class PlaylistService {
           };
           randomTrack.expires_at = nextTrackExpiresAt;
 
-          console.log(this.getTime(), '<U+1F916> - Of', tracks.length, 'tracks, pushing', randomTrack.name , 'expires at', randomTrack.expires_at);
+          console.log(this.getTime(), '🤖 - Of', tracks.length, 'tracks, pushing', randomTrack.name , 'expires at', randomTrack.expires_at);
           this.db.list(this.playlistUrl)
             .push(randomTrack)
             .then(

@@ -30,7 +30,7 @@ export class RecosComponent implements OnInit {
       .subscribe(
         tracks => {
           this.lastFiveTrackUris = '';
-          console.log(tracks);
+          // console.log(tracks);
           for (let track in tracks) {
             this.lastFiveTrackUris += tracks[track]['uri'].replace('spotify:track:','');
             this.lastFiveTrackUris += ',';
@@ -47,7 +47,7 @@ export class RecosComponent implements OnInit {
   }
 
   pushTrack(track: Object, i: number) {
-    console.log('Push Recommended track:', track);
+    // console.log('Push Recommended track:', track);
     this.clicked = i;
     const user = this.spotifyService.getUser();
     this.playlistService.pushTrack(track, user.display_name || user.id);
@@ -59,7 +59,7 @@ export class RecosComponent implements OnInit {
       .subscribe(
         data => {
           this.recos = data;
-          console.log(data);
+          // console.log(data);
           this.clicked = -1;
         },
         error => {

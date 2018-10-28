@@ -66,7 +66,7 @@ export class PlaylistService {
 
   /** Method to set station data */
   private setStation(): void {
-    this.stationName = 'default'; // There is only 1 station at the moment
+    this.stationName = 'pablovem'; // There is only 1 station at the moment
     this.environment = environment.production ? 'prod' : 'dev';
     this.setLists();
     this.playerMetaRef = this.db.object(`${this.stationName}/${this.environment}/player`).query.ref;
@@ -87,9 +87,8 @@ export class PlaylistService {
   setUsername(): void {
     this.user = this.spotifyService.getUser();
     if (this.user) {
-      console.log('USER ISSSS:', this.user);
       this.userName = this.user.display_name ? this.user.display_name : this.user.id;
-      console.log("YOOOOOO", this.userName);
+      console.log('User is:', this.userName);
     } else {
       console.log('Error obtaining user:', this.user);
     }

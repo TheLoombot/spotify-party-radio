@@ -22,9 +22,9 @@ export class RecosComponent implements OnInit {
 
   constructor(
     private spotifyService: SpotifyService,
-    private playlistSvc: PlaylistService
+    private playlistService: PlaylistService
   ) {
-    this.lastFivePlaylistRef = playlistSvc.getLastTracks(5);
+    this.lastFivePlaylistRef = playlistService.getLastTracks(5);
     this.lastFivePlaylistRef.valueChanges()
       .pipe(debounceTime(2000))
       .subscribe(
@@ -49,7 +49,8 @@ export class RecosComponent implements OnInit {
   pushTrack(track: Object, i: number) {
     console.log('Push Recommended track:', track);
     this.clicked = i;
-    this.playlistSvc.pushTrack(track, 'pablovem');
+    const user = this.spotifyService.getUser();
+    this.playlistService.pushTrack(track, user.display_name || user.id);
   }
 
   refreshRecos() {

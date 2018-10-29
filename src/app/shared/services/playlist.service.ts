@@ -3,8 +3,7 @@ import { Injectable } from '@angular/core';
 import { SpotifyService } from './spotify.service';
 /* RxJs */
 import { Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { take } from 'rxjs/operators';
+import { take, tap, map } from 'rxjs/operators';
 /* Models */
 import { User } from '../models/user';
 import { Track } from '../models/track';
@@ -26,13 +25,12 @@ export class PlaylistService {
   playerMetaRef: any;
   user: User;
   tokenSubscription: Subscription;
+  private previousTracksLimit: number;
 
   constructor(
     private db: AngularFireDatabase,
     private spotifyService: SpotifyService
   ) {
-
-    console.log("about to call token subscription")
     this.tokenSubscription = this.spotifyService.getTokens()
       .subscribe(
         (token: string) => {
@@ -48,6 +46,7 @@ export class PlaylistService {
       );
 
     this.setStation();
+    this.previousTracksLimit = 5; // Limit the number of tracks obtained from previous
 
     this.getLastTracks(1).snapshotChanges()
       .subscribe(
@@ -152,21 +151,24 @@ export class PlaylistService {
 
   getAllTracks() {
     const tracksRef = this.db.list(this.playlistUrl);
-    const tracks = tracksRef.snapshotChanges().pipe(
-      map( changes =>
-        changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
-      )
-    );
+    const tracks = tracksRef.snapshotChanges()
+      .pipe(
+        map( changes =>
+          changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
+        )
+      );
     return tracks;
   }
 
   getAllPreviousTracks() {
-    const tracksRef = this.db.list(this.previouslistUrl);
-    const tracks = tracksRef.snapshotChanges().pipe(
-      map( changes =>
-        changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
-      )
-    );
+    const tracksRef = this.db.list(this.previouslistUrl, ref => ref.orderByChild('added_at').limitToFirst(this.previousTracksLimit));
+    const tracks = tracksRef.snapshotChanges()
+      .pipe(
+        tap( tracks => console.log('Before mapping:', tracks)),
+        map( changes =>
+          changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
+        )
+      );
     return tracks;
   }
 

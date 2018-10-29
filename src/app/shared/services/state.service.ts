@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 /* RxJs */
 import { Observable, Subject } from 'rxjs';
-import { map, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { of } from 'rxjs';
 /* Models */
 import { State } from '../models/state';
 /* Others */

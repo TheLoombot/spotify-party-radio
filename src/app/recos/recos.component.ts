@@ -32,6 +32,7 @@ export class RecosComponent implements OnInit {
           this.lastFiveTrackUris = '';
           // console.log(tracks);
           for (let track in tracks) {
+            console.log(tracks[track]['uri'])
             this.lastFiveTrackUris += tracks[track]['uri'].replace('spotify:track:','');
             this.lastFiveTrackUris += ',';
           }

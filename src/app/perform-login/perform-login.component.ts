@@ -39,7 +39,7 @@ export class PerformLoginComponent implements OnInit {
           },
           error => {
             console.error('getUserProfile:', error);
-            this.stateService.sendError(`There is no available user, ${error.error.message}`, error.error.status);
+            this.stateService.sendError(`There is no available user, ${error.error.error.message}`, error.error.error.status);
             window.localStorage.removeItem('access_token');
             this.spotifyService.sendToken(null);
             this.spotifyService.setUser(null);

@@ -198,7 +198,6 @@ export class PlayerComponent implements OnInit {
           this.playerError = error.error.error;
           console.error('Now playing error:', this.playerError);
           this.stateService.sendError(`There is no available user, ${this.playerError}`);
-
         }
       );
   }

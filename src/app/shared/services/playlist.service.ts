@@ -32,7 +32,6 @@ export class PlaylistService {
     private spotifyService: SpotifyService
   ) {
 
-    console.log("about to call token subscription")
     this.tokenSubscription = this.spotifyService.getTokens()
       .subscribe(
         (token: string) => {
@@ -66,7 +65,7 @@ export class PlaylistService {
 
   /** Method to set station data */
   private setStation(): void {
-    this.stationName = 'pablovem'; // There is only 1 station at the moment
+    this.stationName = 'default'; // There is only 1 station at the moment
     this.environment = environment.production ? 'prod' : 'dev';
     this.setLists();
     this.playerMetaRef = this.db.object(`${this.stationName}/${this.environment}/player`).query.ref;
@@ -88,7 +87,6 @@ export class PlaylistService {
     this.user = this.spotifyService.getUser();
     if (this.user) {
       this.userName = this.user.display_name ? this.user.display_name : this.user.id;
-      console.log('User is:', this.userName);
     } else {
       console.log('Error obtaining user:', this.user);
     }
@@ -101,7 +99,7 @@ export class PlaylistService {
       .then(
         result => {
           // call this when the above completes successfully only!
-          console.log(result);
+          console.log('Removal result:', result);
           this.recalcTimes(i);
         }
       );

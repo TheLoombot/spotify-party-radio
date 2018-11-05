@@ -1,24 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 /* RxJs */
-import { map, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
 /* Services */
 import { PlaylistService } from '../shared/services/playlist.service';
 import { SpotifyService } from '../shared/services/spotify.service';
+/* Models */
+import { Track } from '../shared/models/track';
 
 @Component({
   selector: 'app-recos',
   templateUrl: './recos.component.html',
   styleUrls: ['./recos.component.css']
 })
-export class RecosComponent implements OnInit {
+export class RecosComponent implements OnInit, OnDestroy {
   lastFivePlaylistRef;
-  lastFiveTrackUris;
-  recos;
+  recommendations: Array<Track>;
   recoError;
   clicked;
-  lastTrackPlaylistRef;
-  lastTrack;
-  RecoTracksEnabled: boolean;
 
   constructor(
     private spotifyService: SpotifyService,
@@ -29,14 +27,13 @@ export class RecosComponent implements OnInit {
       .pipe(debounceTime(2000))
       .subscribe(
         tracks => {
-          this.lastFiveTrackUris = '';
-          // console.log(tracks);
-          for (let track in tracks) {
-            console.log(tracks[track]['uri'])
-            this.lastFiveTrackUris += tracks[track]['uri'].replace('spotify:track:','');
-            this.lastFiveTrackUris += ',';
+          let seedTracksUris = ''; // Up to the last five track uris
+          for (const track in tracks) {
+            if (tracks[track]['uri']) {
+              seedTracksUris += `${tracks[track]['uri'].replace('spotify:track:', '')},`;
+            }
           }
-          this.refreshRecos();
+          this.refreshRecommendations(seedTracksUris);
         },
         error => {
           console.log('playlist retrieve error for recos:', error);
@@ -54,19 +51,23 @@ export class RecosComponent implements OnInit {
     this.playlistService.pushTrack(track, user.display_name || user.id);
   }
 
-  refreshRecos() {
+  /** Method to refresh recommended tracks based on seed tracks */
+  refreshRecommendations(seedTracksUris: string): void {
     if (this.spotifyService.isTokenAvailable()) {
-      this.spotifyService.getRecos(this.lastFiveTrackUris)
-      .subscribe(
-        data => {
-          this.recos = data;
-          // console.log(data);
-          this.clicked = -1;
-        },
-        error => {
-          this.recoError = error.error.error;
-        }
-      );
+      this.spotifyService.getRecos(seedTracksUris)
+        .subscribe(
+          (reccomendations: any) => {
+            this.recommendations = reccomendations.tracks as Array<Track>;
+            this.clicked = -1;
+          },
+          error => {
+            console.error(error);
+            this.recoError = error.error.error;
+          }
+        );
     }
+  }
+
+  ngOnDestroy() {
   }
 }

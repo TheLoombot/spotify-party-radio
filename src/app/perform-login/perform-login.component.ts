@@ -15,6 +15,7 @@ import { StateService } from '../shared/services/state.service';
 export class PerformLoginComponent implements OnInit {
   isLocalhost: boolean;
   user: User;
+  username: string;
   accessTokenNew: string; // a new token from URL hash fragment params
   accessTokenStored: string; // an old token from localStorage
   availableToken: boolean;
@@ -40,6 +41,7 @@ export class PerformLoginComponent implements OnInit {
             console.log('User:', user);
             this.spotifyService.setUser(user);
             this.user = user;
+            this.username = this.user.display_name ? this.user.display_name : this.user.id;
             this.stateService.sendState({ enabled: true });
           },
           error => {

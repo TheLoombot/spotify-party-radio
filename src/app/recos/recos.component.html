@@ -1,9 +1,10 @@
 <div *ngIf="recommendations?.length > 0" class="panel panel-primary">
   <div class="panel-heading">Some recommendations:
-    <span style="cursor: pointer" 
-      class="pull-right glyphicon glyphicon-refresh"
-      (click)="refreshRecos()">
+    <!--
+    <span id="refresh-btn" class="pull-right glyphicon glyphicon-refresh"
+      (click)="refreshRecommendations()">
     </span>
+    -->
   </div>
   <div class="panel-body text-primary">
     <div class="panel panel-primary" *ngFor="let track of recommendations; let i = index" >

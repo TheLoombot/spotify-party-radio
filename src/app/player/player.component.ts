@@ -116,7 +116,7 @@ export class PlayerComponent implements OnInit {
   **/
   checkFirstTrack() {
     if (this.firstTrack == null) {
-      console.warn('State of Brad: Sorry mate theres nothing to play');
+      console.warn(`State of Brad: Sorry mate theres nothing to play`);
       return;
     }
 

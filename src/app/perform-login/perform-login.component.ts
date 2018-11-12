@@ -1,5 +1,5 @@
 /* Core */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 /* Models */
 import { User } from '../shared/models/user';
@@ -13,6 +13,7 @@ import { StateService } from '../shared/services/state.service';
   styleUrls: ['./perform-login.component.css']
 })
 export class PerformLoginComponent implements OnInit {
+  isLocalhost: boolean;
   user: User;
   accessTokenNew: string; // a new token from URL hash fragment params
   accessTokenStored: string; // an old token from localStorage
@@ -23,11 +24,15 @@ export class PerformLoginComponent implements OnInit {
     private spotifyService: SpotifyService,
     private stateService: StateService
   ) {
+    this.isLocalhost = false; // Default state
     this.availableToken = true; // Default state
     this.cleanLocalStorage();
   }
 
   ngOnInit() {
+    if (location.hostname === 'localhost') {
+      this.isLocalhost = true;
+    }
     if (this.manageToken()) {
       this.spotifyService.getUserProfile()
         .subscribe(

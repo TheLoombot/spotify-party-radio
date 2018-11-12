@@ -1,7 +1,0 @@
-<div class="alert alert-danger">
-  {{ error.message }} -- 
-  <span [ngSwitch]="error.status"> 
-    <span *ngSwitchCase="401">Refresh and Sign In</span>
-    <span *ngSwitchCase="404"><a href="https://open.spotify.com/" target="_blank"> Open a Spotify session</a> and press Play/Pause</span>
-  </span>
-</div>

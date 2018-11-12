@@ -99,7 +99,6 @@ export class PlaylistService {
       .then(
         result => {
           // call this when the above completes successfully only!
-          console.log('Removal result:', result);
           this.recalcTimes(i);
         }
       );
@@ -178,7 +177,6 @@ export class PlaylistService {
   }
 
   pushTrack(track: any, userName = this.userName) {
-    console.log('username is', userName);
     const now = this.getTime();
     const lastTrackExpiresAt = (this.lastTrack) ? this.lastTrack.expires_at : now;
     const nextTrackExpiresAt = lastTrackExpiresAt + track.duration_ms + 1500; // introducing some fudge here

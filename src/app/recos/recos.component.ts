@@ -27,7 +27,7 @@ export class RecosComponent implements OnInit, OnDestroy {
       .pipe(debounceTime(2000))
       .subscribe(
         tracks => {
-          let seedTracksUris = ''; // Up to the last five track uris
+          let seedTracksUris = '';
           for (const track in tracks) {
             if (tracks[track]['uri']) {
               seedTracksUris += `${tracks[track]['uri'].replace('spotify:track:', '')},`;
@@ -53,6 +53,9 @@ export class RecosComponent implements OnInit, OnDestroy {
 
   /** Method to refresh recommended tracks based on seed tracks */
   refreshRecommendations(seedTracksUris: string): void {
+    if (!seedTracksUris) {
+      seedTracksUris = this.recommendations.map(track => track.id).join();
+    }
     if (this.spotifyService.isTokenAvailable()) {
       this.spotifyService.getRecos(seedTracksUris)
         .subscribe(

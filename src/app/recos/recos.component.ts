@@ -62,6 +62,7 @@ export class RecosComponent implements OnInit, OnDestroy {
           },
           error => {
             console.error(error);
+            // Add error state here
             this.recoError = error.error.error;
           }
         );

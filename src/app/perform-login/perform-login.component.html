@@ -1,11 +1,14 @@
 <div class="panel panel-default">
-  <ng-template [ngIf]="user">
-    <div class="panel-heading" *ngIf="!username">{{ username }}</div>
-
+  <ng-template [ngIf]="user && availableToken">
+    <div class="panel-heading" *ngIf="!username">
+      {{ username }}
+    </div>
     <div class="panel-body">
-      <img *ngIf="user.images?.length" src="{{ user.images[0].url }}" class="pull-left" id="user-img">
+      <img id="user-img" class="pull-left" *ngIf="user.images?.length" src="{{ user.images[0].url }}">
       <h5> You've got {{ user.product }} access.</h5>
-      <h5><a href (click)="killToken()">Sign Out</a></h5>
+      <h5>
+        <a (click)="killToken()">Sign Out</a>
+      </h5>
       <h5 *ngIf="!isLocalhost">
         <a href="http://localhost:4200/#access_token={{ accessTokenNew ? accessTokenNew : accessTokenStored}}">Apply to localhost</a>
       </h5>

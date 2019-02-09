@@ -17,23 +17,25 @@ export class RecosComponent implements OnInit, OnDestroy {
   recommendations: Array<Track>;
   recoError;
   clicked;
+  seedTrackUris: string;
 
   constructor(
     private spotifyService: SpotifyService,
     private playlistService: PlaylistService
   ) {
+    this.seedTrackUris = '';
     this.lastFivePlaylistRef = playlistService.getLastTracks(5);
     this.lastFivePlaylistRef.valueChanges()
       .pipe(debounceTime(2000))
       .subscribe(
         tracks => {
-          let seedTracksUris = '';
+          this.seedTrackUris = '';
           for (const track in tracks) {
             if (tracks[track]['uri']) {
-              seedTracksUris += `${tracks[track]['uri'].replace('spotify:track:', '')},`;
+              this.seedTrackUris += `${tracks[track]['uri'].replace('spotify:track:', '')},`;
             }
           }
-          this.refreshRecommendations(seedTracksUris);
+          this.refreshRecommendations(this.seedTrackUris);
         },
         error => {
           console.log('playlist retrieve error for recos:', error);
@@ -52,12 +54,14 @@ export class RecosComponent implements OnInit, OnDestroy {
   }
 
   /** Method to refresh recommended tracks based on seed tracks */
-  refreshRecommendations(seedTracksUris: string): void {
-    if (!seedTracksUris) {
-      seedTracksUris = this.recommendations.map(track => track.id).join();
+  refreshRecommendations(seedTracksUris?: string): void {
+    if (!this.seedTrackUris) {
+      console.warn('There were no seeds in playlist');
+      this.seedTrackUris = this.recommendations.map(track => track.id).join();
     }
+    console.log('seeds:', this.seedTrackUris);
     if (this.spotifyService.isTokenAvailable()) {
-      this.spotifyService.getRecos(seedTracksUris)
+      this.spotifyService.getRecos(this.seedTrackUris)
         .subscribe(
           (reccomendations: any) => {
             this.recommendations = reccomendations.tracks as Array<Track>;

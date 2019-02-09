@@ -10,11 +10,10 @@ import { State } from '../../models/state';
   templateUrl: './alert.component.html',
   styleUrls: ['./alert.component.css']
 })
-export class AlertComponent implements OnInit, OnChanges {
+export class AlertComponent implements OnInit {
   error: Error;
 
   constructor(
-    private cdr: ChangeDetectorRef,
     private stateService: StateService
   ) { }
 
@@ -23,14 +22,8 @@ export class AlertComponent implements OnInit, OnChanges {
       .subscribe(
         (state: State) => {
           this.error = state.error;
-          this.cdr.detectChanges();
         }
       );
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    console.log(changes);
-    // changes.prop contains the old and the new value...
   }
 
 }

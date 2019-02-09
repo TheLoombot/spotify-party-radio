@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-/* Services */
-import { SpotifyService } from './spotify.service';
 /* RxJs */
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -8,6 +6,8 @@ import { take } from 'rxjs/operators';
 /* Models */
 import { User } from '../models/user';
 import { Track } from '../models/track';
+/* Services */
+import { SpotifyService } from './spotify.service';
 /* Others */
 import { AngularFireDatabase } from 'angularfire2/database';
 import { environment } from '../../../environments/environment';
@@ -32,7 +32,6 @@ export class PlaylistService {
     private spotifyService: SpotifyService
   ) {
 
-    console.log("about to call token subscription")
     this.tokenSubscription = this.spotifyService.getTokens()
       .subscribe(
         (token: string) => {
@@ -66,7 +65,7 @@ export class PlaylistService {
 
   /** Method to set station data */
   private setStation(): void {
-    this.stationName = 'default'; // There is only 1 station at the moment
+    this.stationName = 'default';
     this.environment = environment.production ? 'prod' : 'dev';
     this.setLists();
     this.playerMetaRef = this.db.object(`${this.stationName}/${this.environment}/player`).query.ref;
@@ -88,7 +87,6 @@ export class PlaylistService {
     this.user = this.spotifyService.getUser();
     if (this.user) {
       this.userName = this.user.display_name ? this.user.display_name : this.user.id;
-      console.log('User is:', this.userName);
     } else {
       console.log('Error obtaining user:', this.user);
     }
@@ -179,7 +177,6 @@ export class PlaylistService {
   }
 
   pushTrack(track: any, userName = this.userName) {
-    console.log('username is', userName);
     const now = this.getTime();
     const lastTrackExpiresAt = (this.lastTrack) ? this.lastTrack.expires_at : now;
     const nextTrackExpiresAt = lastTrackExpiresAt + track.duration_ms + 1500; // introducing some fudge here

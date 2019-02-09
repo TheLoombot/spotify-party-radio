@@ -6,7 +6,6 @@
       (keyup)="newSearch($event.target.value, 0)"
       (search)="newSearch($event.target.value)">
     <br/> 
-    <app-error-alert *ngIf="searchError" [error]="searchError"></app-error-alert>
     <div *ngIf="tracks?.length" class="panel panel-primary">
       <div class="panel-heading">Search Results:
         <span style="cursor: pointer" class="button pull-right glyphicon glyphicon-chevron-right"

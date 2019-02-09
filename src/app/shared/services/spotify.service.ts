@@ -44,7 +44,7 @@ export class SpotifyService {
 
   setToken(token: string): void {
     this.token = token;
-    console.log('SpotifyService token:', this.token);
+    // console.log('SpotifyService token:', this.token);
   }
 
   getToken(): string {
@@ -57,7 +57,7 @@ export class SpotifyService {
 
   /** Method to send token using the tokenSubject */
   sendToken(token: string): void {
-    console.log('New token:', token);
+    // console.log('New token:', token);
     this.tokenSubject.next({ token: token });
   }
 
@@ -66,7 +66,6 @@ export class SpotifyService {
   }
 
   getTokens(): Observable<any> {
-    console.log("returning token observable", this.tokenSubject)
     return this.tokenSubject.asObservable();
   }
 

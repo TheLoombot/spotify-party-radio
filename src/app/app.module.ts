@@ -15,10 +15,10 @@ import { AppComponent } from './app.component';
 import { PerformLoginComponent } from './perform-login/perform-login.component';
 import { SearchComponent } from './search/search.component';
 import { PlaylistComponent } from './playlist/playlist.component';
-import { ErrorAlertComponent } from './error-alert/error-alert.component';
 import { PlayerComponent } from './player/player.component';
 import { RecosComponent } from './recos/recos.component';
 import { ToptracksComponent } from './toptracks/toptracks.component';
+/* Shared Components */
 import { AlertComponent } from './shared/components/alert/alert.component';
 
 /* Services */
@@ -34,7 +34,6 @@ import { environment } from '../environments/environment';
     PerformLoginComponent,
     SearchComponent,
     PlaylistComponent,
-    ErrorAlertComponent,
     PlayerComponent,
     RecosComponent,
     ToptracksComponent,

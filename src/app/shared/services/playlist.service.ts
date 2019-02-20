@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-/* Services */
-import { SpotifyService } from './spotify.service';
 /* RxJs */
 import { Subscription } from 'rxjs';
 import { take, tap, map } from 'rxjs/operators';
 /* Models */
 import { User } from '../models/user';
 import { Track } from '../models/track';
+/* Services */
+import { SpotifyService } from './spotify.service';
 /* Others */
 import { AngularFireDatabase } from 'angularfire2/database';
 import { environment } from '../../../environments/environment';
@@ -21,7 +21,7 @@ export class PlaylistService {
   userName: string;
   playlistUrl: string;
   previouslistUrl: string;
-  stationName: string;
+  stationId: string;
   playerMetaRef: any;
   user: User;
   tokenSubscription: Subscription;
@@ -65,21 +65,21 @@ export class PlaylistService {
 
   /** Method to set station data */
   private setStation(): void {
-    this.stationName = 'default'; // There is only 1 station at the moment
+    this.stationId = 'default';
     this.environment = environment.production ? 'prod' : 'dev';
     this.setLists();
-    this.playerMetaRef = this.db.object(`${this.stationName}/${this.environment}/player`).query.ref;
+    this.playerMetaRef = this.db.object(`stations/${this.stationId}/${this.environment}/player`).query.ref;
   }
 
   /** Method to set station lists */
   private setLists(): void {
-    this.playlistUrl = `${this.stationName}/${this.environment}/lists/playlist`;
-    this.previouslistUrl = `${this.stationName}/${this.environment}/lists/previouslist`;
+    this.playlistUrl = `stations/${this.stationId}/${this.environment}/lists/playlist`;
+    this.previouslistUrl = `stations/${this.stationId}/${this.environment}/lists/previouslist`;
   }
 
   /** Method to get station data */
   getStation(): string {
-    return this.stationName;
+    return this.stationId;
   }
 
   /** Method to set username */
@@ -87,7 +87,6 @@ export class PlaylistService {
     this.user = this.spotifyService.getUser();
     if (this.user) {
       this.userName = this.user.display_name ? this.user.display_name : this.user.id;
-      console.log('User is:', this.userName);
     } else {
       console.log('Error obtaining user:', this.user);
     }
@@ -181,7 +180,6 @@ export class PlaylistService {
   }
 
   pushTrack(track: any, userName = this.userName) {
-    console.log('username is', userName);
     const now = this.getTime();
     const lastTrackExpiresAt = (this.lastTrack) ? this.lastTrack.expires_at : now;
     const nextTrackExpiresAt = lastTrackExpiresAt + track.duration_ms + 1500; // introducing some fudge here

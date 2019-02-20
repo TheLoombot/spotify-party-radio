@@ -1,8 +1,9 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-/* Services */
-import { StateService } from './shared/services/state.service';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 /* Models */
 import { State } from './shared/models/state';
+/* Services */
+import { StateService } from './shared/services/state.service';
+
 
 @Component({
   selector: 'app-root',

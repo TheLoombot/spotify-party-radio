@@ -6,6 +6,7 @@ import { debounceTime } from 'rxjs/operators';
 /* Services */
 import { SpotifyService } from '../shared/services/spotify.service';
 import { PlaylistService } from '../shared/services/playlist.service';
+import { StateService } from '../shared/services/state.service';
 /* Models */
 import { Track } from '../shared/models/track';
 /* Others */
@@ -31,21 +32,22 @@ export class PlayerComponent implements OnInit {
 
   constructor(
     private titleService: Title,
-    private spotify: SpotifyService,
-    private playlistSvc: PlaylistService
+    private spotifyService: SpotifyService,
+    private playlistService: PlaylistService,
+    private stateService: StateService
   ) {
     this.pendingCheck = false;
     this.progress = 0;
     this.showSkip = false;
     this.showNowPlaying = false;
 
-    this.playlistRef = playlistSvc.getFirstTracks(1);
+    this.playlistRef = playlistService.getFirstTracks(1);
     this.showSkip = false;
     this.showNowPlaying = false;
   }
 
   ngOnInit() {
-    this.station = this.playlistSvc.getStation();
+    this.station = this.playlistService.getStation();
 
     this.playlistRef.snapshotChanges()
       .pipe(debounceTime(300))
@@ -58,7 +60,7 @@ export class PlayerComponent implements OnInit {
             // console.log(`First track ${this.firstTrackKey} is:`, this.firstTrack);
             this.checkFirstTrack();
           } else {
-            this.playlistSvc.autoUpdatePlaylist(); // handle empty playlist
+            this.playlistService.autoUpdatePlaylist(); // handle empty playlist
           }
         },
         error => {
@@ -82,7 +84,7 @@ export class PlayerComponent implements OnInit {
     // actually tracking them rn
     this.pendingCheck = false;
     this.showNowPlaying = false;
-    this.playlistSvc.remove(key, 0);
+    this.playlistService.remove(key, 0);
     this.showSkip = false;
     this.firstTrack = null;
   }
@@ -114,7 +116,7 @@ export class PlayerComponent implements OnInit {
   **/
   checkFirstTrack() {
     if (this.firstTrack == null) {
-      console.warn('State of Brad: Sorry mate theres nothing to play');
+      console.warn(`State of Brad: Sorry mate theres nothing to play`);
       return;
     }
 
@@ -127,15 +129,15 @@ export class PlayerComponent implements OnInit {
       // Track has expired
       console.log(this.getTime(), this.firstTrack.name, 'track expired, expected expiration time was', this.firstTrack.expires_at);
       // console.log(this.showDate(this.getTime()), 'expected expiration time was', this.showDate(this.firstTrack.expires_at));
-      this.playlistSvc.remove(this.firstTrackKey, 0);
-      this.playlistSvc.saveTrack(this.firstTrack); // Save track in secondary list
+      this.playlistService.remove(this.firstTrackKey, 0);
+      this.playlistService.saveTrack(this.firstTrack); // Save track in secondary list
       this.showSkip = false;
       this.showNowPlaying = false;
       this.firstTrack = null;
       return;
     }
 
-    this.spotify.getNowPlaying()
+    this.spotifyService.getNowPlaying()
       .subscribe(
         (data: any) => {
           this.nowPlaying = data ? data.item : null;
@@ -165,7 +167,7 @@ export class PlayerComponent implements OnInit {
               console.log(this.getTime(), 'NOT scheduling check, one is pending, yo', timeToExpiration);
             }
           } else {
-            this.spotify.playTrack(this.firstTrack.uri)
+            this.spotifyService.playTrack(this.firstTrack.uri)
               .subscribe(
                 (response) => {
                   // this.playerError = response
@@ -176,7 +178,7 @@ export class PlayerComponent implements OnInit {
                   // playTrack doesn't give us an affirmative response on the play request
                   // so we have to wait a bit (fudge = 1.0s) before we try check the 'now
                   // playing status' again
-                  this.spotify.seekTrack(this.getTime() - this.firstTrack.expires_at + this.firstTrack.duration_ms)
+                  this.spotifyService.seekTrack(this.getTime() - this.firstTrack.expires_at + this.firstTrack.duration_ms)
                     .subscribe(
                       () => {},
                       error => {
@@ -192,9 +194,9 @@ export class PlayerComponent implements OnInit {
           }
         },
         error => {
-          console.error(error);
           this.playerError = error.error.error;
-          console.error('Now playing error:', this.playerError);
+          console.error('Now playing error:', error);
+          this.stateService.sendError(`There is no available user, ${error.error.error.message}`, error.error.error.status);
         }
       );
   }

@@ -2,8 +2,6 @@
 
   <div class="panel-heading">Now playing: <b>{{ station }} station</b></div>
 
-  <app-error-alert *ngIf="playerError" [error]="playerError"></app-error-alert>
-
   <div class="panel-body" *ngIf="nowPlaying">
     <ng-template [ngIf]="showNowPlaying" [ngIfElse]="showLoading">
       <ng-template [ngIf]="nowPlaying.album.images.length > 1" [ngIfElse]="fallbackImg">

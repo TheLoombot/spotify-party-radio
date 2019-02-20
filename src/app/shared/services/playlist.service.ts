@@ -68,13 +68,13 @@ export class PlaylistService {
     this.stationName = 'default';
     this.environment = environment.production ? 'prod' : 'dev';
     this.setLists();
-    this.playerMetaRef = this.db.object(`${this.stationName}/${this.environment}/player`).query.ref;
+    this.playerMetaRef = this.db.object(`stations/${this.stationName}/${this.environment}/player`).query.ref;
   }
 
   /** Method to set station lists */
   private setLists(): void {
-    this.playlistUrl = `${this.stationName}/${this.environment}/lists/playlist`;
-    this.previouslistUrl = `${this.stationName}/${this.environment}/lists/previouslist`;
+    this.playlistUrl = `stations/${this.stationName}/${this.environment}/lists/playlist`;
+    this.previouslistUrl = `stations/${this.stationName}/${this.environment}/lists/previouslist`;
   }
 
   /** Method to get station data */

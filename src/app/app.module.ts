@@ -22,6 +22,7 @@ import { ToptracksComponent } from './toptracks/toptracks.component';
 import { AlertComponent } from './shared/components/alert/alert.component';
 
 /* Services */
+import { ApiService } from './shared/services/api.service';
 import { SpotifyService } from './shared/services/spotify.service';
 import { StateService } from './shared/services/state.service';
 
@@ -54,6 +55,7 @@ import { environment } from '../environments/environment';
       useClass: Interceptor,
       multi: true
     },
+    ApiService,
     SpotifyService,
     StateService
   ],

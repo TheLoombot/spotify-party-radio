@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 /* RxJs */
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { take } from 'rxjs/operators';
 /* Models */
 import { User } from '../models/user';
 import { Track } from '../models/track';
 /* Services */
+import { ApiService } from './api.service';
 import { SpotifyService } from './spotify.service';
 /* Others */
 import { AngularFireDatabase } from 'angularfire2/database';
@@ -16,19 +17,22 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root'
 })
 export class PlaylistService {
-  environment: string;
   lastTrack: Track;
   firstTrack;
   userName: string;
+  stationName: string;
+  environment: string;
+  listsUrl: string;
   playlistUrl: string;
   previouslistUrl: string;
-  stationName: string;
   playerMetaRef: any;
   user: User;
+  /* Subscriptions */
   tokenSubscription: Subscription;
 
   constructor(
     private db: AngularFireDatabase,
+    private apiService: ApiService,
     private spotifyService: SpotifyService
   ) {
 
@@ -65,16 +69,17 @@ export class PlaylistService {
 
   /** Method to set station data */
   private setStation(): void {
-    this.stationName = 'default';
+    this.stationName = 'pablovem';
     this.environment = environment.production ? 'prod' : 'dev';
-    this.setLists();
+    this.setStationUrls();
     this.playerMetaRef = this.db.object(`stations/${this.stationName}/${this.environment}/player`).query.ref;
   }
 
-  /** Method to set station lists */
-  private setLists(): void {
-    this.playlistUrl = `stations/${this.stationName}/${this.environment}/lists/playlist`;
-    this.previouslistUrl = `stations/${this.stationName}/${this.environment}/lists/previouslist`;
+  /** Method to set station urls */
+  private setStationUrls(): void {
+    this.listsUrl = `stations/${this.stationName}/${this.environment}/lists`;
+    this.playlistUrl = `${this.listsUrl}/playlist`;
+    this.previouslistUrl = `${this.listsUrl}/previouslist`;
   }
 
   /** Method to get station data */
@@ -158,16 +163,6 @@ export class PlaylistService {
     return tracks;
   }
 
-  getAllPreviousTracks() {
-    const tracksRef = this.db.list(this.previouslistUrl);
-    const tracks = tracksRef.snapshotChanges().pipe(
-      map( changes =>
-        changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
-      )
-    );
-    return tracks;
-  }
-
   getFirstTracks(i: number) {
     return this.db.list(this.playlistUrl, ref => ref.limitToFirst(i));
   }
@@ -209,37 +204,29 @@ export class PlaylistService {
   }
 
   pushRandomTrack() {
-    const getAllPreviousTracksSubscription = this.getAllPreviousTracks()
+    this.apiService.getRandomPreviousListTrack(this.stationName, this.environment)
       .subscribe(
-        (tracks: Array<any>) => {
-          // console.log(tracks.length, 'previous tracks:', tracks);
-          const randomTrack: Track = tracks[Math.floor( Math.random() * tracks.length)] as Track;
-          // console.log('Random Track:', randomTrack);
+        track => {
+          console.log('Random Track:', track);
           const now = this.getTime();
           const lastTrackExpiresAt = (this.lastTrack) ? this.lastTrack.expires_at : now;
-          const nextTrackExpiresAt = lastTrackExpiresAt + randomTrack.duration_ms + 1500; // introducing some fudge here
-          // console.log('last track expires at:', this.showDate(lastTrackExpiresAt));
-          // console.log('next track expires at:', this.showDate(nextTrackExpiresAt));
-
-          randomTrack.added_at = now;
-          randomTrack.player = {
+          const nextTrackExpiresAt = lastTrackExpiresAt + track.duration_ms + 1500; // introducing some fudge here
+          track.added_at = now;
+          track.player = {
             auto: true
           };
-          randomTrack.expires_at = nextTrackExpiresAt;
-
-          console.log(this.getTime(), '🤖 - Of', tracks.length, 'tracks, pushing', randomTrack.name , 'expires at', randomTrack.expires_at);
+          track.expires_at = nextTrackExpiresAt;
           this.db.list(this.playlistUrl)
-            .push(randomTrack)
+            .push(track)
             .then(
               result => {
-                // console.log(result);
-                getAllPreviousTracksSubscription.unsubscribe();
+                console.log(result);
               }
             );
         },
         error => console.error(error),
         () => {
-          console.log('pushRandomTrack finished', this.getTime());
+          console.log('Random track fetched');
         }
       );
   }

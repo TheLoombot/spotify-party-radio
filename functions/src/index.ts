@@ -1,5 +1,8 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import * as cors from 'cors';
+
+const corsHandler = cors({origin: true});
 admin.initializeApp();
 
 // Keeps track of the length of the tracks child list in playlist
@@ -71,5 +74,34 @@ export const recountPreviouslistTrack = functions.database
       const collectionRef = counterRef.parent.child('previouslist');
       const tracksData = await collectionRef.once('value');
       await counterRef.set(tracksData.numChildren());
+    }
+  );
+
+// returnd random track from tracks in previouslist
+export const getRandomPreviousTrack = functions.https
+  .onRequest(
+    (req, res) => {
+      return corsHandler(req, res, () => {
+        const station = req.body.station;
+        const environment = req.body.environment;
+        const url = `stations/${station}/${environment}/lists`
+        admin.database()
+          .ref(url)
+          .once('value') // Reading data once
+          .then(
+            (snapshot) => {
+              const lists = snapshot.val();
+              const count = lists.previouslist_count;
+              const previouslist = lists.previouslist
+              const trackIds = Object.keys(previouslist);
+              const randomTrackId = trackIds[Math.floor( Math.random() * count)];
+              const randomTrack = lists.previouslist[randomTrackId];
+              res.status(200).send(randomTrack);
+            }
+          )
+          .catch(
+            err => console.error()
+          );
+      });
     }
   );

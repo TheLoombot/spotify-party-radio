@@ -1,4 +1,4 @@
-# Deep State Radio - Overview
+# Spotify Party Radio - Overview
 
 I miss [Turntable.fm](https://en.wikipedia.org/wiki/Turntable.fm), the defunct service that let you share DJ duties with your friends. This is my take on some of their ideas. 
 

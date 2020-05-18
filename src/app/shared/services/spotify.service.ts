@@ -116,6 +116,10 @@ export class SpotifyService {
     return this.http.put(this.baseUrl + '/me/player/play', JSON.stringify(bodyObj));
   }
 
+  pauseTrack() {
+    return this.http.put(this.baseUrl + '/me/player/pause', null);
+  }
+
   seekTrack(offset: number) {
     if (offset < 2000) return of([]);
     console.log(new Date().getTime(), ' seeking to position ', offset);

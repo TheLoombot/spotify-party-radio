@@ -83,6 +83,13 @@ export class PlayerComponent implements OnInit {
     // ideally we'd clear out the actual pending checks... but we're not
     // actually tracking them rn
     this.playlistService.removeFromPool(this.firstTrack.id);
+    this.spotifyService.pauseTrack()
+    .subscribe(
+      () => {},
+      error => {
+        console.error('Failed to pause track ', error);
+      }
+      );
     this.pendingCheck = false;
     this.showNowPlaying = false;
     this.playlistService.remove(key, 0);

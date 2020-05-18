@@ -27,6 +27,7 @@ import { StateService } from './shared/services/state.service';
 
 /* Others */
 import { environment } from '../environments/environment';
+import { ResetlibrarybuttonComponent } from './resetlibrarybutton/resetlibrarybutton.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { environment } from '../environments/environment';
     PlayerComponent,
     RecosComponent,
     ToptracksComponent,
-    AlertComponent
+    AlertComponent,
+    ResetlibrarybuttonComponent
   ],
   imports: [
     BrowserModule,

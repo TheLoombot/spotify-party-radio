@@ -159,7 +159,8 @@ export class PlaylistService {
   }
 
   getAllPreviousTracks() {
-    const tracksRef = this.db.list(this.previouslistUrl);
+    const tracksRef = this.db.list(this.previouslistUrl, ref=>ref.orderByChild('added_at'));
+
     const tracks = tracksRef.snapshotChanges().pipe(
       map( changes =>
         changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
@@ -206,6 +207,23 @@ export class PlaylistService {
 
     console.log(now, 'pushing track onto playlist:', playlistEntry.name , 'expires at', playlistEntry.expires_at);
     this.db.list(this.playlistUrl).push(playlistEntry);
+  }
+
+  pruneTracks(tracksToLeave: number) { 
+    const getAllPreviousTracksSubscription = this.getAllPreviousTracks()
+    .subscribe(
+      (tracks: Array<any>) => {
+        if (tracks.length <= tracksToLeave) {
+          console.log('not enough tracks to prune: ', tracks.length);
+          return;
+        }
+        for (let track of tracks.slice(0,tracks.length-tracksToLeave)) {
+          console.log('pruning track', track.key);
+          this.db.list(this.previouslistUrl).remove(track.key);
+        }        
+        getAllPreviousTracksSubscription.unsubscribe();
+      },
+    );
   }
 
   pushRandomTrack() {

@@ -153,6 +153,9 @@ export class PlayerComponent implements OnInit {
           if (this.nowPlaying == null) {
             // this.playerError = 'poopie';
             console.warn('There is nothing being played');
+            setTimeout(() => {
+              this.checkFirstTrack();
+            }, 3000);
           } else if (this.firstTrack == null) {
             console.warn('Sorry mate theres nothing to play');
           } else if (data.is_playing && this.nowPlaying.uri === this.firstTrack.uri) {

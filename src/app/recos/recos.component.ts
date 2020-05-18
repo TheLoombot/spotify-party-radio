@@ -47,7 +47,6 @@ export class RecosComponent implements OnInit, OnDestroy {
   }
 
   pushTrack(track: Object, i: number) {
-    // console.log('Push Recommended track:', track);
     this.clicked = i;
     const user = this.spotifyService.getUser();
     this.playlistService.pushTrack(track, user.display_name || user.id);
@@ -59,7 +58,6 @@ export class RecosComponent implements OnInit, OnDestroy {
       console.warn('There were no seeds in playlist');
       this.seedTrackUris = this.recommendations.map(track => track.id).join();
     }
-    // console.log('seeds:', this.seedTrackUris);
     if (this.spotifyService.isTokenAvailable()) {
       this.spotifyService.getRecos(this.seedTrackUris)
         .subscribe(

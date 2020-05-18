@@ -35,11 +35,9 @@ export class SearchComponent implements OnInit {
     .subscribe(
       (results: any) => {
         this.results = results;
-        // console.log('Results:', this.results);
         this.searchResults = results.tracks;
         if (results.tracks) {
           this.tracks = results.tracks.items as Array<Track>;
-          // console.log('Tracks:', this.tracks, 'total: ', results.tracks.total);
           this.tracks.forEach( (track: Track) => {
             if (track.album.images.length > 0) {
               const images = track.album.images.slice(-1); // Select smallest size

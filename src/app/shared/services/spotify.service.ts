@@ -110,7 +110,6 @@ export class SpotifyService {
     const bodyObj = {
       'uris': [uri]
     };
-    // console.log(new Date().getTime(), "attempting to play ", uri);
     return this.http.put(this.baseUrl + '/me/player/play', JSON.stringify(bodyObj));
   }
 
@@ -120,7 +119,7 @@ export class SpotifyService {
 
   seekTrack(offset: number) {
     if (offset < 2000) return of([]);
-    console.log('Seeking to position ', offset);
+    console.log(`Seeking to position ${offset}`);
     return this.http.put(this.baseUrl + '/me/player/seek?position_ms=' + offset, null);
   }
 

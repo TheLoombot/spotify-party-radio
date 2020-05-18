@@ -215,15 +215,19 @@ export class PlaylistService {
       (tracks: Array<any>) => {
         if (tracks.length <= tracksToLeave) {
           console.log('not enough tracks to prune: ', tracks.length);
-          return;
+        } else {
+          for (let track of tracks.slice(0,tracks.length-tracksToLeave)) {
+            console.log('pruning track', track.key);
+            this.db.list(this.previouslistUrl).remove(track.key);
+          }        
         }
-        for (let track of tracks.slice(0,tracks.length-tracksToLeave)) {
-          console.log('pruning track', track.key);
-          this.db.list(this.previouslistUrl).remove(track.key);
-        }        
         getAllPreviousTracksSubscription.unsubscribe();
       },
     );
+  }
+
+  removeFromPool(key: string) {
+    this.db.list(this.previouslistUrl).remove(key);
   }
 
   pushRandomTrack() {

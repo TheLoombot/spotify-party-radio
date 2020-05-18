@@ -134,4 +134,8 @@ export class SpotifyService {
     return this.http.get(this.baseUrl + '/me/top/tracks?limit=5&time_range=short_term');
   }
 
+  getTrackById(id: string) {
+    return this.http.get(this.baseUrl + '/tracks/' + id);
+  }
+
 }

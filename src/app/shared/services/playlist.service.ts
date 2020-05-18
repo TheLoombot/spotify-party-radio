@@ -94,7 +94,6 @@ export class PlaylistService {
 
   /** Method used to delete a track from the playlist given its id and index */
   remove(key: string, i: number) {
-    console.log('Removing item at index', i, 'with key', key);
     this.db.list(this.playlistUrl).remove(key)
     .then(
       result => {
@@ -205,7 +204,7 @@ export class PlaylistService {
 
     const playlistEntry = {...track, ...additionalData};
 
-    console.log(now, 'pushing track onto playlist:', playlistEntry.name , 'expires at', playlistEntry.expires_at);
+    console.log('Pushing track onto playlist:', playlistEntry.name);
     this.db.list(this.playlistUrl).push(playlistEntry);
   }
 
@@ -247,7 +246,7 @@ export class PlaylistService {
           };
           randomTrack.expires_at = nextTrackExpiresAt;
 
-          console.log(this.getTime(), '🤖 - Of', tracks.length, 'tracks, pushing', randomTrack.name , 'expires at', randomTrack.expires_at);
+          console.log('🤖 ', tracks.length, ' tracks in pool, pushing', randomTrack.name);
           this.db.list(this.playlistUrl)
           .push(randomTrack)
           .then(
@@ -259,7 +258,7 @@ export class PlaylistService {
         } else {
           this.spotifyService.getTrackById("0GL1ye91pT3nJIQzXwncG2").subscribe(
             (data: any) => {
-              this.pushTrack(data, '🤖 welcome bot');
+              this.pushTrack(data, '🦾 welcome bot');
             }
             );
         }
@@ -287,7 +286,7 @@ export class PlaylistService {
       delete track.expires_at;
       // Save track in previous played list
       this.db.list(this.previouslistUrl).set(track.id, track);
-      console.log(this.getTime(), track.name, ' saved to previous list');
+      console.log(track.name, ' saved to previous list');
     }
   }
 

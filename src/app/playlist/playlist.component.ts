@@ -17,7 +17,7 @@ export class PlaylistComponent implements OnInit {
       .subscribe(
         tracks => {
           this.tracks = tracks;
-          console.log('Playlist update:', this.tracks['length'], 'tracks');
+          console.log('Playlist update, new size: ', this.tracks['length']);
         },
         error => console.error('Playlist retrieves error: ', error)
       );
@@ -29,7 +29,7 @@ export class PlaylistComponent implements OnInit {
     // add 1 to the index because we slice off the first track
     i++;
     console.log('Clicked to remove track:', i);
-    console.warn('Remove Track:', track);
+    // console.warn('Remove Track:', track);
     this.playlistService.remove(track.key, i);
   }
 }

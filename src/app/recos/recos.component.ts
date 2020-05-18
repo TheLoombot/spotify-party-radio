@@ -59,7 +59,7 @@ export class RecosComponent implements OnInit, OnDestroy {
       console.warn('There were no seeds in playlist');
       this.seedTrackUris = this.recommendations.map(track => track.id).join();
     }
-    console.log('seeds:', this.seedTrackUris);
+    // console.log('seeds:', this.seedTrackUris);
     if (this.spotifyService.isTokenAvailable()) {
       this.spotifyService.getRecos(this.seedTrackUris)
         .subscribe(

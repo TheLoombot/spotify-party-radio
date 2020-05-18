@@ -79,7 +79,7 @@ export class PlayerComponent implements OnInit {
   }
 
   skipTrack(key: string): void {
-    console.log('Clicked to skip currently-playing track [track 0]');
+    // console.log('Clicked to skip currently-playing track [track 0]');
     // ideally we'd clear out the actual pending checks... but we're not
     // actually tracking them rn
     this.playlistService.removeFromPool(this.firstTrack.id);
@@ -135,7 +135,7 @@ export class PlayerComponent implements OnInit {
 
     if (timeToExpiration > 0) {
       // Track has expired
-      console.log(this.getTime(), this.firstTrack.name, 'track expired, expected expiration time was', this.firstTrack.expires_at);
+      console.log(this.firstTrack.name, ' expired');
       // console.log(this.showDate(this.getTime()), 'expected expiration time was', this.showDate(this.firstTrack.expires_at));
       this.playlistService.remove(this.firstTrackKey, 0);
       this.playlistService.saveTrack(this.firstTrack); // Save track in secondary list
@@ -157,7 +157,7 @@ export class PlayerComponent implements OnInit {
           } else if (this.firstTrack == null) {
             console.warn('Sorry mate theres nothing to play');
           } else if (data.is_playing && this.nowPlaying.uri === this.firstTrack.uri) {
-            console.log( this.getTime(), `${this.nowPlaying.name} expires in ${timeToExpiration}`);
+            console.log(`${this.nowPlaying.name} expires in ${timeToExpiration}`);
             this.showNowPlaying = true;
             this.setTitle(`${this.firstTrack.artist_name} - ${this.firstTrack.name}`);
             this.showSkip = true;
@@ -179,7 +179,7 @@ export class PlayerComponent implements OnInit {
               .subscribe(
                 (response) => {
                   // this.playerError = response
-                  console.log(this.getTime(), this.firstTrack.name, ' Requested playback, scheduled check in 1000ms');
+                  console.log(this.firstTrack.name, ' Requested playback, scheduled check in 1000ms');
                   setTimeout(() => {
                     this.checkFirstTrack();
                   }, 1000);

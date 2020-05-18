@@ -88,6 +88,8 @@ export class PerformLoginComponent implements OnInit {
         if (paramArray[0] === 'access_token') {
           this.accessTokenNew = paramArray[1];
           window.localStorage.setItem('access_token', this.accessTokenNew);
+          this.spotifyService.setToken(this.accessTokenNew);
+          this.spotifyService.sendToken(this.accessTokenNew);
         }
       }
     // Otherwise we get the locally-stored token

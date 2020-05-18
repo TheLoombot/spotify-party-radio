@@ -82,7 +82,7 @@ export class PlayerComponent implements OnInit {
     console.log('Clicked to skip currently-playing track [track 0]');
     // ideally we'd clear out the actual pending checks... but we're not
     // actually tracking them rn
-    this.playlistService.removeFromPool(this.firstTrack.key);
+    this.playlistService.removeFromPool(this.firstTrack.id);
     this.pendingCheck = false;
     this.showNowPlaying = false;
     this.playlistService.remove(key, 0);

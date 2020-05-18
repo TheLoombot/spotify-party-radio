@@ -22,6 +22,7 @@ export class Track {
   image_url: string;
   is_local?: boolean;
   is_playable?: boolean;
+  key?: string;
   name: string;
   player?: {
     auto?: boolean,

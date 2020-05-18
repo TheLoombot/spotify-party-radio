@@ -44,7 +44,6 @@ export class SpotifyService {
 
   setToken(token: string): void {
     this.token = token;
-    // console.log('SpotifyService token:', this.token);
   }
 
   getToken(): string {
@@ -57,7 +56,6 @@ export class SpotifyService {
 
   /** Method to send token using the tokenSubject */
   sendToken(token: string): void {
-    // console.log('New token:', token);
     this.tokenSubject.next({ token: token });
   }
 
@@ -104,7 +102,7 @@ export class SpotifyService {
   }
 
   searchEntries(term: string, offset: number) {
-    console.log('🕵🏽‍♀️', term, 'offset', offset);
+    console.log(`🕵🏽‍♀️${term}, offset - ${offset}`);
     return this.http.get(this.baseUrl + '/search?type=track,album,artist&offset=' + offset + '&limit=5&q=' + term);
   }
 
@@ -122,7 +120,7 @@ export class SpotifyService {
 
   seekTrack(offset: number) {
     if (offset < 2000) return of([]);
-    console.log(new Date().getTime(), ' seeking to position ', offset);
+    console.log('Seeking to position ', offset);
     return this.http.put(this.baseUrl + '/me/player/seek?position_ms=' + offset, null);
   }
 

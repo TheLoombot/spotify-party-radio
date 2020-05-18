@@ -204,7 +204,7 @@ export class PlaylistService {
 
     const playlistEntry = {...track, ...additionalData};
 
-    console.log('Pushing track onto playlist:', playlistEntry.name);
+    console.log(`Pushing track onto playlist: ${playlistEntry.name}`);
     this.db.list(this.playlistUrl).push(playlistEntry);
   }
 
@@ -226,7 +226,7 @@ export class PlaylistService {
   }
 
   removeFromPool(key: string) {
-    console.log('removing from pool ', key);
+    // console.log('removing from pool ', key);
     this.db.list(this.previouslistUrl).remove(key);
   }
 
@@ -246,7 +246,7 @@ export class PlaylistService {
           };
           randomTrack.expires_at = nextTrackExpiresAt;
 
-          console.log('🤖 ', tracks.length, ' tracks in pool, pushing', randomTrack.name);
+          console.log(`🤖 ${tracks.length} tracks in pool, pushing ${randomTrack.name}`);
           this.db.list(this.playlistUrl)
           .push(randomTrack)
           .then(
@@ -286,7 +286,8 @@ export class PlaylistService {
       delete track.expires_at;
       // Save track in previous played list
       this.db.list(this.previouslistUrl).set(track.id, track);
-      console.log(track.name, ' saved to previous list');
+      console.log(`${track.name} saved to previous list`);
+      this.pruneTracks(40);
     }
   }
 

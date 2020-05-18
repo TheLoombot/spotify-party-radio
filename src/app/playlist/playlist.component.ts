@@ -17,7 +17,7 @@ export class PlaylistComponent implements OnInit {
       .subscribe(
         tracks => {
           this.tracks = tracks;
-          console.log('Playlist update, new size: ', this.tracks['length']);
+          console.log(`Playlist update, new size: ${this.tracks['length']}`);
         },
         error => console.error('Playlist retrieves error: ', error)
       );

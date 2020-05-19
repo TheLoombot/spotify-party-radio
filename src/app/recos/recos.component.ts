@@ -6,6 +6,7 @@ import { PlaylistService } from '../shared/services/playlist.service';
 import { SpotifyService } from '../shared/services/spotify.service';
 /* Models */
 import { Track } from '../shared/models/track';
+import { StateService } from '../shared/services/state.service';
 
 @Component({
   selector: 'app-recos',
@@ -21,7 +22,8 @@ export class RecosComponent implements OnInit, OnDestroy {
 
   constructor(
     private spotifyService: SpotifyService,
-    private playlistService: PlaylistService
+    private playlistService: PlaylistService,
+    private stateService: StateService
   ) {
     this.seedTrackUris = '';
     this.lastFivePlaylistRef = playlistService.getLastTracks(5);
@@ -69,6 +71,7 @@ export class RecosComponent implements OnInit, OnDestroy {
             console.error(error);
             // Add error state here
             this.recoError = error.error.error;
+            this.stateService.sendError(`Error on refresh recos `, error.error.error.status);
           }
         );
     }

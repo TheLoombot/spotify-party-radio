@@ -9,6 +9,7 @@ import { State } from '../shared/models/state';
 /* Services */
 import { SpotifyService } from '../shared/services/spotify.service';
 import { StateService } from '../shared/services/state.service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-perform-login',
@@ -28,7 +29,8 @@ export class PerformLoginComponent implements OnInit {
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
     private spotifyService: SpotifyService,
-    private stateService: StateService
+    private stateService: StateService,
+    private titleService: Title
   ) {
     this.isLocalhost = false; // Default state
     this.availableToken = true; // Default state
@@ -124,5 +126,6 @@ export class PerformLoginComponent implements OnInit {
     this.accessTokenStored = null;
     this.availableToken = false;
     this.user = null;
+    this.titleService.setTitle('Logged Out');
   }
 }

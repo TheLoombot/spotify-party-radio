@@ -53,7 +53,7 @@ export class RecosComponent implements OnInit, OnDestroy {
   pushTrack(track: Object, i: number) {
     this.clicked = i;
     const user = this.spotifyService.getUser();
-    this.playlistService.pushTrack(track, user.display_name || user.id);
+    this.playlistService.pushTrack(track, user);
   }
 
   /** Method to refresh recommended tracks based on seed tracks */

@@ -83,6 +83,6 @@ export class SearchComponent implements OnInit {
   pushTrack(track: Object, i: number) {
     const user = this.spotifyService.getUser();
     this.clicked = i;
-    this.playlistService.pushTrack(track, user.display_name || user.id);
+    this.playlistService.pushTrack(track, user);
   }
 }

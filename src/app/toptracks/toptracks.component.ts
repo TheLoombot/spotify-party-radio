@@ -39,6 +39,6 @@ export class ToptracksComponent implements OnInit {
   pushTrack(track: Object, i: number) {
     const user = this.spotifyService.getUser();
     this.clicked = i;
-    this.playlistSvc.pushTrack(track, user.display_name || user.id);
+    this.playlistSvc.pushTrack(track, user);
   }
 }

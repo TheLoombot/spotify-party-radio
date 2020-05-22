@@ -71,8 +71,8 @@ export class SpotifyService {
     this.user = user;
   }
 
-  getUser(): User {
-    return this.user;
+  getUser(): string {
+    return (this.user.display_name || this.user.id);
   }
 
   /** Get Current User's Profile */

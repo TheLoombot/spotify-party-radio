@@ -1,6 +1,11 @@
-Current station: {{ currentStation }}
+<!-- <ul *ngFor="let station of stations">
+  <li style="cursor: pointer" (click)="setStation(station.key)">
+      {{ station.key }}
+  </li>
+</ul> -->
 
 <ul *ngFor="let station of stations">
-    <li (click)="setStation(station.key)">{{ station.key }} </li>
+  <li>
+    <a [routerLink]="" (click)="setStation(station.key)"> {{ station.key }} </a>
+  </li>
 </ul>
-

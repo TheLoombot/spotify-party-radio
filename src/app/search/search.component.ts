@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 /* RxJs */
 import { Subject } from 'rxjs';
 /* Models */
@@ -6,6 +6,8 @@ import { Track } from '../shared/models/track';
 /* Services */
 import { SpotifyService } from '../shared/services/spotify.service';
 import { PlaylistService } from '../shared/services/playlist.service';
+import { StateService } from '../shared/services/state.service';
+import { State } from '../shared/models/state';
 
 @Component({
   selector: 'app-search',
@@ -22,11 +24,14 @@ export class SearchComponent implements OnInit {
   searchError;
   clicked: number;
   pageSize: number;
+  stationLoading: boolean;
 
   constructor(
     private spotifyService: SpotifyService,
-    private playlistService: PlaylistService
-  ) {
+    private playlistService: PlaylistService,
+    private stateService: StateService,
+    private cdr: ChangeDetectorRef,
+    ) {
     this.pageSize = 5;
   }
 
@@ -54,7 +59,18 @@ export class SearchComponent implements OnInit {
       error => {
         this.searchError = error.error.error;
       }
-    );
+      );
+
+    this.stateService.getState()
+    .subscribe(
+      (state: State) => {
+        this.stationLoading = state.loading;
+      },
+      error => console.error(error),
+      () => {
+        this.cdr.detectChanges();
+      }
+      );
 
     // it's important that these emit values once each after the subscription 
     // because if that hasn't happened, combineLatest won't work!

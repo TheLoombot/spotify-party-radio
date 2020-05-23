@@ -26,6 +26,6 @@
       </div>
 
     </div>
-    <app-recos *ngIf="!tracks?.length"></app-recos>
+    <app-recos *ngIf="!tracks?.length && !stationLoading"></app-recos>
   </div>
 </div>

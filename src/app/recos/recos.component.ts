@@ -8,6 +8,7 @@ import { SpotifyService } from '../shared/services/spotify.service';
 import { Track } from '../shared/models/track';
 import { StateService } from '../shared/services/state.service';
 import { Title } from '@angular/platform-browser';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-recos',
@@ -16,6 +17,7 @@ import { Title } from '@angular/platform-browser';
 })
 export class RecosComponent implements OnInit, OnDestroy {
   lastFivePlaylistRef;
+  lastFiveSub: Subscription;
   recommendations: Array<Track>;
   recoError;
   clicked;
@@ -26,28 +28,29 @@ export class RecosComponent implements OnInit, OnDestroy {
     private playlistService: PlaylistService,
     private stateService: StateService,
     private titleService: Title
-  ) {
-    this.seedTrackUris = '';
-    this.lastFivePlaylistRef = playlistService.getLastTracks(5);
-    this.lastFivePlaylistRef.valueChanges()
-      .pipe(debounceTime(2000))
-      .subscribe(
-        tracks => {
-          this.seedTrackUris = '';
-          for (const track in tracks) {
-            if (tracks[track]['uri']) {
-              this.seedTrackUris += `${tracks[track]['uri'].replace('spotify:track:', '')},`;
-            }
-          }
-          this.refreshRecommendations(this.seedTrackUris);
-        },
-        error => {
-          console.log('playlist retrieve error for recos:', error);
-        }
-      );
+    ) {
   }
 
   ngOnInit() {
+    this.seedTrackUris = '';
+    this.lastFivePlaylistRef = this.playlistService.getLastTracks(5);
+    this.lastFiveSub = this.lastFivePlaylistRef.valueChanges()
+    .pipe(debounceTime(2000))
+    .subscribe(
+      tracks => {
+        this.seedTrackUris = '';
+        for (const track in tracks) {
+          if (tracks[track]['uri']) {
+            this.seedTrackUris += `${tracks[track]['uri'].replace('spotify:track:', '')},`;
+          }
+        }
+        this.refreshRecommendations(this.seedTrackUris);
+      },
+      error => {
+        console.log('playlist retrieve error for recos:', error);
+      }
+      );
+
   }
 
   pushTrack(track: Object, i: number) {
@@ -64,22 +67,25 @@ export class RecosComponent implements OnInit, OnDestroy {
     }
     if (this.spotifyService.isTokenAvailable()) {
       this.spotifyService.getRecos(this.seedTrackUris)
-        .subscribe(
-          (reccomendations: any) => {
-            this.recommendations = reccomendations.tracks as Array<Track>;
-            this.clicked = -1;
-          },
-          error => {
-            console.error(error);
-            // Add error state here
-            this.recoError = error.error.error;
-            this.titleService.setTitle('Logged Out');
-            this.stateService.sendError(`Error on refresh recos `, error.error.error.status);
-          }
+      .subscribe(
+        (reccomendations: any) => {
+          this.recommendations = reccomendations.tracks as Array<Track>;
+          this.clicked = -1;
+        },
+        error => {
+          console.error(error);
+          // Add error state here
+          this.recoError = error.error.error;
+          this.titleService.setTitle('Logged Out');
+          this.stateService.sendError(`Error on refresh recos `, error.error.error.status);
+        }
         );
     }
   }
 
   ngOnDestroy() {
+    if (this.lastFiveSub) {
+      this.lastFiveSub.unsubscribe();
+    }
   }
 }

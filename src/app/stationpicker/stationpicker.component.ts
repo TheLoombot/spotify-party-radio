@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { StateService } from '../shared/services/state.service';
 import { PlaylistService } from '../shared/services/playlist.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-stationpicker',
@@ -10,6 +11,8 @@ import { PlaylistService } from '../shared/services/playlist.service';
 export class StationpickerComponent implements OnInit {
 
   currentStation: string;
+  stationSub: Subscription;
+  stations: Object;
 
   constructor(
     private stateService: StateService,
@@ -17,27 +20,32 @@ export class StationpickerComponent implements OnInit {
     ) { }
 
   ngOnInit() {
-    this.currentStation = 'loombot';
+    this.currentStation = this.playlistService.getStation();
+    this.stationSub = this.playlistService.getStations()
+    .subscribe(
+      stations => {
+        this.stations = stations;
+        console.log(`Total stations: ${this.stations['length']}`);
+      },
+      error => console.error('Playlist retrieves error: ', error)
+      );
   }
 
-  onClick() {
-    if (this.currentStation == 'loombot') {
-      this.currentStation = 'poop';
-      this.stateService.sendState({ enabled: true, loading: true, station: "poop" });
-      this.playlistService.setStation("poop");
-      // I don't know why I need to delay this but if you run it immediately
-      // then shit just don't work 
-      setTimeout(() => {
-        this.stateService.sendState({ enabled: true, loading: false, station: "poop" });
-      }, 1);
 
-    } else {
-      this.currentStation = 'loombot';
-      this.stateService.sendState({ enabled: true, loading: false, station: "loombot" });
-    }
-
+  setStation(stationKey) {
+    this.stateService.sendState({ enabled: true, loading: true, station: stationKey });
+    this.playlistService.setStation(stationKey);
+    setTimeout(() => {
+      this.stateService.sendState({ enabled: true, loading: false, station: stationKey });
+    }, 1);
+    this.currentStation = stationKey;
     console.log(`clicked for ${this.currentStation}`);
+  }
 
+  ngOnDestroy() {
+    if (this.stationSub) {
+      this.stationSub.unsubscribe();
+    }
   }
 
 }

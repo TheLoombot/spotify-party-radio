@@ -151,7 +151,7 @@ export class PlaylistService {
   }
 
   getStations() {
-    return this.db.list(`${this.environment}`);
+    return this.db.list(`${this.environment}`).snapshotChanges();
   }
 
   pushTrack(track: any, userName) {

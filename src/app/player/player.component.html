@@ -1,6 +1,6 @@
 <div class="panel panel-default" style="min-height: 375px">
 
-  <div class="panel-heading">Now playing: <b>{{ station }} station</b></div>
+  <div class="panel-heading">Now playing: <b>Radio {{ station }}</b></div>
 
   <div class="panel-body" *ngIf="nowPlaying">
     <ng-template [ngIf]="showNowPlaying" [ngIfElse]="showLoading">

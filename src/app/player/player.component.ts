@@ -29,6 +29,8 @@ export class PlayerComponent implements OnInit {
   tokenSubscription: Subscription;
   showSkip: boolean;
   showNowPlaying: boolean;
+  playlistSub: Subscription;
+  progressSub: Subscription;
 
   constructor(
     private titleService: Title,
@@ -49,7 +51,7 @@ export class PlayerComponent implements OnInit {
   ngOnInit() {
     this.station = this.playlistService.getStation();
 
-    this.playlistRef.snapshotChanges()
+    this.playlistSub = this.playlistRef.snapshotChanges()
       .pipe(debounceTime(300))
       .subscribe(
         data => {
@@ -68,7 +70,7 @@ export class PlayerComponent implements OnInit {
         }
       );
 
-    interval(1000)
+    this.progressSub = interval(1000)
       .subscribe(
         () => {
           if (this.firstTrack) {
@@ -210,4 +212,11 @@ export class PlayerComponent implements OnInit {
         }
       );
   }
+
+  ngOnDestroy() {
+    this.playlistSub.unsubscribe();
+    this.progressSub.unsubscribe();
+    console.log(`DESTRUCTIONNNN inside player component.`);
+  }
+
 }

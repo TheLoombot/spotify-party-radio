@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 /* Services */
 import { PlaylistService } from '../shared/services/playlist.service';
 
@@ -7,23 +7,29 @@ import { PlaylistService } from '../shared/services/playlist.service';
   templateUrl: './playlist.component.html',
   styleUrls: ['./playlist.component.css']
 })
-export class PlaylistComponent implements OnInit {
+export class PlaylistComponent implements OnInit, OnDestroy {
+
+
   tracks: Object;
+  trackSub;
 
   constructor(
     private playlistService: PlaylistService
-  ) {
-    playlistService.getAllTracks()
-      .subscribe(
-        tracks => {
-          this.tracks = tracks;
-          console.log(`Playlist update, new size: ${this.tracks['length']}`);
-        },
-        error => console.error('Playlist retrieves error: ', error)
-      );
+    ) {
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+
+    this.trackSub = this.playlistService.getAllTracks()
+    .subscribe(
+      tracks => {
+        this.tracks = tracks;
+        console.log(`Playlist update, new size: ${this.tracks['length']}`);
+      },
+      error => console.error('Playlist retrieves error: ', error)
+      );
+
+  }
 
   removeTrack(track: any, i: number): void {
     // add 1 to the index because we slice off the first track
@@ -32,4 +38,10 @@ export class PlaylistComponent implements OnInit {
     // console.warn('Remove Track:', track);
     this.playlistService.remove(track.key, i);
   }
+
+  ngOnDestroy() {
+    this.trackSub.unsubscribe();
+    console.log(`DESTRUCTIONNNN inside playlist component.`);
+  }
+
 }

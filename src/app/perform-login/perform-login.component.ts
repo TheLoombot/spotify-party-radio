@@ -49,7 +49,7 @@ export class PerformLoginComponent implements OnInit {
             this.spotifyService.setUser(user);
             this.user = user;
             this.username = this.user.display_name ? this.user.display_name : this.user.id;
-            this.stateService.sendState({ enabled: true });
+            this.stateService.sendState({ enabled: true, loading: false, station: `${this.username}` });
           },
           error => {
             console.error('getUserProfile:', error);
@@ -68,7 +68,6 @@ export class PerformLoginComponent implements OnInit {
     this.stateSubscription = this.stateService.getState()
     .subscribe(
       (state: State) => {
-        console.log('State obtained in app:', state);
         this.availableToken = state.enabled;
       },
       error => console.error(error),

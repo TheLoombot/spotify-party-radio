@@ -6,9 +6,12 @@
     <div class="col-md-6"> 
       <div class="row">
         <div class="col-md-12" *ngIf="appEnabled">
+          <app-stationpicker></app-stationpicker>
+        </div>
+        <div class="col-md-12" *ngIf="appEnabled && !stationLoading">
           <app-player></app-player>
         </div>
-        <div class="col-md-12" *ngIf="appEnabled">
+        <div class="col-md-12" *ngIf="appEnabled && !stationLoading">
           <app-playlist></app-playlist>
         </div>
       </div>

@@ -20,7 +20,6 @@ export class StateService {
   }
 
   sendState(state: State): void {
-    console.log('Next state:', state);
     this.stateSubject.next(state);
   }
 

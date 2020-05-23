@@ -17,12 +17,11 @@ import { environment } from '../../../environments/environment';
 export class PlaylistService {
   environment: string;
   lastTrack: Track;
-  firstTrack;
   playlistUrl: string;
   previouslistUrl: string;
   stationName: string;
   playerMetaRef: any;
-  tokenSubscription: Subscription;
+  lastTrackSub: Subscription;
 
   constructor(
     private db: AngularFireDatabase,
@@ -34,7 +33,20 @@ export class PlaylistService {
     // on startup, set the current station to the user's own station
     this.setStation(this.spotifyService.getUser());
 
-    this.getLastTracks(1).snapshotChanges()
+  }
+
+  setStation(stationName: string): void {
+    console.log(`Station is: ${stationName}`);
+    this.stationName = stationName;
+    this.playlistUrl = `${this.environment}/${this.stationName}/lists/playlist`;
+    this.previouslistUrl = `${this.environment}/${this.stationName}/lists/previouslist`;
+    this.playerMetaRef = this.db.object(`${this.environment}/${this.stationName}/player`).query.ref;
+
+    if (this.lastTrackSub) {
+      this.lastTrackSub.unsubscribe();
+    }
+
+    this.lastTrackSub = this.getLastTracks(1).snapshotChanges()
     .subscribe(
       data => {
         if (data[0]) {
@@ -47,18 +59,9 @@ export class PlaylistService {
         console.log('playlist retrieve error:', error);
       }
       );
+
   }
 
-  /** Method to set station data */
-  private setStation(stationName: string): void {
-    console.log(`Station is: ${stationName}`);
-    this.stationName = stationName;
-    this.playlistUrl = `${this.environment}/${this.stationName}/lists/playlist`;
-    this.previouslistUrl = `${this.environment}/${this.stationName}/lists/previouslist`;
-    this.playerMetaRef = this.db.object(`${this.environment}/${this.stationName}/player`).query.ref;
-  }
-
-  /** Method to get station data */
   getStation(): string {
     return this.stationName;
   }

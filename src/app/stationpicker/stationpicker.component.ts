@@ -39,7 +39,6 @@ export class StationpickerComponent implements OnInit {
       this.stateService.sendState({ enabled: true, loading: false, station: stationKey });
     }, 1);
     this.currentStation = stationKey;
-    console.log(`clicked for ${this.currentStation}`);
   }
 
   ngOnDestroy() {

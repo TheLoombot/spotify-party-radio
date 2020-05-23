@@ -217,6 +217,13 @@ export class PlayerComponent implements OnInit {
   }
 
   ngOnDestroy() {
+    this.spotifyService.pauseTrack()
+    .subscribe(
+      () => {},
+      error => {
+        console.error('Failed to pause track ', error);
+      }
+      );
     this.playlistSub.unsubscribe();
     this.progressSub.unsubscribe();
     this.timeOutSubs.forEach(id => clearTimeout(id));

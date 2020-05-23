@@ -31,6 +31,7 @@ export class PlayerComponent implements OnInit {
   showNowPlaying: boolean;
   playlistSub: Subscription;
   progressSub: Subscription;
+  timeOutSubs = [];
 
   constructor(
     private titleService: Title,
@@ -59,7 +60,7 @@ export class PlayerComponent implements OnInit {
           if (data[0]) {
             this.firstTrackKey = data[0].key;
             this.firstTrack = data[0].payload.val();
-            // console.log(`First track ${this.firstTrackKey} is:`, this.firstTrack);
+            console.log(`First track ${this.firstTrackKey} is: ${this.firstTrack.name}`);
             this.checkFirstTrack();
           } else {
             this.playlistService.autoUpdatePlaylist(); // handle empty playlist
@@ -131,7 +132,7 @@ export class PlayerComponent implements OnInit {
       return;
     }
 
-    // console.log('checking first track: ', this.firstTrack);
+    console.log(`Checking first track: ${this.firstTrack.name}`);
     const timeToExpiration = this.getTime() - this.firstTrack.expires_at;
     // console.log('First track expires at: ', this.showDate(this.firstTrack.expires_at));
     // console.log('Time to first track expiration: ', timeToExpiration);
@@ -170,10 +171,12 @@ export class PlayerComponent implements OnInit {
               // when we support deletes, we'll have to handle cancelling
               // the pending check and replacing it instead. later.
               this.pendingCheck = true;
-              setTimeout( () => {
+              this.timeOutSubs.push(
+                setTimeout( () => {
                 this.checkFirstTrack();
                 this.pendingCheck = false;
-              }, -timeToExpiration);
+              }, -timeToExpiration)
+              );
             } else {
               console.log(`NOT scheduling check, one is pending, yo`);
             }
@@ -216,6 +219,7 @@ export class PlayerComponent implements OnInit {
   ngOnDestroy() {
     this.playlistSub.unsubscribe();
     this.progressSub.unsubscribe();
+    this.timeOutSubs.forEach(id => clearTimeout(id));
     console.log(`DESTRUCTIONNNN inside player component.`);
   }
 

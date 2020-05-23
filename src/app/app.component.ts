@@ -32,7 +32,7 @@ export class AppComponent implements OnInit {
           this.station = state.station;
           this.appEnabled = state.enabled;
           this.stationLoading = state.loading;
-          console.log('State obtained in app:', this.state);
+          // console.log('State obtained in app:', this.state);
         },
         error => console.error(error),
         () => {

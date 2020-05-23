@@ -217,7 +217,6 @@ export class PlayerComponent implements OnInit {
       this.playlistSub.unsubscribe();
       this.progressSub.unsubscribe();
       this.timeOutSubs.forEach(id => clearTimeout(id));
-      console.log(`DESTRUCTIONNNN inside player component.`);
     }
 
   }

@@ -41,7 +41,6 @@ export class PlaylistComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.trackSub.unsubscribe();
-    console.log(`DESTRUCTIONNNN inside playlist component.`);
   }
 
 }

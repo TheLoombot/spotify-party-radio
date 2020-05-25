@@ -125,6 +125,10 @@ export class PlaylistService {
     const tracksRef = this.db.list(this.playlistUrl);
     const tracks = tracksRef.snapshotChanges().pipe(
       map( changes =>
+        // I think sometimes we don't get the correct/expected
+        // "key" here... the intended key is the track's key in 
+        // the playlist, but we sometimes see that the key is 
+        // instead the track's Spotify ID? This leads to bugs
         changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
         )
       );
@@ -132,13 +136,7 @@ export class PlaylistService {
   }
 
   getAllPreviousTracks() {
-    const tracksRef = this.db.list(this.previouslistUrl, ref=>ref.orderByChild('added_at'));
-
-    const tracks = tracksRef.snapshotChanges().pipe(
-      map( changes =>
-        changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
-        )
-      );
+    const tracks = this.db.list(this.previouslistUrl, ref=>ref.orderByChild('added_at')).valueChanges();
     return tracks;
   }
 
@@ -194,8 +192,10 @@ export class PlaylistService {
           console.log('not enough tracks to prune: ', tracks.length);
         } else {
           for (let track of tracks.slice(0,tracks.length-tracksToLeave)) {
-            console.log('pruning track', track.key);
-            this.db.list(this.previouslistUrl).remove(track.key);
+            // It turns out the track's key in the pool is just its
+            // track ID, so we can just remove(track.id)
+            console.log('pruning track', track.name);
+            this.db.list(this.previouslistUrl).remove(track.id);
           }        
         }
         getAllPreviousTracksSubscription.unsubscribe();
@@ -204,7 +204,6 @@ export class PlaylistService {
   }
 
   removeFromPool(key: string) {
-    // console.log('removing from pool ', key);
     this.db.list(this.previouslistUrl).remove(key);
   }
 
@@ -212,7 +211,6 @@ export class PlaylistService {
     const getAllPreviousTracksSubscription = this.getAllPreviousTracks()
     .subscribe(
       (tracks: Array<any>) => {
-
         if (tracks.length > 0) {
           const randomTrack: Track = tracks[Math.floor( Math.random() * tracks.length)] as Track;
           const now = this.getTime();

@@ -16,10 +16,14 @@ It integrates with Firebase, mostly to use Firebase's realtime database. I've al
 
 ## To run the app locally
 
+[Download Node/NPM LTS](https://nodejs.org/en/)
+
 1. Check out the project
-2. Use npm to install the angular cli (to build) and firebase tools (to deploy) (`npm install angular-cli` and `npm install firebase-tools`)
-3. Run `ng serve` for a dev server. This will work with `dev` environment by default. (You can also work with `prod` environment using `ng serve --prod` instead)
-4. Navigate to `http://localhost:4200/`. (You can get an access token [from a deployed instance of the app](https://poop-a1c0e.firebaseapp.com/))
+2. Install n: `npm install -g n` so we can choose which version of Node we want
+3. Install Node @ 12.16.3: `n 12.16.3`
+4. Run `npm install`
+5. Run `ng serve` for a dev server. This will work with `dev` environment by default. (You can also work with `prod` environment using `ng serve --prod` instead)
+6. Navigate to `http://localhost:4200/`. (You can get an access token [from a deployed instance of the app](https://poop-a1c0e.firebaseapp.com/))
 
 To build and deploy the app
 1. Run `ng build --prod; firebase deploy`. 

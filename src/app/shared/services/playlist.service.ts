@@ -277,10 +277,12 @@ export class PlaylistService {
 
   /** Method to increase counter */
   autoUpdatePlaylist() {
+    const now = this.getTime();    
+    // this.playerMetaRef.set({last_auto_added: `${now}`};
+
     this.playerMetaRef
     .transaction(
       (player: any) => {
-        const now = this.getTime();
         if (player) {
           if ( (now - player.last_auto_added) < 1000 ) {
             console.warn('autoUpdatePlaylist transaction should not update');
@@ -290,6 +292,9 @@ export class PlaylistService {
             return player;
           }
         } else {
+          player = {};
+          player.last_auto_added = now;
+          console.warn(`No player object on station?`);
           return player;
         }
       }

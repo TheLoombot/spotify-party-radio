@@ -1,11 +1,20 @@
-<!-- <ul *ngFor="let station of stations">
-  <li style="cursor: pointer" (click)="setStation(station.key)">
-      {{ station.key }}
-  </li>
-</ul> -->
 
-<ul *ngFor="let station of stations">
-  <li>
-    <a [routerLink]="" (click)="setStation(station.key)"> {{ station.key }} </a>
-  </li>
-</ul>
+<div class="scroll" style="overflow: auto; white-space: nowrap">
+
+  <div *ngFor="let station of stations" style="display: inline-block; cursor: pointer">
+    <div [class]="station.key == currentStation ? 'panel panel-primary' : 'panel panel-default'"  
+      style="width: 150px; margin-right: 10px"
+      (click)="setStation(station.key)">
+      <div class="panel-heading">{{ station.key }}</div>
+      <div class="panel-body">
+        <br />
+        Artist Name
+      </div>
+
+
+    </div>
+
+  </div>
+
+
+</div>

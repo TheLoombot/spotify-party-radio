@@ -135,6 +135,20 @@ export class PlaylistService {
     return tracks;
   }
 
+  getAllStations() {
+    const stationsRef = this.db.list(this.environment);
+    const stations = stationsRef.snapshotChanges().pipe(
+      map( changes =>
+        // I think sometimes we don't get the correct/expected
+        // "key" here... the intended key is the track's key in 
+        // the playlist, but we sometimes see that the key is 
+        // instead the track's Spotify ID? This leads to bugs
+        changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
+        )
+      );
+    return stations;
+  }
+
   getAllPreviousTracks() {
     const tracks = this.db.list(this.previouslistUrl, ref=>ref.orderByChild('added_at')).valueChanges();
     return tracks;
@@ -146,10 +160,6 @@ export class PlaylistService {
 
   getLastTracks(i: number) {
     return this.db.list(this.playlistUrl, ref => ref.limitToLast(i));
-  }
-
-  getStations() {
-    return this.db.list(`${this.environment}`).snapshotChanges();
   }
 
   pushTrack(track: any, userName) {

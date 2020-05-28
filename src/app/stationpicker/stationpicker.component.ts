@@ -21,11 +21,12 @@ export class StationpickerComponent implements OnInit {
 
   ngOnInit() {
     this.currentStation = this.playlistService.getStation();
-    this.stationSub = this.playlistService.getStations()
+    this.stationSub = this.playlistService.getAllStations()
     .subscribe(
       stations => {
         this.stations = stations;
         console.log(`Total stations: ${this.stations['length']}`);
+        console.log(this.stations[0].lists.playlist);
       },
       error => console.error('Playlist retrieves error: ', error)
       );

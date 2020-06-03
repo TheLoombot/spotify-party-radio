@@ -28,6 +28,8 @@ import { StateService } from './shared/services/state.service';
 /* Others */
 import { environment } from '../environments/environment';
 import { StationpickerComponent } from './stationpicker/stationpicker.component';
+import { PlayerpickerComponent } from './playerpicker/playerpicker.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -39,7 +41,8 @@ import { StationpickerComponent } from './stationpicker/stationpicker.component'
     RecosComponent,
     ToptracksComponent,
     AlertComponent,
-    StationpickerComponent
+    StationpickerComponent,
+    PlayerpickerComponent
   ],
   imports: [
     BrowserModule,
@@ -47,7 +50,8 @@ import { StationpickerComponent } from './stationpicker/stationpicker.component'
     FormsModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireDatabaseModule,
-    HttpClientModule
+    HttpClientModule,
+    NgbModule
   ],
   providers: [
     Title,

@@ -24,7 +24,7 @@
     "@angular/router": "^9.1.9",
     "@ng-bootstrap/ng-bootstrap": "^6.1.0",
     "angular": "^1.7.9",
-    "bootstrap": "^3.4.1",
+    "bootstrap": "^4.4.1",
     "core-js": "^2.5.4",
     "firebase": "^7.14.5",
     "firebase-tools": "^8.4.0",

@@ -1,1 +1,11 @@
-<p>playerpicker works!</p>
+<ngb-carousel #carousel (slide)="onSlide($event)" [showNavigationIndicators]="false" [showNavigationArrows]="true" [interval]="false">
+	<ng-template ngbSlide id={{station.key}} *ngFor="let station of stations; index as i">
+		<div class="carousel-caption">
+			<h3>{{ i }} {{ station.key }}</h3>
+		</div>
+    <img src="assets/placeholder_300.png" class="pull-left" style="margin-right: 10px">
+    <h3> {{ station.key }}  </h3>
+    some other content
+    <h2> {{ station }}  </h2>
+	</ng-template>
+</ngb-carousel>

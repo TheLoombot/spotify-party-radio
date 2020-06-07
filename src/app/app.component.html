@@ -5,25 +5,26 @@
 
   <div class="row"> 
 
+    <!-- it's kosher to nest columns in columns! --> 
     <div class="col-md-6"> 
-      <div class="row" *ngIf="appEnabled">
+      <div class="col-md-12" *ngIf="appEnabled">
         <app-stationpicker></app-stationpicker>
         <app-playerpicker></app-playerpicker>
       </div>
-      <div class="row" *ngIf="appEnabled && !stationLoading">
+      <div class="col-md-12" *ngIf="appEnabled && !stationLoading">
         <app-player></app-player>
       </div>
-      <div class="row" *ngIf="appEnabled && !stationLoading">
+      <div class="col-md-12" *ngIf="appEnabled && !stationLoading">
         <app-playlist></app-playlist>
       </div>
     </div>
 
     <div class="col-md-6"> 
-      <div class="row">
+      <div class="col-md-12">
         <!-- router outlet for login/profile component --> 
         <router-outlet></router-outlet>
       </div>
-      <div class="row" *ngIf="appEnabled">
+      <div class="col-md-12" *ngIf="appEnabled">
         <app-search></app-search>
       </div>
     </div>

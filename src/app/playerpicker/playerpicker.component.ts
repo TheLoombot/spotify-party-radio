@@ -45,25 +45,6 @@ export class PlayerpickerComponent implements OnInit {
   ngOnInit() {
     this.currentStation = this.playlistService.getStation();
 
-    this.playlistSub = this.playlistService.getFirstTracks(1).snapshotChanges()
-    .pipe(debounceTime(300))
-    .subscribe(
-      data => {
-        // console.log('Player data:', data);
-        if (data[0]) {
-          this.firstTrackKey = data[0].key;
-          this.firstTrack = data[0].payload.val();
-          // console.log(`First track ${this.firstTrackKey} is: ${this.firstTrack.name}`);
-          this.checkFirstTrack();
-        } else {
-          this.playlistService.autoUpdatePlaylist(); // handle empty playlist
-        }
-      },
-      error => {
-        console.log('playlist retrieve error:', error);
-      }
-      );
-
     this.stationSub = this.playlistService.getAllStations()
     .subscribe(
       stations => {
@@ -71,8 +52,10 @@ export class PlayerpickerComponent implements OnInit {
         console.log(`Total stations: ${this.stations['length']}`);
         // console.log(this.stations);
       },
-      error => console.error('Playlist retrieves error: ', error)
+      error => console.error('Stations retrieve error: ', error)
       );
+
+    this.subscribeToPlaylist();
 
     this.progressSub = interval(1000)
     .subscribe(
@@ -102,13 +85,44 @@ export class PlayerpickerComponent implements OnInit {
   }
 
   onSlide(slideEvent: NgbSlideEvent) {
-    console.log(`slide events, yo`);
+    this.showNowPlaying = false;
+    this.spotifyService.pauseTrack()
+    .subscribe(
+      () => {},
+      error => {
+        console.error('Failed to pause track ', error);
+      }
+      );
+    this.timeOutSubs.forEach(id => clearTimeout(id));
+    this.playlistSub.unsubscribe();
     this.stateService.sendState({ enabled: true, loading: true, station: slideEvent.current });
     this.playlistService.setStation(slideEvent.current);
     setTimeout(() => {
       this.stateService.sendState({ enabled: true, loading: false, station: slideEvent.current });
     }, 1);
     this.currentStation = slideEvent.current;
+    this.subscribeToPlaylist();
+  }
+
+  subscribeToPlaylist() {
+    this.playlistSub = this.playlistService.getFirstTracks(1).snapshotChanges()
+    .pipe(debounceTime(300))
+    .subscribe(
+      data => {
+        // console.log('Player data:', data);
+        if (data[0]) {
+          this.firstTrackKey = data[0].key;
+          this.firstTrack = data[0].payload.val();
+          console.log(`First track ${this.firstTrackKey} is: ${this.firstTrack.name}`);
+          this.checkFirstTrack();
+        } else {
+          this.playlistService.autoUpdatePlaylist(); // handle empty playlist
+        }
+      },
+      error => {
+        console.log('playlist retrieve error:', error);
+      }
+      );
   }
 
   private setTitle(title: string) {

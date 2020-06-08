@@ -1,11 +1,34 @@
 <ngb-carousel #carousel (slide)="onSlide($event)" [showNavigationIndicators]="false" [showNavigationArrows]="true" [interval]="false">
-	<ng-template ngbSlide id={{station.key}} *ngFor="let station of stations; index as i">
-		<div class="carousel-caption">
-			<h3>{{ i }} {{ station.key }}</h3>
-		</div>
-    <img src="assets/placeholder_300.png" class="pull-left" style="margin-right: 10px">
-    <h3> {{ station.key }}  </h3>
-    some other content
-    <h2> {{ station }}  </h2>
-	</ng-template>
+    <ng-template ngbSlide id={{station.key}} *ngFor="let station of stations; index as i">
+        <div class="card w-100 bg-dark">
+            <div class="card-header text-white"> Now Playing: Radio {{ station.key }}</div>
+            <div class="card-body">
+                <div class="card w-75 mx-auto">
+                    <img class="card-img-top" *ngIf="showNowPlaying" src="{{ nowPlaying.album.images[0].url }}">
+                    <div class="card-body">
+                        <h4>{{ nowPlaying.name }} </h4>
+                        <h5> {{ nowPlaying.artists[0].name }} - 
+                            <a target="_blank" href="{{ nowPlaying.album.external_urls.spotify }}">{{ nowPlaying.album.name }}</a>
+                        </h5>
+                        <div class="progress">
+                          <div class="progress-bar " role="progressbar" [style.width]="progress + '%'" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+
+                        <ng-template [ngIf]="firstTrack?.player?.auto" [ngIfElse]="notRobot">
+                          <small class="text-muted small float-right my-3"> 
+                            🤖 (via {{ firstTrack.added_by }})
+                          </small>
+                        </ng-template>
+                        <ng-template #notRobot>
+                          <small class="text-muted small float-right my-3"> 
+                            {{ firstTrack.added_by }} 
+                          </small>
+                        </ng-template>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </ng-template>
 </ngb-carousel>

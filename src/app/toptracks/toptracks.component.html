@@ -7,7 +7,7 @@
         <img class="float-left" src="{{ track.album.images[2].url }}">
         <span class="float-right fa" 
           [class.fa-plus]="clicked !== i"
-          [class.fa-ok]="clicked === i">
+          [class.fa-check]="clicked === i">
         </span>
         <h5 class="card-title">{{ track.name }} </h5>
         <h6 class="card-subtitle">{{ track.artists[0].name }} - {{ track.album.name }}</h6>

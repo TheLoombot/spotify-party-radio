@@ -1,24 +1,24 @@
-<div class="panel panel-default">
-  <ng-template [ngIf]="user && availableToken">
-    <div class="panel-heading" *ngIf="!username">
-      {{ username }}
-    </div>
-    <div class="panel-body">
-      <img id="user-img" class="pull-left" *ngIf="user.images?.length" src="{{ user.images[0].url }}">
-      <h5> You've got {{ user.product }} access.</h5>
-      <h5>
-        <a (click)="killToken()">Sign Out</a>
-      </h5>
-      <h5 *ngIf="!isLocalhost">
-        <a href="http://localhost:4200/#access_token={{ accessTokenNew ? accessTokenNew : accessTokenStored}}">Apply to localhost</a>
-      </h5>
-    </div>
-  </ng-template>
-
-  <div class="panel-body" *ngIf="!availableToken">
-    <button class="btn btn-default"
-      (click)="authSpotify()">
-      Sign in with Spotify
-    </button>
+<div class="card w-100" *ngIf="user && availableToken">
+  <div class="card-header">
+    {{ username }}
   </div>
-</div> 
+  <div class="card-body">
+    <img id="user-img" class="rounded float-left mx-1" *ngIf="user.images?.length" src="{{ user.images[0].url }}">
+    <p class="card-text"> You've got {{ user.product }} access.</p>
+    <a href="#" class="btn btn-primary mx-1" (click)="killToken()">Sign Out</a>
+
+    <a href="http://localhost:4200/#access_token={{ accessTokenNew ? accessTokenNew : accessTokenStored}}" class="btn btn-primary mx-1" *ngIf="!isLocalhost"> Apply to localhost</a>
+
+  </div>
+</div>
+
+<div class="card w-100" *ngIf="!availableToken">
+  <div class="card-header">
+    Signed out
+  </div>
+  <div class="card-body">
+    <a href="#" class="btn btn-primary mx-1" (click)="authSpotify()">
+      Sign in with Spotify
+    </a>
+  </div>
+</div>

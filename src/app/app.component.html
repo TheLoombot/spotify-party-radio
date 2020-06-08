@@ -2,26 +2,32 @@
 <div class="container">
   <h1>Spotify Party Radio (<a href="https://github.com/TheLoombot/spotify-party-radio">GitHub</a>)</h1>
   <app-alert *ngIf="!appEnabled"></app-alert>
-  <div class="row">
+
+  <div class="row"> 
+
+    <!-- it's kosher to nest columns in columns! --> 
     <div class="col-md-6"> 
-      <div class="row">
-        <div class="col-md-12" *ngIf="appEnabled">
-          <app-stationpicker></app-stationpicker>
-        </div>
-        <div class="col-md-12" *ngIf="appEnabled && !stationLoading">
-          <app-player></app-player>
-        </div>
-        <div class="col-md-12" *ngIf="appEnabled && !stationLoading">
-          <app-playlist></app-playlist>
-        </div>
+      <div class="col-md-12 my-3" *ngIf="appEnabled">
+        <app-playerpicker></app-playerpicker>
+      </div>
+      <div class="col-md-12 my-3" *ngIf="appEnabled && !stationLoading">
+        <app-playlist></app-playlist>
       </div>
     </div>
-    <div class="col-md-6">
-      <router-outlet></router-outlet>
+
+    <div class="col-md-6"> 
+      <div class="col-md-12 my-3">
+        <!-- router outlet for login/profile component --> 
+        <router-outlet></router-outlet>
+      </div>
+      <div class="col-md-12 my-3" *ngIf="appEnabled">
+        <app-search></app-search>
+      </div>
     </div>
-    <div class="col-md-6" *ngIf="appEnabled">
-      <app-search></app-search>
-    </div>
+
+
   </div>
+
+
 </div>
 

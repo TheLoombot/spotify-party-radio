@@ -1,26 +1,26 @@
-<div class="panel panel-default">
-  <div class="panel-heading">Add tracks</div>
-  <div class="panel-body">
+<div class="card w-100">
+  <div class="card-header">Add tracks</div>
+  <div class="card-body">
     <input type="search" class="form-control" style="font-size: 16px;" 
       spellcheck="false" placeholder="Search"
       (keyup)="newSearch($event.target.value, 0)"
       (search)="newSearch($event.target.value)">
     <br/> 
-    <div *ngIf="tracks?.length" class="panel panel-primary">
-      <div class="panel-heading">Search Results:
-        <span style="cursor: pointer" class="button pull-right glyphicon glyphicon-chevron-right"
-        (click)="nextPage()" *ngIf="curOffset + pageSize < results.tracks.total"></span>
-        <span style="cursor: pointer" class="pull-right glyphicon glyphicon-chevron-left"
+    <div *ngIf="tracks?.length" class="card w-100 ">
+      <div class="card-header">Search Results:
+        <span style="cursor: pointer" class="button float-right fa fa-chevron-right text-primary"
+        (click)="nextPage()" *ngIf="curOffset + pageSize < results.tracks.total"></span> 
+        <span style="cursor: pointer" class="float-right fa fa-chevron-left text-primary mx-3"
         (click)="prevPage()" *ngIf="curOffset > 0" ></span>
       </div>
-      <div class="panel-body text-primary">
-        <div class="panel panel-primary" *ngFor="let track of tracks; let i = index" >
-          <div (click)="pushTrack(track, i)" class="panel-body" style="cursor: pointer">   
-            <img src="{{ track.image_url }}" class="pull-left" style="margin-right: 10px">
-            <span class="pull-right glyphicon" [class.glyphicon-plus]="clicked !== i"
-            [class.glyphicon-ok]="clicked === i"></span>
-            <h4>{{ track.name }}</h4>
-            <h5>{{ track.artists[0].name }} - {{ track.album.name }}</h5>
+      <div class="card-body text-primary">
+        <div class="card mb-3 border-primary" *ngFor="let track of tracks; let i = index" >
+          <div (click)="pushTrack(track, i)" class="card-body" style="cursor: pointer">   
+            <img src="{{ track.image_url }}" class="float-left" style="margin-right: 10px">
+            <span class="float-right fa" [class.fa-plus]="clicked !== i"
+            [class.fa-check]="clicked === i"></span>
+            <h5 class="card-title">{{ track.name }}</h5>
+            <h6 class="card-subtitle">{{ track.artists[0].name }} - {{ track.album.name }}</h6>
           </div>
         </div>
       </div>

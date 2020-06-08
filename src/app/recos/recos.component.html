@@ -1,23 +1,23 @@
-<div class="panel panel-primary">
-  <div class="panel-heading">Some recommendations:
-    <span id="refresh-btn" class="pull-right glyphicon glyphicon-refresh"
+<div class="card w-100 mb-3">
+  <div class="card-header">Some recommendations:
+    <span id="refresh-btn" class="float-right fa fa-refresh text-primary"
       (click)="refreshRecommendations()">
     </span>
   </div>
-  <div class="panel-body text-primary" *ngIf="!recommendations">
+  <div class="card-body" *ngIf="!recommendations">
     <div class="well">Loading Recommendations...</div>
   </div>
-  <div class="panel-body text-primary" *ngIf="recommendations">
-    <div class="panel panel-primary" *ngFor="let track of recommendations; let i = index" >
-      <div class="panel-body" style="cursor: pointer" 
+  <div class="card-body text-primary" *ngIf="recommendations">
+    <div class="card mb-3 border-primary" *ngFor="let track of recommendations; let i = index" >
+      <div class="card-body" style="cursor: pointer" 
         (click)="pushTrack(track, i)">   
-        <img src="{{ track.album.images[2].url }}" class="pull-left">
-        <span class="pull-right glyphicon" 
-          [class.glyphicon-plus]="clicked !== i"
-          [class.glyphicon-ok]="clicked === i">
+        <img src="{{ track.album.images[2].url }}" class="float-left">
+        <span class="float-right fa" 
+          [class.fa-plus]="clicked !== i"
+          [class.fa-check]="clicked === i">
         </span>
-        <h4>{{ track.name }}</h4>
-        <h5>{{ track.artists[0].name }} - {{ track.album.name }}</h5>
+        <h5 class="card-title">{{ track.name }}</h5>
+        <h6 class="card-subtitle">{{ track.artists[0].name }} - {{ track.album.name }}</h6>
       </div>
     </div>
   </div>

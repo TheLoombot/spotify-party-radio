@@ -1,14 +1,14 @@
-<div class="panel panel-default">
-  <div class="panel-heading">Up next</div>
-  <div class="panel-body" *ngIf="tracks">
-    <div class="panel panel-default" *ngFor="let track of tracks | slice:1; index as i; last as isLast" >
-      <div class="panel-body">
-        <img src="{{ track.image_url }}" class="pull-left" style="margin-right: 10px">
-        <h4> {{ track.name }} </h4>
-        <h5> {{ track.artist_name }} - {{ track.album_name }} </h5>
-        <span class="glyphicon glyphicon-remove pull-right text-primary" style="cursor: pointer" (click)="removeTrack(track, i)"></span>
+<div class="card w-100 mb-3">
+  <div class="card-header">Up next</div>
+  <div class="card-body" *ngIf="tracks">
+    <div class="card mb-3" *ngFor="let track of tracks | slice:1; index as i; last as isLast" >
+      <div class="card-body">
+        <img src="{{ track.image_url }}" class="float-left" style="margin-right: 10px">
+        <h5 class="card-title"> {{ track.name }} </h5>
+        <h6 class="card-subtitle"> {{ track.artist_name }} - {{ track.album_name }} </h6>
+        <span class="fa fa-remove float-right text-primary" style="cursor: pointer" (click)="removeTrack(track, i)"></span>
       </div>
     </div>
-    <h5 *ngIf="tracks.length<2">Add a track or else the job goes to a robot</h5>
+    <h5 class="card-title" *ngIf="tracks.length<2">Add a track or else the job goes to a robot</h5>
   </div>
 </div>

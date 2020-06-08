@@ -8,17 +8,17 @@
     <br/> 
     <div *ngIf="tracks?.length" class="card w-100 ">
       <div class="card-header">Search Results:
-        <span style="cursor: pointer" class="button float-right glyphicon glyphicon-chevron-right"
-        (click)="nextPage()" *ngIf="curOffset + pageSize < results.tracks.total"></span>
-        <span style="cursor: pointer" class="float-right glyphicon glyphicon-chevron-left"
+        <span style="cursor: pointer" class="button float-right fa fa-chevron-right text-primary"
+        (click)="nextPage()" *ngIf="curOffset + pageSize < results.tracks.total"></span> 
+        <span style="cursor: pointer" class="float-right fa fa-chevron-left text-primary mx-3"
         (click)="prevPage()" *ngIf="curOffset > 0" ></span>
       </div>
       <div class="card-body text-primary">
         <div class="card mb-3 border-primary" *ngFor="let track of tracks; let i = index" >
           <div (click)="pushTrack(track, i)" class="card-body" style="cursor: pointer">   
             <img src="{{ track.image_url }}" class="float-left" style="margin-right: 10px">
-            <span class="float-right glyphicon" [class.glyphicon-plus]="clicked !== i"
-            [class.glyphicon-ok]="clicked === i"></span>
+            <span class="float-right fa" [class.fa-plus]="clicked !== i"
+            [class.fa-check]="clicked === i"></span>
             <h5 class="card-title">{{ track.name }}</h5>
             <h6 class="card-subtitle">{{ track.artists[0].name }} - {{ track.album.name }}</h6>
           </div>

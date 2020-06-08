@@ -86,6 +86,7 @@ export class PlayerpickerComponent implements OnInit {
 
   skipTrack(key: string): void {
     console.log(`Skipping and removing ${this.firstTrack.name} from pool `);
+    this.showNowPlaying = false;
     this.playlistService.removeFromPool(this.firstTrack.id);
     this.spotifyService.pauseTrack()
     .subscribe(
@@ -95,7 +96,6 @@ export class PlayerpickerComponent implements OnInit {
       }
       );
     this.timeOutSubs.forEach(id => clearTimeout(id));
-    this.showNowPlaying = false;
     this.playlistService.remove(key, 0);
     this.showSkip = false;
     this.firstTrack = null;

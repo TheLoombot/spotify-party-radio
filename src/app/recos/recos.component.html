@@ -1,6 +1,6 @@
 <div class="card w-100 mb-3">
   <div class="card-header">Some recommendations:
-    <span id="refresh-btn" class="float-right glyphicon glyphicon-refresh"
+    <span id="refresh-btn" class="float-right fa fa-refresh text-primary"
       (click)="refreshRecommendations()">
     </span>
   </div>
@@ -12,9 +12,9 @@
       <div class="card-body" style="cursor: pointer" 
         (click)="pushTrack(track, i)">   
         <img src="{{ track.album.images[2].url }}" class="float-left">
-        <span class="float-right glyphicon" 
-          [class.glyphicon-plus]="clicked !== i"
-          [class.glyphicon-ok]="clicked === i">
+        <span class="float-right fa" 
+          [class.fa-plus]="clicked !== i"
+          [class.fa-check]="clicked === i">
         </span>
         <h5 class="card-title">{{ track.name }}</h5>
         <h6 class="card-subtitle">{{ track.artists[0].name }} - {{ track.album.name }}</h6>

@@ -103,7 +103,7 @@ export class SpotifyService {
 
   searchEntries(term: string, offset: number) {
     console.log(`🕵🏽‍♀️${term}, offset - ${offset}`);
-    return this.http.get(this.baseUrl + '/search?type=track,album,artist&offset=' + offset + '&limit=5&q=' + term);
+    return this.http.get(this.baseUrl + '/search?type=track,album,artist&offset=' + offset + '&limit=3&q=' + term);
   }
 
   playTrack(uri: string) {
@@ -125,14 +125,14 @@ export class SpotifyService {
 
   getRecos(ids: string) {
     if (ids) {
-      return this.http.get(this.baseUrl + '/recommendations?limit=5&min_popularity=50&seed_tracks=' + ids);
+      return this.http.get(this.baseUrl + '/recommendations?limit=3&min_popularity=50&seed_tracks=' + ids);
     } else {
       return of([]);
     }
   }
 
   getTopTracks() {
-    return this.http.get(this.baseUrl + '/me/top/tracks?limit=5&time_range=short_term');
+    return this.http.get(this.baseUrl + '/me/top/tracks?limit=3&time_range=short_term');
   }
 
   getTrackById(id: string) {

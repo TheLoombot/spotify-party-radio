@@ -32,7 +32,7 @@ export class SearchComponent implements OnInit {
     private stateService: StateService,
     private cdr: ChangeDetectorRef,
     ) {
-    this.pageSize = 5;
+    this.pageSize = 3;
   }
 
   ngOnInit() {

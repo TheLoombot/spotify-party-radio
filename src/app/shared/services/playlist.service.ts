@@ -86,6 +86,13 @@ export class PlaylistService {
         // console.log('Recalculating expiration times for ', data.length, 'tracks, from ', i, 'onwards  ' );
         if (data.length && (i < data.length)) {
           for (let j = i ; j < data.length ; j++) {
+            const timeToExpiration = this.getTime() - data[j]['expires_at'];
+            if (timeToExpiration > 0) {
+              // Track has expired
+              console.log(`${data[j]['name']} expired, not updating expiration time!`);
+              return;
+            }
+
             if (data[j - 1]) {
               // console.log('track ', j, ' expiration time is', data[j]['expires_at'], ' with duration ', data[j]['duration_ms']);
               // console.log('prior track expires at: ', data[j-1]['expires_at']);

@@ -49,7 +49,7 @@ export class PlayerpickerComponent implements OnInit {
     .subscribe(
       stations => {
         this.stations = stations;
-        console.log(`Total stations: ${this.stations['length']}`);
+        // console.log(`Total stations: ${this.stations['length']}`);
         // For some reason we have to set the carousel this way SHRUGS:
         setTimeout( () => {
           this.carousel.select(this.currentStation);

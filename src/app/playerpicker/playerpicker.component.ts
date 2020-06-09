@@ -50,6 +50,10 @@ export class PlayerpickerComponent implements OnInit {
       stations => {
         this.stations = stations;
         console.log(`Total stations: ${this.stations['length']}`);
+        // For some reason we have to set the carousel this way SHRUGS:
+        setTimeout( () => {
+          this.carousel.select(this.currentStation);
+        });
         // console.log(this.stations);
       },
       error => console.error('Stations retrieve error: ', error)
@@ -113,7 +117,6 @@ export class PlayerpickerComponent implements OnInit {
         if (data[0]) {
           this.firstTrackKey = data[0].key;
           this.firstTrack = data[0].payload.val();
-          console.log(`First track ${this.firstTrackKey} is: ${this.firstTrack.name}`);
           this.checkFirstTrack();
         } else {
           this.playlistService.autoUpdatePlaylist(); // handle empty playlist

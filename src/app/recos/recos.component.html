@@ -4,8 +4,12 @@
       (click)="refreshRecommendations()">
     </span>
   </div>
-  <div class="card-body" *ngIf="!recommendations">
-    <div class="well">Loading Recommendations...</div>
+  <div class="card-body" *ngIf="!recommendations?.length">
+    <div class="d-flex justify-content-center">
+      <div class="spinner-border text-secondary" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
   </div>
   <div class="card-body text-primary" *ngIf="recommendations">
     <div class="card mb-3 border-primary" *ngFor="let track of recommendations; let i = index" >

@@ -84,6 +84,10 @@ export class SpotifyService {
     return this.http.get(this.baseUrl + '/me/player/currently-playing');
   }
 
+  getUserPlaylists() { 
+    return this.http.get(this.baseUrl + '/users/' + this.user.id + '/playlists');
+  }
+
   getAuthUrl(): string {
     this.authorizeURL += '?' + 'client_id=' + this.clientId;
     this.authorizeURL += '&response_type=' + this.responseType;

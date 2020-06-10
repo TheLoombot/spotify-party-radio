@@ -30,6 +30,7 @@ import { environment } from '../environments/environment';
 import { StationpickerComponent } from './stationpicker/stationpicker.component';
 import { PlayerpickerComponent } from './playerpicker/playerpicker.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { UserPlaylistsComponent } from './user-playlists/user-playlists.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     ToptracksComponent,
     AlertComponent,
     StationpickerComponent,
-    PlayerpickerComponent
+    PlayerpickerComponent,
+    UserPlaylistsComponent
   ],
   imports: [
     BrowserModule,

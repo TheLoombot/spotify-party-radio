@@ -23,6 +23,7 @@ export class UserPlaylistsComponent implements OnInit {
 	curPlaylistTracks;
 	curPlaylist$ = new Subject<string>();
 	curPlaylistName: string;
+  clicked = -1;
 
 	constructor(
 		private spotifyService: SpotifyService,
@@ -55,7 +56,7 @@ export class UserPlaylistsComponent implements OnInit {
 		.subscribe(
 			tracks => {
 				this.curPlaylistTracks = tracks;
-				console.log(this.curPlaylistTracks.items);
+				// console.log(this.curPlaylistTracks.items);
 			},
 			error => {
 				this.userPlaylistsError = error.error.error;
@@ -82,16 +83,32 @@ export class UserPlaylistsComponent implements OnInit {
 		this.tracksOffset$.next(this.curTracksOffset);
 		this.curPlaylistName = playlist['name'];
 		this.curPlaylist$.next(playlist['id']);
+		this.clicked = -1;
 	}
 
 	nextTracksPage() {
 		this.curTracksOffset += this.pageSize;
 		this.tracksOffset$.next(this.curTracksOffset);
+		this.clicked = -1;
 	}
 
 	prevTracksPage() { 
 		this.curTracksOffset -= this.pageSize;
 		this.tracksOffset$.next(this.curTracksOffset);
+		this.clicked = -1;
 	}
+
+	back() {
+		this.curPlaylistTracks = null;
+		this.curPlaylist$.next('');
+		this.clicked = -1;
+	}
+
+	pushTrack(track: Object, i: number) {
+	  const user = this.spotifyService.getUser();
+	  this.clicked = i;
+	  this.playlistSvc.pushTrack(track, user);
+	}
+
 
 }

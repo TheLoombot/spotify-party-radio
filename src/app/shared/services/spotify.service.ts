@@ -107,10 +107,12 @@ export class SpotifyService {
     return this.http.get(this.baseUrl + '/search?type=track,album,artist&offset=' + offset + '&limit=3&q=' + term);
   }
 
+  // I don't know why but for some reason on this request we have to be explicit
+  // about the fields we want, track.album.images[] doesn't come down automatically :(
   getTracksForPlaylist(playlistId: Observable<string>, offset: Observable<number>) {
     return combineLatest(playlistId, offset)
     .pipe(switchMap(([playlistId, offset]) => (playlistId) ?
-      this.http.get(this.baseUrl + '/playlists/' + playlistId + '/tracks?limit=3&fields=total,items(track(name,artists,href,images,album(name,images)))&offset=' + offset)
+      this.http.get(this.baseUrl + '/playlists/' + playlistId + '/tracks?limit=3&fields=total,items(track(name,duration_ms,artists,id,uri,href,images,album(name,images,external_urls(spotify))))&offset=' + offset)
       :
       of([])
       ));

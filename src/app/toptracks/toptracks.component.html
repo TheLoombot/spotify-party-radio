@@ -1,5 +1,5 @@
 <div *ngIf="topTracksEnabled" class="card w-100">
-  <div class="card-header">Your top Spotify tracks:</div>
+  <div class="card-header">Your top Spotify tracks</div>
   <div class="card-body text-primary" *ngIf="topTracks?.items">
     <div class="card mb-3 border-primary" *ngFor="let track of topTracks.items; let i = index">
       <div class="card-body" style="cursor: pointer"

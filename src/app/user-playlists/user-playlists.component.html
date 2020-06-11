@@ -18,3 +18,27 @@
     </div>
   </div>
 </div>
+
+<div *ngIf="userPlaylists?.items" class="card w-100">
+  <div class="card-header">{{ curPlaylistName }}: {{curPlaylistTracks?.total}} 
+  <span style="cursor: pointer" class="button float-right fa fa-chevron-right text-primary"
+  (click)="nextTracksPage()" *ngIf="curTracksOffset + pageSize < curPlaylistTracks?.total"></span> 
+  <span style="cursor: pointer" class="float-right fa fa-chevron-left text-primary mx-3"
+  (click)="prevTracksPage()" *ngIf="curTracksOffset > 0" ></span>
+</div>
+  <div class="card-body text-primary">
+    <div class="card mb-3 border-primary" *ngFor="let track of curPlaylistTracks.items; let i = index">
+      <div class="card-body" style="cursor: pointer"
+        (click)="addTrack(track)">
+        <img width="64" class="float-left mr-2" src="{{ track.track.album.images[2].url }}">
+        <span class="float-right fa" 
+          [class.fa-plus]="clicked !== i"
+          [class.fa-check]="clicked === i">
+        </span>
+        <h5 class="card-title">{{ track.track.name }} </h5>
+        <h6 class="card-subtitle">{{ track.track.artists[0].name}} -
+        {{ track.track.album.name }} </h6>
+      </div>
+    </div>
+  </div>
+</div>

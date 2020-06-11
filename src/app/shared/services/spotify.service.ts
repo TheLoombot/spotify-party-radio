@@ -22,20 +22,20 @@ export class SpotifyService {
   responseType: string;
   redirectURI = 'https://' + window.location.hostname;
   scope = [
-    'user-read-email',
-    'user-read-currently-playing',
-    'user-modify-playback-state',
-    'streaming',
-    'user-read-playback-state',
-    'user-read-private',
-    'user-top-read',
-    'playlist-read-private'
+  'user-read-email',
+  'user-read-currently-playing',
+  'user-modify-playback-state',
+  'streaming',
+  'user-read-playback-state',
+  'user-read-private',
+  'user-top-read',
+  'playlist-read-private'
   ].join('%20');
   baseUrl: string;
 
   constructor(
     private http: HttpClient
-  ) {
+    ) {
     this.token = '';
     this.tokenSubject = new Subject<any>();
     this.clientId = environment.spotify.clientId;
@@ -96,15 +96,24 @@ export class SpotifyService {
   search(terms: Observable<string>, offset: Observable<number>) {
     return combineLatest(offset, terms.pipe(debounceTime(400), distinctUntilChanged()))
     .pipe(switchMap(([offset, term]) => (term && term.trim().length > 0) ?
-    this.searchEntries(term, offset)
-    :
-    of([])
-    ));
+      this.searchEntries(term, offset)
+      :
+      of([])
+      ));
   }
 
   searchEntries(term: string, offset: number) {
     console.log(`🕵🏽‍♀️${term}, offset - ${offset}`);
     return this.http.get(this.baseUrl + '/search?type=track,album,artist&offset=' + offset + '&limit=3&q=' + term);
+  }
+
+  getTracksForPlaylist(playlistId: Observable<string>, offset: Observable<number>) {
+    return combineLatest(playlistId, offset)
+    .pipe(switchMap(([playlistId, offset]) => (playlistId) ?
+      this.http.get(this.baseUrl + '/playlists/' + playlistId + '/tracks?limit=3&fields=total,items(track(name,artists,href,images,album(name,images)))&offset=' + offset)
+      :
+      of([])
+      ));
   }
 
   getUserPlaylists(offset: Observable<number>) { 

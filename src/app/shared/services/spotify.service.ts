@@ -22,19 +22,20 @@ export class SpotifyService {
   responseType: string;
   redirectURI = 'https://' + window.location.hostname;
   scope = [
-    'user-read-email',
-    'user-read-currently-playing',
-    'user-modify-playback-state',
-    'streaming',
-    'user-read-playback-state',
-    'user-read-private',
-    'user-top-read'
+  'user-read-email',
+  'user-read-currently-playing',
+  'user-modify-playback-state',
+  'streaming',
+  'user-read-playback-state',
+  'user-read-private',
+  'user-top-read',
+  'playlist-read-private'
   ].join('%20');
   baseUrl: string;
 
   constructor(
     private http: HttpClient
-  ) {
+    ) {
     this.token = '';
     this.tokenSubject = new Subject<any>();
     this.clientId = environment.spotify.clientId;
@@ -95,15 +96,30 @@ export class SpotifyService {
   search(terms: Observable<string>, offset: Observable<number>) {
     return combineLatest(offset, terms.pipe(debounceTime(400), distinctUntilChanged()))
     .pipe(switchMap(([offset, term]) => (term && term.trim().length > 0) ?
-    this.searchEntries(term, offset)
-    :
-    of([])
-    ));
+      this.searchEntries(term, offset)
+      :
+      of([])
+      ));
   }
 
   searchEntries(term: string, offset: number) {
     console.log(`🕵🏽‍♀️${term}, offset - ${offset}`);
     return this.http.get(this.baseUrl + '/search?type=track,album,artist&offset=' + offset + '&limit=3&q=' + term);
+  }
+
+  // I don't know why but for some reason on this request we have to be explicit
+  // about the fields we want, track.album.images[] doesn't come down automatically :(
+  getTracksForPlaylist(playlistId: Observable<string>, offset: Observable<number>) {
+    return combineLatest(playlistId, offset)
+    .pipe(switchMap(([playlistId, offset]) => (playlistId) ?
+      this.http.get(this.baseUrl + '/playlists/' + playlistId + '/tracks?limit=3&fields=total,items(track(name,duration_ms,artists,id,uri,href,images,album(name,images,external_urls(spotify))))&offset=' + offset)
+      :
+      of([])
+      ));
+  }
+
+  getUserPlaylists(offset: Observable<number>) { 
+    return offset.pipe(switchMap(offset => this.http.get(this.baseUrl + '/me/playlists?limit=3&offset=' + offset)));
   }
 
   playTrack(uri: string) {

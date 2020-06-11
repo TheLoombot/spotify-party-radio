@@ -7,7 +7,7 @@
       (search)="newSearch($event.target.value)">
     <br/> 
     <div *ngIf="tracks?.length" class="card w-100 ">
-      <div class="card-header">Search Results:
+      <div class="card-header">Results
         <span style="cursor: pointer" class="button float-right fa fa-chevron-right text-primary"
         (click)="nextPage()" *ngIf="curOffset + pageSize < results.tracks.total"></span> 
         <span style="cursor: pointer" class="float-right fa fa-chevron-left text-primary mx-3"

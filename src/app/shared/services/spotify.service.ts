@@ -28,7 +28,8 @@ export class SpotifyService {
     'streaming',
     'user-read-playback-state',
     'user-read-private',
-    'user-top-read'
+    'user-top-read',
+    'playlist-read-private'
   ].join('%20');
   baseUrl: string;
 
@@ -84,10 +85,6 @@ export class SpotifyService {
     return this.http.get(this.baseUrl + '/me/player/currently-playing');
   }
 
-  getUserPlaylists() { 
-    return this.http.get(this.baseUrl + '/users/' + this.user.id + '/playlists');
-  }
-
   getAuthUrl(): string {
     this.authorizeURL += '?' + 'client_id=' + this.clientId;
     this.authorizeURL += '&response_type=' + this.responseType;
@@ -108,6 +105,10 @@ export class SpotifyService {
   searchEntries(term: string, offset: number) {
     console.log(`🕵🏽‍♀️${term}, offset - ${offset}`);
     return this.http.get(this.baseUrl + '/search?type=track,album,artist&offset=' + offset + '&limit=3&q=' + term);
+  }
+
+  getUserPlaylists(offset: Observable<number>) { 
+    return offset.pipe(switchMap(offset => this.http.get(this.baseUrl + '/me/playlists?limit=3&offset=' + offset)));
   }
 
   playTrack(uri: string) {

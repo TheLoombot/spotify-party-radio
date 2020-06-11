@@ -23,7 +23,7 @@ export class UserPlaylistsComponent implements OnInit {
 	curPlaylistTracks;
 	curPlaylist$ = new Subject<string>();
 	curPlaylistName: string;
-  clicked = -1;
+  	clicked = -1;
 
 	constructor(
 		private spotifyService: SpotifyService,

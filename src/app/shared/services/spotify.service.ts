@@ -29,7 +29,8 @@ export class SpotifyService {
   'user-read-playback-state',
   'user-read-private',
   'user-top-read',
-  'playlist-read-private'
+  'playlist-read-private',
+  'playlist-read-collaborative'
   ].join('%20');
   baseUrl: string;
 

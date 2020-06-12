@@ -1,4 +1,4 @@
-<div *ngIf="userPlaylists?.items" class="card w-100">
+<div *ngIf="userPlaylists?.items" class="card w-100 mb-3">
   <div class="card-header">
     <span *ngIf="!curPlaylistTracks?.items">Playlists</span>
     <a [routerLink]="" *ngIf="curPlaylistTracks?.items" (click)="back()">Playlists</a>

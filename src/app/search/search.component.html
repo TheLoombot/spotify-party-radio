@@ -1,4 +1,4 @@
-<div class="card w-100">
+<div class="card w-100 mb-3">
   <div class="card-header">Add tracks</div>
   <div class="card-body">
     <input type="search" class="form-control" style="font-size: 16px;" 
@@ -6,8 +6,8 @@
       (keyup)="newSearch($event.target.value, 0)"
       (search)="newSearch($event.target.value)">
     <br/> 
-    <div *ngIf="tracks?.length" class="card w-100 ">
-      <div class="card-header">Results
+    <div *ngIf="tracks?.length" class="card w-100 mb-3">
+      <div class="card-header">Search Results
         <span style="cursor: pointer" class="button float-right fa fa-chevron-right text-primary"
         (click)="nextPage()" *ngIf="curOffset + pageSize < results.tracks.total"></span> 
         <span style="cursor: pointer" class="float-right fa fa-chevron-left text-primary mx-3"
@@ -26,6 +26,7 @@
       </div>
 
     </div>
-    <app-recos *ngIf="!tracks?.length && !stationLoading"></app-recos>
+    <app-user-playlists></app-user-playlists>
+    <app-recos *ngIf="!stationLoading"></app-recos>
   </div>
 </div>

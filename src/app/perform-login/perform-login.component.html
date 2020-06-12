@@ -1,18 +1,13 @@
-<div class="card w-100" *ngIf="user && availableToken">
-  <div class="card-header">
+<div class="media h-100" *ngIf="user && availableToken">
+  <div class="media-body h-100 align-self-center text-right">
+    <a href="http://localhost:4200/#access_token={{ accessTokenNew ? accessTokenNew : accessTokenStored}}" class="btn btn-sm btn-secondary mx-1" *ngIf="!isLocalhost"> Apply to localhost</a>
+    <a href="#" class="btn btn-primary btn-sm mx-1" (click)="killToken()">Sign Out</a>
     {{ username }}
   </div>
-  <div class="card-body">
-    <img id="user-img" class="rounded float-left mx-1" *ngIf="user.images?.length" src="{{ user.images[0].url }}">
-    <p class="card-text"> You've got {{ user.product }} access.</p>
-    <a href="#" class="btn btn-primary mx-1" (click)="killToken()">Sign Out</a>
-
-    <a href="http://localhost:4200/#access_token={{ accessTokenNew ? accessTokenNew : accessTokenStored}}" class="btn btn-primary mx-1" *ngIf="!isLocalhost"> Apply to localhost</a>
-
-  </div>
+  <img id="user-img" class="rounded" *ngIf="user.images?.length" src="{{ user.images[0].url }}">
 </div>
 
-<div class="card w-100" *ngIf="!availableToken">
+<div class="card w-100 mb-3" *ngIf="!availableToken">
   <div class="card-header">
     Signed out
   </div>

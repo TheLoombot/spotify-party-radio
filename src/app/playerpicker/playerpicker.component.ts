@@ -237,6 +237,13 @@ export class PlayerpickerComponent implements OnInit {
 
 
   ngOnDestroy() {
+    this.spotifyService.pauseTrack()
+    .subscribe(
+      () => {},
+      error => {
+        console.error('Failed to pause track ', error);
+      }
+      );
     if (this.stationSub) {
       this.stationSub.unsubscribe();
     }
@@ -246,6 +253,7 @@ export class PlayerpickerComponent implements OnInit {
     if (this.progressSub) {
       this.progressSub.unsubscribe();
     }
+    this.timeOutSubs.forEach(id => clearTimeout(id));
   }
 
 

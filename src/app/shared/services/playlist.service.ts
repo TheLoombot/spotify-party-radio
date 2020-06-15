@@ -249,10 +249,18 @@ export class PlaylistService {
             }
             );
         } else {
-          this.spotifyService.getTrackById("0GL1ye91pT3nJIQzXwncG2").subscribe(
-            (data: any) => {
-              this.pushTrack(data, '🦾 welcome bot');
-            }
+          // when there are no previous tracks in the pool (like on first login)
+          // then we push three of the user's "top tracks" instead
+          this.spotifyService.getTopTracks()
+            .subscribe(
+              topTracks => {
+                for (let track of topTracks['items']) { 
+                  this.pushTrack(track, this.spotifyService.getUser());
+                } 
+              },
+              error => {
+                console.log(`top track fetch error: ${error}`);
+              }
             );
         }
         getAllPreviousTracksSubscription.unsubscribe();

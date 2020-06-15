@@ -35,7 +35,7 @@ export class RecosComponent implements OnInit, OnDestroy {
     this.seedTrackUris = '';
     this.lastFivePlaylistRef = this.playlistService.getLastTracks(5);
     this.lastFiveSub = this.lastFivePlaylistRef.valueChanges()
-    .pipe(debounceTime(2000))
+    .pipe(debounceTime(500))
     .subscribe(
       tracks => {
         this.seedTrackUris = '';
@@ -66,6 +66,7 @@ export class RecosComponent implements OnInit, OnDestroy {
       this.seedTrackUris = this.recommendations.map(track => track.id).join();
     }
     if (this.spotifyService.isTokenAvailable()) {
+      this.recommendations = null;
       this.spotifyService.getRecos(this.seedTrackUris)
       .subscribe(
         (reccomendations: any) => {

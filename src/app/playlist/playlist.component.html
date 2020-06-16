@@ -6,7 +6,7 @@
         <img src="{{ track.image_url }}" class="float-left" style="margin-right: 10px">
         <h5 class="card-title"> {{ track.name }} </h5>
         <h6 class="card-subtitle"> {{ track.artist_name }} - {{ track.album_name }} </h6>
-        <span class="fa fa-remove float-right text-primary" style="cursor: pointer" (click)="removeTrack(track, i)"></span>
+        <span class="fa fa-remove float-right text-primary cursor-pointer" (click)="removeTrack(track, i)"></span>
       </div>
     </div>
     <h5 class="card-title" *ngIf="tracks.length<2">Add a track or else the job goes to a robot</h5>

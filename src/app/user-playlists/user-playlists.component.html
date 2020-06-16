@@ -4,21 +4,21 @@
     <a [routerLink]="" *ngIf="curPlaylistTracks?.items" (click)="back()">Playlists</a>
     <span *ngIf="curPlaylistTracks?.items"> / {{ curPlaylistName }} </span>
 
-    <span style="cursor: pointer" class="button float-right fa fa-chevron-right text-primary"
+    <span class="button float-right fa fa-chevron-right text-primary cursor-pointer"
     (click)="nextPlaylistPage()" *ngIf="!curPlaylistTracks?.items && (curPlaylistOffset + pageSize < userPlaylists.total)"></span> 
-    <span style="cursor: pointer" class="float-right fa fa-chevron-left text-primary mx-3"
+    <span class="float-right fa fa-chevron-left text-primary mx-3 cursor-pointer"
     (click)="prevPlaylistPage()" *ngIf="!curPlaylistTracks?.items && (curPlaylistOffset > 0)" ></span>
 
-    <span style="cursor: pointer" class="button float-right fa fa-chevron-right text-primary"
+    <span class="button float-right fa fa-chevron-right text-primary cursor-pointer"
     (click)="nextTracksPage()" *ngIf="curPlaylistTracks?.items && (curTracksOffset + pageSize < curPlaylistTracks?.total)"></span> 
-    <span style="cursor: pointer" class="float-right fa fa-chevron-left text-primary mx-3"
+    <span class="float-right fa fa-chevron-left text-primary mx-3 cursor-pointer"
     (click)="prevTracksPage()" *ngIf="curPlaylistTracks?.items && (curTracksOffset > 0)" ></span>
 
 
   </div>
   <div class="card-body text-primary" *ngIf="!curPlaylistTracks?.items">
     <div class="card mb-3 border-primary" *ngFor="let playlist of userPlaylists.items; let i = index">
-      <div class="card-body" style="cursor: pointer" (click)="clickedPlaylist(playlist)">
+      <div class="card-body cursor-pointer" (click)="clickedPlaylist(playlist)">
         <img width="64" class="float-left mr-2" src="{{ playlist.images[0].url }}" *ngIf="playlist.images?.length">
         <span class="float-right fa fa-chevron-right"></span>
         <h5 class="card-title">{{ playlist.name }} </h5>
@@ -28,7 +28,7 @@
   </div>
   <div class="card-body text-primary" *ngIf="curPlaylistTracks?.items">
     <div class="card mb-3 border-primary" *ngFor="let track of curPlaylistTracks.items; let i = index">
-      <div class="card-body" style="cursor: pointer" (click)="pushTrack(track.track, i)">
+      <div class="card-body cursor-pointer" (click)="pushTrack(track.track, i)">
         <img width="64" class="float-left mr-2" src="{{ track.track.album.images[2].url }}" *ngIf="track.track.album?.images?.length">
         <span class="float-right fa" [class.fa-plus]="clicked !== i" [class.fa-check]="clicked === i">
         </span>

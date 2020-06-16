@@ -8,14 +8,14 @@
     <br/> 
     <div *ngIf="tracks?.length" class="card w-100 mb-3">
       <div class="card-header">Search Results
-        <span style="cursor: pointer" class="button float-right fa fa-chevron-right text-primary"
+        <span class="button float-right fa fa-chevron-right text-primary cursor-pointer"
         (click)="nextPage()" *ngIf="curOffset + pageSize < results.tracks.total"></span> 
-        <span style="cursor: pointer" class="float-right fa fa-chevron-left text-primary mx-3"
+        <span class="float-right fa fa-chevron-left text-primary mx-3 cursor-pointer"
         (click)="prevPage()" *ngIf="curOffset > 0" ></span>
       </div>
       <div class="card-body text-primary">
         <div class="card mb-3 border-primary" *ngFor="let track of tracks; let i = index" >
-          <div (click)="pushTrack(track, i)" class="card-body" style="cursor: pointer">   
+          <div (click)="pushTrack(track, i)" class="card-body cursor-pointer">
             <img src="{{ track.image_url }}" class="float-left" style="margin-right: 10px">
             <span class="float-right fa" [class.fa-plus]="clicked !== i"
             [class.fa-check]="clicked === i"></span>

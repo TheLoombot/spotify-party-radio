@@ -201,13 +201,9 @@ export class PlaylistService {
     console.log(`Pushing track onto playlist: ${playlistEntry.name}`);
     if (station == this.stationName) {
       this.db.list(this.playlistUrl).push(playlistEntry);
-      console.log(this.stationName);
-      console.log(this.station);
-      console.log(`pushing onto playlist ${this.playlistUrl}`);
     } else {
       const playlistUrl = `${this.environment}/${station}/lists/playlist`;
       this.db.list(playlistUrl).push(playlistEntry);
-      console.log(`pushing onto playlist ${playlistUrl}`);
     }
   }
 

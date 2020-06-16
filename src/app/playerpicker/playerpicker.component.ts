@@ -28,6 +28,8 @@ export class PlayerpickerComponent implements OnInit {
   timeOutSubs = [];
   nowPlaying;
   playerError;
+  showPushButton: boolean;
+  clicked: boolean = false;
 
   @ViewChild('carousel', {static : true}) carousel: NgbCarousel;
 
@@ -86,6 +88,11 @@ export class PlayerpickerComponent implements OnInit {
     this.playlistService.remove(key, 0);
     this.showSkip = false;
     this.firstTrack = null;
+  }
+
+  pushTrack(track: Track) {
+    this.clicked = true;
+    this.playlistService.pushTrackForStation(track, this.spotifyService.getUser(), this.spotifyService.getUser());    
   }
 
   onSlide(slideEvent: NgbSlideEvent) {
@@ -192,7 +199,11 @@ export class PlayerpickerComponent implements OnInit {
             this.setTitle(`${this.firstTrack.artist_name} - ${this.firstTrack.name}`);
             if (this.userOwnsStation()) {
               this.showSkip = true;
+              this.showPushButton = false;
+              this.clicked = false;
             } else {
+              this.showPushButton = true;
+              this.clicked = false;
               this.showSkip = false;
             }
             this.timeOutSubs.forEach(id => clearTimeout(id));

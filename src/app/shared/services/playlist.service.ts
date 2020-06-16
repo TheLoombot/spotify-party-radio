@@ -169,7 +169,8 @@ export class PlaylistService {
     return this.db.list(this.playlistUrl, ref => ref.limitToLast(i));
   }
 
-  pushTrack(track: any, userName) {
+  pushTrackForStation(track: any, userName: string, station: string) {
+    console.log(`pashing onto playlist for user ${userName} and station: ${station}`);
     const now = this.getTime();
     const lastTrackExpiresAt = (this.lastTrack) ? this.lastTrack.expires_at : now;
     const nextTrackExpiresAt = lastTrackExpiresAt + track.duration_ms + 1500; // introducing some fudge here
@@ -198,7 +199,21 @@ export class PlaylistService {
     const playlistEntry = {...track, ...additionalData};
 
     console.log(`Pushing track onto playlist: ${playlistEntry.name}`);
-    this.db.list(this.playlistUrl).push(playlistEntry);
+    if (station == this.stationName) {
+      this.db.list(this.playlistUrl).push(playlistEntry);
+      console.log(this.stationName);
+      console.log(this.station);
+      console.log(`pushing onto playlist ${this.playlistUrl}`);
+    } else {
+      const playlistUrl = `${this.environment}/${station}/lists/playlist`;
+      this.db.list(playlistUrl).push(playlistEntry);
+      console.log(`pushing onto playlist ${playlistUrl}`);
+    }
+  }
+
+  // push a track to the *currently tuned* station
+  pushTrack(track: any, userName) {
+    this.pushTrackForStation(track, userName, this.stationName);
   }
 
   pruneTracks(tracksToLeave: number) { 

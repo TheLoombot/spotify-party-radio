@@ -190,8 +190,11 @@ export class PlayerpickerComponent implements OnInit {
             console.log(`${this.nowPlaying.name} expires in ${timeToExpiration}`);
             this.showNowPlaying = true;
             this.setTitle(`${this.firstTrack.artist_name} - ${this.firstTrack.name}`);
-            this.showSkip = true;
-
+            if (this.userOwnsStation()) {
+              this.showSkip = true;
+            } else {
+              this.showSkip = false;
+            }
             this.timeOutSubs.forEach(id => clearTimeout(id));
             this.timeOutSubs.push(
               setTimeout( () => {
@@ -235,26 +238,30 @@ export class PlayerpickerComponent implements OnInit {
         );
     }
 
+    userOwnsStation(): boolean {
+      if (this.currentStation == this.spotifyService.getUser()) return true;
+      return false;
+    }
 
-  ngOnDestroy() {
-    this.spotifyService.pauseTrack()
-    .subscribe(
-      () => {},
-      error => {
-        console.error('Failed to pause track ', error);
+    ngOnDestroy() {
+      this.spotifyService.pauseTrack()
+      .subscribe(
+        () => {},
+        error => {
+          console.error('Failed to pause track ', error);
+        }
+        );
+      if (this.stationSub) {
+        this.stationSub.unsubscribe();
       }
-      );
-    if (this.stationSub) {
-      this.stationSub.unsubscribe();
+      if (this.playlistSub) {
+        this.playlistSub.unsubscribe();
+      }
+      if (this.progressSub) {
+        this.progressSub.unsubscribe();
+      }
+      this.timeOutSubs.forEach(id => clearTimeout(id));
     }
-    if (this.playlistSub) {
-      this.playlistSub.unsubscribe();
-    }
-    if (this.progressSub) {
-      this.progressSub.unsubscribe();
-    }
-    this.timeOutSubs.forEach(id => clearTimeout(id));
+
+
   }
-
-
-}

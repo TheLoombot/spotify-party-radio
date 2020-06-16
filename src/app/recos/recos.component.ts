@@ -63,7 +63,10 @@ export class RecosComponent implements OnInit, OnDestroy {
   refreshRecommendations(seedTracksUris?: string): void {
     if (!this.seedTrackUris) {
       console.warn('There were no seeds in playlist');
-      this.seedTrackUris = this.recommendations.map(track => track.id).join();
+
+      //what the fuck does this line of code do?
+      // this.seedTrackUris = this.recommendations.map(track => track.id).join();
+      return;
     }
     if (this.spotifyService.isTokenAvailable()) {
       this.recommendations = null;

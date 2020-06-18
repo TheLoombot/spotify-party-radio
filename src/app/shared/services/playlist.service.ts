@@ -170,7 +170,7 @@ export class PlaylistService {
   }
 
   pushTrackForStation(track: any, userName: string, station: string) {
-    console.log(`pashing onto playlist for user ${userName} and station: ${station}`);
+    // console.log(`pashing onto playlist for user ${userName} and station: ${station}`);
     const now = this.getTime();
     const lastTrackExpiresAt = (this.lastTrack) ? this.lastTrack.expires_at : now;
     const nextTrackExpiresAt = lastTrackExpiresAt + track.duration_ms + 1500; // introducing some fudge here
@@ -240,25 +240,32 @@ export class PlaylistService {
     .subscribe(
       (tracks: Array<any>) => {
         if (tracks.length > 0) {
-          const randomTrack: Track = tracks[Math.floor( Math.random() * tracks.length)] as Track;
-          const now = this.getTime();
-          const lastTrackExpiresAt = (this.lastTrack) ? this.lastTrack.expires_at : now;
-          const nextTrackExpiresAt = lastTrackExpiresAt + randomTrack.duration_ms + 1500; // introducing some fudge here
-          randomTrack.added_at = now;
-          randomTrack.player = {
-            auto: true
-          };
-          randomTrack.expires_at = nextTrackExpiresAt;
 
-          console.log(`🤖 ${tracks.length} tracks in pool, pushing ${randomTrack.name}`);
-          this.db.list(this.playlistUrl)
-          .push(randomTrack)
-          .then(
-            result => {
-              // console.log(result);
-              // getAllPreviousTracksSubscription.unsubscribe();
-            }
-            );
+          console.log(`🤖 ${tracks.length} tracks in pool, pushing 3 of them`);
+          this.shuffleArray(tracks);
+
+          var i = 0;
+          var randomTracks = [];
+
+          for (let track of tracks) {
+            track.player = { auto: true };
+            randomTracks[i] = track;
+            if (i >= 2) break;
+            i++;
+          }
+
+          var delay = 0;
+
+          for (let track of randomTracks) {
+
+            setTimeout(() => {
+              this.pushTrack(track, track['added_by']);
+            }, delay);
+
+            delay = delay + 1000;
+            
+          }
+
         } else {
           // when there are no previous tracks in the pool (like on first login)
           // then we push three of the user's "top tracks" instead
@@ -281,6 +288,13 @@ export class PlaylistService {
         console.log('pushRandomTrack finished with error ', this.getTime());
       }
       );
+  }
+
+  shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+      }
   }
 
   /** Method to save track in Firebase secondary list */

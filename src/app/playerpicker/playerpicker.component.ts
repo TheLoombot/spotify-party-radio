@@ -184,6 +184,7 @@ export class PlayerpickerComponent implements OnInit {
         (data: any) => {
           this.nowPlaying = data ? data.item : null;
           if (this.nowPlaying == null) {
+            // assmume the player isn't going... wait and try again
             console.warn('There is nothing being played');
             this.timeOutSubs.forEach(id => clearTimeout(id));
             this.timeOutSubs.push(

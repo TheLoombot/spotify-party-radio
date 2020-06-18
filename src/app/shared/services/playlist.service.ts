@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Component, OnInit, ViewChild } from '@angular/core';
 /* RxJs */
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -22,6 +22,7 @@ export class PlaylistService {
   stationName: string;
   playerMetaRef: any;
   lastTrackSub: Subscription;
+  timeOutSubs = [];
 
   constructor(
     private db: AngularFireDatabase,
@@ -36,6 +37,8 @@ export class PlaylistService {
   }
 
   setStation(stationName: string): void {
+    this.timeOutSubs.forEach(id => clearTimeout(id));
+
     console.log(`Station is: ${stationName}`);
     this.stationName = stationName;
     this.playlistUrl = `${this.environment}/${this.stationName}/lists/playlist`;
@@ -241,7 +244,7 @@ export class PlaylistService {
       (tracks: Array<any>) => {
         if (tracks.length > 0) {
 
-          console.log(`🤖 ${tracks.length} tracks in pool, pushing 3 of them`);
+          console.log(`🤖 ${tracks.length} tracks in pool, pushing (up to) 3 of them`);
           this.shuffleArray(tracks);
 
           var i = 0;
@@ -258,12 +261,15 @@ export class PlaylistService {
 
           for (let track of randomTracks) {
 
-            setTimeout(() => {
-              this.pushTrack(track, track['added_by']);
-            }, delay);
-
-            delay = delay + 1000;
-            
+            this.timeOutSubs.push(
+              setTimeout(() => {
+                this.pushTrack(track, track['added_by']);
+              }, delay)
+              )
+            // we introduce some delay here to give one track time 
+            // to push before the next one does, or else the expiration 
+            // times get screwy! 
+            delay = delay + 250;
           }
 
         } else {
@@ -357,4 +363,9 @@ export class PlaylistService {
       }
       );
   }
+
+  ngOnDestroy() {
+    this.timeOutSubs.forEach(id => clearTimeout(id));
+  }
+
 }

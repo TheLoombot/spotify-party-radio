@@ -2,7 +2,7 @@
   <div class="card-header">
     <span *ngIf="!curPlaylistTracks?.items">Playlists</span>
     <a [routerLink]="" *ngIf="curPlaylistTracks?.items" (click)="back()">Playlists</a>
-    <span *ngIf="curPlaylistTracks?.items"> / {{ curPlaylistName }} </span>
+    <span *ngIf="curPlaylistTracks?.items" class="text-truncate"> / {{ curPlaylistName }} </span>
 
     <span class="button float-right fa fa-chevron-right text-primary cursor-pointer"
     (click)="nextPlaylistPage()" *ngIf="!curPlaylistTracks?.items && (curPlaylistOffset + pageSize < userPlaylists.total)"></span> 
@@ -21,8 +21,8 @@
       <div class="card-body cursor-pointer" (click)="clickedPlaylist(playlist)">
         <img width="64" class="float-left mr-2" src="{{ playlist.images[0].url }}" *ngIf="playlist.images?.length">
         <span class="float-right fa fa-chevron-right"></span>
-        <h5 class="card-title">{{ playlist.name }} </h5>
-        <h6 class="card-subtitle">{{ playlist.owner.display_name }}</h6>
+        <h5 class="card-title text-truncate">{{ playlist.name }} </h5>
+        <h6 class="card-subtitle text-truncate">{{ playlist.owner.display_name }}</h6>
       </div>
     </div>
   </div>
@@ -32,8 +32,8 @@
         <img width="64" class="float-left mr-2" src="{{ track.track.album.images[2].url }}" *ngIf="track.track.album?.images?.length">
         <span class="float-right fa" [class.fa-plus]="clicked !== i" [class.fa-check]="clicked === i">
         </span>
-        <h5 class="card-title">{{ track.track.name }} </h5>
-        <h6 class="card-subtitle">{{ track.track.artists[0].name}} -
+        <h5 class="card-title text-truncate">{{ track.track.name }} </h5>
+        <h6 class="card-subtitle text-truncate">{{ track.track.artists[0].name}} -
         {{ track.track.album.name }} </h6>
       </div>
     </div>

@@ -8,8 +8,8 @@
           <img class="card-img-top" src="assets/placeholder_300.png" *ngIf="!showNowPlaying">
 
           <div class="card-body" *ngIf="showNowPlaying">
-            <h4>{{ nowPlaying.name }} </h4>
-            <h5> {{ nowPlaying.artists[0].name }} - 
+            <h4 class="text-truncate">{{ nowPlaying.name }} </h4>
+            <h5 class="text-truncate"> {{ nowPlaying.artists[0].name }} - 
               <a target="_blank" href="{{ nowPlaying.album.external_urls.spotify }}">{{ nowPlaying.album.name }}</a>
             </h5>
             <div class="progress">

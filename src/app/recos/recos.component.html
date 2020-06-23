@@ -11,7 +11,7 @@
       </div>
     </div>
   </div>
-  <div class="card-body text-primary" *ngIf="recommendations">
+  <div class="card-body text-primary bg-light" *ngIf="recommendations">
     <div class="card mb-3 border-primary" *ngFor="let track of recommendations; let i = index" >
       <div class="card-body cursor-pointer" 
         (click)="pushTrack(track, i)">   

@@ -16,7 +16,7 @@
 
 
   </div>
-  <div class="card-body text-primary" *ngIf="!curPlaylistTracks?.items">
+  <div class="card-body text-primary bg-light" *ngIf="!curPlaylistTracks?.items">
     <div class="card mb-3 border-primary" *ngFor="let playlist of userPlaylists.items; let i = index">
       <div class="card-body cursor-pointer" (click)="clickedPlaylist(playlist)">
         <img width="64" class="float-left mr-2" src="{{ playlist.images[0].url }}" *ngIf="playlist.images?.length">
@@ -26,7 +26,7 @@
       </div>
     </div>
   </div>
-  <div class="card-body text-primary" *ngIf="curPlaylistTracks?.items">
+  <div class="card-body text-primary bg-light" *ngIf="curPlaylistTracks?.items">
     <div class="card mb-3 border-primary" *ngFor="let track of curPlaylistTracks.items; let i = index">
       <div class="card-body cursor-pointer" (click)="pushTrack(track.track, i)">
         <img width="64" class="float-left mr-2" src="{{ track.track.album.images[2].url }}" *ngIf="track.track.album?.images?.length">

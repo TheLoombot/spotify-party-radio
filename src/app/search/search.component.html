@@ -1,32 +1,31 @@
 <div class="card w-100 mb-3">
-  <div class="card-header">Add tracks</div>
-  <div class="card-body">
-    <input type="search" class="form-control" style="font-size: 16px;" 
-      spellcheck="false" placeholder="Search"
-      (keyup)="newSearch($event.target.value, 0)"
-      (search)="newSearch($event.target.value)">
-    <br/> 
-    <div *ngIf="tracks?.length" class="card w-100 mb-3">
-      <div class="card-header">Search Results
-        <span class="button float-right fa fa-chevron-right text-primary cursor-pointer"
-        (click)="nextPage()" *ngIf="curOffset + pageSize < results.tracks.total"></span> 
-        <span class="float-right fa fa-chevron-left text-primary mx-3 cursor-pointer"
-        (click)="prevPage()" *ngIf="curOffset > 0" ></span>
-      </div>
-      <div class="card-body text-primary">
-        <div class="card mb-3 border-primary" *ngFor="let track of tracks; let i = index" >
-          <div (click)="pushTrack(track, i)" class="card-body cursor-pointer">
-            <img src="{{ track.image_url }}" class="float-left" style="margin-right: 10px">
-            <span class="float-right fa" [class.fa-plus]="clicked !== i"
-            [class.fa-check]="clicked === i"></span>
-            <h5 class="card-title text-truncate">{{ track.name }}</h5>
-            <h6 class="card-subtitle text-truncate">{{ track.artists[0].name }} - {{ track.album.name }}</h6>
-          </div>
-        </div>
-      </div>
+  <div class="card-body text-primary bg-light">
 
+    <div class="row">
+      <div class="col-md-10"> 
+        <input type="search" class="form-control my-3" style="font-size: 16px;"spellcheck="false" placeholder="Search"
+        (keyup)="newSearch($event.target.value, 0)"
+        (search)="newSearch($event.target.value)">
+      </div>
+      <div class="col-md-1 align-self-center">
+        <span class="fa fa-chevron-left text-primary cursor-pointer"
+        (click)="prevPage()" *ngIf="curOffset > 0 && results.tracks?.total" ></span>
+      </div>
+      <div class="col-md-1 align-self-center">
+        <span class="fa fa-chevron-right text-primary cursor-pointer"
+        (click)="nextPage()" *ngIf="curOffset + pageSize < results?.tracks?.total"></span> 
+      </div>
     </div>
-    <app-user-playlists></app-user-playlists>
-    <app-recos *ngIf="!stationLoading"></app-recos>
+
+    <div class="card mb-3 border-primary" *ngFor="let track of tracks; let i = index" >
+      <div (click)="pushTrack(track, i)" class="card-body cursor-pointer">
+        <img src="{{ track.image_url }}" class="float-left" style="margin-right: 10px">
+        <span class="float-right fa" [class.fa-plus]="clicked !== i"
+        [class.fa-check]="clicked === i"></span>
+        <h5 class="card-title text-truncate">{{ track.name }}</h5>
+        <h6 class="card-subtitle text-truncate">{{ track.artists[0].name }} - {{ track.album.name }}</h6>
+      </div>
+    </div>
   </div>
+
 </div>

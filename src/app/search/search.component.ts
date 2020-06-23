@@ -15,7 +15,7 @@ import { State } from '../shared/models/state';
   styleUrls: ['./search.component.css']
 })
 export class SearchComponent implements OnInit {
-  results: Object;
+  results;
   searchResults: any;
   tracks: Array<Track>;
   searchTerm$ = new Subject<string>();

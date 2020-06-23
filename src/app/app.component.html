@@ -3,11 +3,21 @@
 
   <div class="row"> 
 
+    <div class="col-md-6 mt-3 h-100 align-self-center">
+      <h2>Spotify Party Radio (<a href="https://github.com/TheLoombot/spotify-party-radio">GitHub</a>)</h2>
+    </div>
+    <div class="col-md-6 mt-3 h-100">
+      <!-- router outlet for login/profile component --> 
+      <router-outlet></router-outlet>
+      <app-alert *ngIf="!appEnabled"></app-alert>
+    </div>
+
+  </div>
+
+  <div class="row">
+
     <!-- it's kosher to nest columns in columns! --> 
     <div class="col-md-6"> 
-      <div class="col-md-12 my-3">
-        <h2>Spotify Party Radio (<a href="https://github.com/TheLoombot/spotify-party-radio">GitHub</a>)</h2>
-      </div>
       <div class="col-md-12 my-3" *ngIf="appEnabled">
         <app-playerpicker></app-playerpicker>
       </div>
@@ -17,13 +27,10 @@
     </div>
 
     <div class="col-md-6"> 
-      <div class="col-md-12 my-3">
-        <!-- router outlet for login/profile component --> 
-        <router-outlet></router-outlet>
-        <app-alert *ngIf="!appEnabled"></app-alert>
-      </div>
       <div class="col-md-12 my-3" *ngIf="appEnabled">
         <app-search></app-search>
+        <app-user-playlists></app-user-playlists>
+        <app-recos *ngIf="!stationLoading"></app-recos>
       </div>
     </div>
 

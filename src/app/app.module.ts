@@ -31,6 +31,8 @@ import { StationpickerComponent } from './stationpicker/stationpicker.component'
 import { PlayerpickerComponent } from './playerpicker/playerpicker.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { UserPlaylistsComponent } from './user-playlists/user-playlists.component';
+import { CallbackComponent } from './callback/callback.component';
+import { LoggedInUserComponent } from './logged-in-user/logged-in-user.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +46,9 @@ import { UserPlaylistsComponent } from './user-playlists/user-playlists.componen
     AlertComponent,
     StationpickerComponent,
     PlayerpickerComponent,
-    UserPlaylistsComponent
+    UserPlaylistsComponent,
+    CallbackComponent,
+    LoggedInUserComponent
   ],
   imports: [
     BrowserModule,

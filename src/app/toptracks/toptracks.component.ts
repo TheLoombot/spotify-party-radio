@@ -18,7 +18,7 @@ export class ToptracksComponent implements OnInit {
     private spotifyService: SpotifyService,
     private playlistSvc: PlaylistService
   ) {
-    this.topTracksEnabled = this.spotifyService.isTokenAvailable();
+    this.topTracksEnabled = true;
   }
 
   ngOnInit() {
@@ -37,7 +37,7 @@ export class ToptracksComponent implements OnInit {
   }
 
   pushTrack(track: Object, i: number) {
-    const user = this.spotifyService.getUser();
+    const user = this.spotifyService.getUserName();
     this.clicked = i;
     this.playlistSvc.pushTrack(track, user);
   }

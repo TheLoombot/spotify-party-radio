@@ -9,18 +9,21 @@ import { combineLatest } from 'rxjs';
 import { User } from '../models/user';
 /* Others */
 import { environment } from '../../../environments/environment';
+import { StateService } from './state.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SpotifyService {
-  token: string;
+  token: string = '';
   private tokenSubject: Subject<any>;
   user: User;
   authorizeURL = 'https://accounts.spotify.com/authorize';
-  clientId: string;
-  responseType: string;
-  redirectURI = 'https://' + window.location.hostname;
+  clientId: string = environment.spotify.clientId;
+  baseUrl: string = environment.spotify.apiURL;
+  responseType: string = 'token';
+  redirectURI = 'https://' + window.location.hostname + '/auth';
+  
   scope = [
   'user-read-email',
   'user-read-currently-playing',
@@ -32,49 +35,60 @@ export class SpotifyService {
   'playlist-read-private',
   'playlist-read-collaborative'
   ].join('%20');
-  baseUrl: string;
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private stateService: StateService,
     ) {
-    this.token = '';
-    this.tokenSubject = new Subject<any>();
-    this.clientId = environment.spotify.clientId;
-    this.responseType = 'token';
-    this.baseUrl = environment.spotify.apiURL;
+
+    if (window.localStorage.getItem('access_token')) {
+      const accessTokenStored = window.localStorage.getItem('access_token');
+      this.setToken(accessTokenStored);
+      // this.sendToken(this.accessTokenStored);
+      // Other otherwise we show the login button
+    }
   }
 
   setToken(token: string): void {
     this.token = token;
+    this.getUserProfile()
+    .subscribe(
+      (user: User) => {
+        this.user = user;
+        this.stateService.sendState({ enabled: true, loading: false, station: `${this.getUserName()}` });
+      },
+      error => {
+        console.error('getUserProfile:', error);
+        this.stateService.sendError(`There is no available user, ${error.error.error.message}`, error.error.error.status);
+        window.localStorage.removeItem('access_token');
+        // this.accessTokenStored = null;
+        // this.availableToken = false;
+      }
+      );
   }
 
   getToken(): string {
     return this.token;
   }
 
-  isTokenAvailable(): boolean {
-    return this.token ? true : false;
-  }
-
-  /** Method to send token using the tokenSubject */
-  sendToken(token: string): void {
-    this.tokenSubject.next({ token: token });
-  }
-
   clearToken(): void {
-    this.tokenSubject.next();
+    this.pauseTrack()
+    .subscribe(
+      () => {},
+      error => {
+      }
+      );
+    this.stateService.sendError(`There is no available token`);
+    this.token = '';
+    window.localStorage.removeItem('access_token');
   }
 
-  getTokens(): Observable<any> {
-    return this.tokenSubject.asObservable();
-  }
-
-  setUser(user: User): void {
-    this.user = user;
-  }
-
-  getUser(): string {
+  getUserName(): string {
     return (this.user.display_name || this.user.id);
+  }
+
+  getUser() {
+    return this.user;
   }
 
   /** Get Current User's Profile */

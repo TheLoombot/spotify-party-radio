@@ -1,13 +1,5 @@
-<div class="media h-100" *ngIf="user && availableToken">
-  <div class="media-body h-100 align-self-center text-right">
-    <a href="http://localhost:4200/#access_token={{ accessTokenNew ? accessTokenNew : accessTokenStored}}" class="btn btn-sm btn-secondary mx-1" *ngIf="!isLocalhost"> Apply to localhost</a>
-    <a href="#" class="btn btn-primary btn-sm mx-1" (click)="killToken()">Sign Out</a>
-    {{ username }}
-  </div>
-  <img id="user-img" class="rounded" *ngIf="user.images?.length" src="{{ user.images[0].url }}">
-</div>
 
-<div class="card w-100 mb-3" *ngIf="!availableToken">
+<div class="card w-100 mb-3">
   <div class="card-body mx-auto">
     <a href="#" class="btn btn-primary mx-1" (click)="authSpotify()">
       Sign in with Spotify

@@ -23,14 +23,13 @@ export class UserPlaylistsComponent implements OnInit {
 	curPlaylistTracks;
 	curPlaylist$ = new Subject<string>();
 	curPlaylistName: string;
-  	clicked = -1;
+	clicked = -1;
 
 	constructor(
 		private spotifyService: SpotifyService,
 		private playlistSvc: PlaylistService
 		) 
 	{ 
-		this.userPlaylistsEnabled = this.spotifyService.isTokenAvailable();
 		this.showPlaylists = true;
 		this.showTracks = false;
 	}
@@ -39,18 +38,17 @@ export class UserPlaylistsComponent implements OnInit {
 
 		this.playlistOffset$.next(this.curPlaylistOffset);
 
-		if (this.userPlaylistsEnabled) {
-			this.spotifyService.getUserPlaylists(this.playlistOffset$)
-			.subscribe(
-				userPlaylists => {
-					this.userPlaylists = userPlaylists;
-					// console.log(this.userPlaylists);
-				},
-				error => {
-					this.userPlaylistsError = error.error.error;
-				}
-				);
-		}
+		this.spotifyService.getUserPlaylists(this.playlistOffset$)
+		.subscribe(
+			userPlaylists => {
+				this.userPlaylists = userPlaylists;
+				// console.log(this.userPlaylists);
+			},
+			error => {
+				this.userPlaylistsError = error.error.error;
+			}
+			);
+		
 
 		this.spotifyService.getTracksForPlaylist(this.curPlaylist$, this.tracksOffset$)
 		.subscribe(
@@ -105,9 +103,9 @@ export class UserPlaylistsComponent implements OnInit {
 	}
 
 	pushTrack(track: Object, i: number) {
-	  const user = this.spotifyService.getUser();
-	  this.clicked = i;
-	  this.playlistSvc.pushTrack(track, user);
+		const user = this.spotifyService.getUserName();
+		this.clicked = i;
+		this.playlistSvc.pushTrack(track, user);
 	}
 
 

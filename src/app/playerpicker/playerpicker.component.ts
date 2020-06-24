@@ -92,7 +92,7 @@ export class PlayerpickerComponent implements OnInit {
 
   pushTrack(track: Track) {
     this.clicked = true;
-    this.playlistService.pushTrackForStation(track, this.spotifyService.getUser(), this.spotifyService.getUser());    
+    this.playlistService.pushTrackForStation(track, this.spotifyService.getUserName(), this.spotifyService.getUserName());    
   }
 
   onSlide(slideEvent: NgbSlideEvent) {
@@ -251,11 +251,12 @@ export class PlayerpickerComponent implements OnInit {
     }
 
     userOwnsStation(): boolean {
-      if (this.currentStation == this.spotifyService.getUser()) return true;
+      if (this.currentStation == this.spotifyService.getUserName()) return true;
       return false;
     }
 
     ngOnDestroy() {
+      // console.log('DESTROYERRR');
       this.spotifyService.pauseTrack()
       .subscribe(
         () => {},

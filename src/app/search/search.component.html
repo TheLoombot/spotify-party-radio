@@ -2,16 +2,16 @@
   <div class="card-body text-primary bg-light">
 
     <div class="row">
-      <div class="col-md-10"> 
+      <div class="col-10"> 
         <input type="search" class="form-control my-3" style="font-size: 16px;"spellcheck="false" placeholder="Search"
         (keyup)="newSearch($event.target.value, 0)"
         (search)="newSearch($event.target.value)">
       </div>
-      <div class="col-md-1 align-self-center">
+      <div class="col-1 align-self-center">
         <span class="fa fa-chevron-left text-primary cursor-pointer"
         (click)="prevPage()" *ngIf="curOffset > 0 && results.tracks?.total" ></span>
       </div>
-      <div class="col-md-1 align-self-center">
+      <div class="col-1 align-self-center">
         <span class="fa fa-chevron-right text-primary cursor-pointer"
         (click)="nextPage()" *ngIf="curOffset + pageSize < results?.tracks?.total"></span> 
       </div>

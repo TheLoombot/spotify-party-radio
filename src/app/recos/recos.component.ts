@@ -7,7 +7,6 @@ import { SpotifyService } from '../shared/services/spotify.service';
 /* Models */
 import { Track } from '../shared/models/track';
 import { StateService } from '../shared/services/state.service';
-import { Title } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -27,7 +26,6 @@ export class RecosComponent implements OnInit, OnDestroy {
     private spotifyService: SpotifyService,
     private playlistService: PlaylistService,
     private stateService: StateService,
-    private titleService: Title
     ) {
   }
 
@@ -55,7 +53,7 @@ export class RecosComponent implements OnInit, OnDestroy {
 
   pushTrack(track: Object, i: number) {
     this.clicked = i;
-    const user = this.spotifyService.getUser();
+    const user = this.spotifyService.getUserName();
     this.playlistService.pushTrack(track, user);
   }
 
@@ -68,23 +66,20 @@ export class RecosComponent implements OnInit, OnDestroy {
       // this.seedTrackUris = this.recommendations.map(track => track.id).join();
       return;
     }
-    if (this.spotifyService.isTokenAvailable()) {
-      this.recommendations = null;
-      this.spotifyService.getRecos(this.seedTrackUris)
-      .subscribe(
-        (reccomendations: any) => {
-          this.recommendations = reccomendations.tracks as Array<Track>;
-          this.clicked = -1;
-        },
-        error => {
-          console.error(error);
-          // Add error state here
-          this.recoError = error.error.error;
-          this.titleService.setTitle('Logged Out');
-          this.stateService.sendError(`Error on refresh recos `, error.error.error.status);
-        }
-        );
-    }
+    this.recommendations = null;
+    this.spotifyService.getRecos(this.seedTrackUris)
+    .subscribe(
+      (reccomendations: any) => {
+        this.recommendations = reccomendations.tracks as Array<Track>;
+        this.clicked = -1;
+      },
+      error => {
+        console.error(error);
+        // Add error state here
+        this.recoError = error.error.error;
+        this.stateService.sendError(`Error on refresh recos `, error.error.error.status);
+      }
+      );
   }
 
   ngOnDestroy() {

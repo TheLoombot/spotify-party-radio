@@ -32,7 +32,7 @@ export class PlaylistService {
     this.environment = environment.production ? 'prod' : 'dev';
 
     // on startup, set the current station to the user's own station
-    this.setStation(this.spotifyService.getUser());
+    this.setStation(this.spotifyService.getUserName());
 
   }
 
@@ -279,7 +279,7 @@ export class PlaylistService {
             .subscribe(
               topTracks => {
                 for (let track of topTracks['items']) { 
-                  this.pushTrack(track, this.spotifyService.getUser());
+                  this.pushTrack(track, this.spotifyService.getUserName());
                 } 
               },
               error => {

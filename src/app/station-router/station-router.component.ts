@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { StateService } from '../shared/services/state.service';
 
 @Component({
   selector: 'app-station-router',
@@ -13,6 +14,7 @@ export class StationRouterComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private stateService: StateService,
     ) { }
 
   ngOnInit(): void {
@@ -20,6 +22,7 @@ export class StationRouterComponent implements OnInit {
       params => { 
         this.station = params['station'] ;
         console.log(`routed station is ${this.station}`);
+        this.stateService.sendState({ enabled: true, loading: false, station: `${this.station}` });
       }
       );
   }

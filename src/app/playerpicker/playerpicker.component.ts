@@ -54,11 +54,6 @@ export class PlayerpickerComponent implements OnInit {
 
   ngOnInit() {
 
-    // if (!this.currentStation) {
-    //   this.currentStation = this.playlistService.getStation();
-    //   this.tuneToStation(this.currentStation);
-    // } 
-
     this.stationSub = this.playlistService.getAllStations()
     .subscribe(
       stations => {
@@ -72,9 +67,6 @@ export class PlayerpickerComponent implements OnInit {
       },
       error => console.error('Stations retrieve error: ', error)
       );
-
-    // this.subscribeToPlaylist();
-    // ☝️this moved into tuneToStation() call 
 
     this.progressSub = interval(1000)
     .subscribe(
@@ -124,11 +116,11 @@ export class PlayerpickerComponent implements OnInit {
       );
     this.timeOutSubs.forEach(id => clearTimeout(id));
     this.playlistSub?.unsubscribe();
-    this.stateService.sendState({ enabled: true, loading: true, station: stationName });
+    // this.stateService.sendState({ enabled: true, loading: true, station: stationName });
     this.playlistService.setStation(stationName);
-    setTimeout(() => {
-      this.stateService.sendState({ enabled: true, loading: false, station: stationName });
-    }, 1);
+    // setTimeout(() => {
+    //   this.stateService.sendState({ enabled: true, loading: false, station: stationName });
+    // }, 1);
     // this.currentStation = stationName;
     this.subscribeToPlaylist();
   }

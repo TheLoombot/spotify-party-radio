@@ -33,6 +33,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { UserPlaylistsComponent } from './user-playlists/user-playlists.component';
 import { CallbackComponent } from './callback/callback.component';
 import { LoggedInUserComponent } from './logged-in-user/logged-in-user.component';
+import { StationRouterComponent } from './station-router/station-router.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { LoggedInUserComponent } from './logged-in-user/logged-in-user.component
     PlayerpickerComponent,
     UserPlaylistsComponent,
     CallbackComponent,
-    LoggedInUserComponent
+    LoggedInUserComponent,
+    StationRouterComponent
   ],
   imports: [
     BrowserModule,

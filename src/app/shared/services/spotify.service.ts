@@ -55,7 +55,7 @@ export class SpotifyService {
     .subscribe(
       (user: User) => {
         this.user = user;
-        this.stateService.sendState({ enabled: true, loading: false, station: `${this.getUserName()}` });
+        this.stateService.sendState({ enabled: true });
       },
       error => {
         console.error('getUserProfile:', error);

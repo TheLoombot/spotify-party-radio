@@ -116,12 +116,7 @@ export class PlayerpickerComponent implements OnInit {
       );
     this.timeOutSubs.forEach(id => clearTimeout(id));
     this.playlistSub?.unsubscribe();
-    // this.stateService.sendState({ enabled: true, loading: true, station: stationName });
     this.playlistService.setStation(stationName);
-    // setTimeout(() => {
-    //   this.stateService.sendState({ enabled: true, loading: false, station: stationName });
-    // }, 1);
-    // this.currentStation = stationName;
     this.subscribeToPlaylist();
   }
 

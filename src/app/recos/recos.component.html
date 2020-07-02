@@ -1,4 +1,4 @@
-<div class="card w-100 mb-3" style="min-height:470px">
+<div class="card w-100 mb-3" style="min-height:554px">
   <div class="card-header">Recommended
     <span id="refresh-btn" class="float-right fa fa-refresh text-primary cursor-pointer"
       (click)="refreshRecommendations()">
@@ -15,13 +15,13 @@
     <div class="card mb-3 border-primary" *ngFor="let track of recommendations; let i = index" >
       <div class="card-body cursor-pointer" 
         (click)="pushTrack(track, i)">   
-        <img src="{{ track.album.images[2].url }}" class="float-left">
+        <img src="{{ track.album.images[1].url }}" width="96px" class="float-left">
         <span class="float-right fa" 
           [class.fa-plus]="clicked !== i"
           [class.fa-check]="clicked === i">
         </span>
-        <h5 class="card-title text-truncate">{{ track.name }}</h5>
-        <h6 class="card-subtitle text-truncate">{{ track.artists[0].name }} - {{ track.album.name }}</h6>
+        <h4 class="card-title text-truncate">{{ track.name }}</h4>
+        <h5 class="card-subtitle text-truncate">{{ track.artists[0].name }} - {{ track.album.name }}</h5>
       </div>
     </div>
   </div>

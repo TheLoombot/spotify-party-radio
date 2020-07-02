@@ -1,6 +1,6 @@
 <ngb-carousel #carousel (slide)="onSlide($event)" [showNavigationIndicators]="false" [showNavigationArrows]="true" [interval]="false">
   <ng-template ngbSlide id={{station.key}} *ngFor="let station of stations; index as i">
-    <div class="card w-100 bg-dark" *ngIf="nowPlaying" style="min-height:610px">
+    <div class="card w-100 bg-dark" *ngIf="nowPlaying" style="min-height:640px">
       <div class="card-header text-white h3"> Radio {{ station.key }}</div>
       <div class="card-body">
         <div class="card w-75 mx-auto">
@@ -8,10 +8,10 @@
           <img class="card-img-top" src="assets/placeholder_300.png" *ngIf="!showNowPlaying">
 
           <div class="card-body" *ngIf="showNowPlaying">
-            <h4 class="text-truncate">{{ nowPlaying.name }} </h4>
-            <h5 class="text-truncate"> {{ nowPlaying.artists[0].name }} - 
+            <h3 class="text-truncate">{{ nowPlaying.name }} </h3>
+            <h4 class="text-truncate"> {{ nowPlaying.artists[0].name }} - 
               <a target="_blank" href="{{ nowPlaying.album.external_urls.spotify }}">{{ nowPlaying.album.name }}</a>
-            </h5>
+            </h4>
             <div class="progress">
               <div class="progress-bar " role="progressbar" [style.width]="progress + '%'" aria-valuemin="0" aria-valuemax="100">
 
@@ -42,7 +42,7 @@
     </div>
 
     <!-- When we ain't communicating with a Spotify session --> 
-    <div class="card w-100 bg-dark" *ngIf="!nowPlaying" style="min-height:610px">
+    <div class="card w-100 bg-dark" *ngIf="!nowPlaying" style="min-height:640px">
       <div class="card-header text-white"> Lookin for ur Spotify... </div>
       <div class="card-body">
         <div class="card w-75 mx-auto">

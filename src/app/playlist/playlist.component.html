@@ -3,9 +3,9 @@
   <div class="card-body" *ngIf="tracks">
     <div class="card mb-3" *ngFor="let track of tracks | slice:1; index as i; last as isLast" >
       <div class="card-body">
-        <img src="{{ track.image_url }}" class="float-left" style="margin-right: 10px">
-        <h5 class="card-title text-truncate"> {{ track.name }} </h5>
-        <h6 class="card-subtitle text-truncate"> {{ track.artist_name }} - {{ track.album_name }} </h6>
+        <img src="{{ track.image_url }}" width="96px" class="float-left" style="margin-right: 10px">
+        <h4 class="card-title text-truncate"> {{ track.name }} </h4>
+        <h5 class="card-subtitle text-truncate"> {{ track.artist_name }} - {{ track.album_name }} </h5>
         <span class="fa fa-remove float-right text-primary cursor-pointer" (click)="removeTrack(track, i)"></span>
       </div>
     </div>

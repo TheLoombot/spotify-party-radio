@@ -45,8 +45,8 @@ export class SearchComponent implements OnInit {
           this.tracks = results.tracks.items as Array<Track>;
           this.tracks.forEach( (track: Track) => {
             if (track.album.images.length > 0) {
-              const images = track.album.images.slice(-1); // Select smallest size
-              track.image_url = images[0].url;
+              // const images = track.album.images.slice(-1); // Select smallest size
+              track.image_url = track.album.images[1].url;
             } else {
               track.image_url = 'assets/record.png'; // Use default image
             }

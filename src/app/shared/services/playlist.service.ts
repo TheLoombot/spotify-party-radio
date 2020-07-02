@@ -185,8 +185,8 @@ export class PlaylistService {
     if (track.image_url) {
       trackImg = track.image_url;
     } else {
-      const images = track.album.images.slice(-1); // Select smallest size
-      trackImg = images[0].url;
+      // const images = track.album.images.slice(-1); // Select smallest size
+      trackImg = track.album.images[1].url;
     }
 
     const additionalData = {

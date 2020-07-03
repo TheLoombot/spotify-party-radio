@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, OnChanges, SimpleChanges } from '@angular/core';
 /* RxJs */
 import { debounceTime } from 'rxjs/operators';
 /* Services */
@@ -15,6 +15,8 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./recos.component.css']
 })
 export class RecosComponent implements OnInit, OnDestroy {
+
+  @Input() currentStation: string;
   lastFivePlaylistRef;
   lastFiveSub: Subscription;
   recommendations: Array<Track>;
@@ -29,7 +31,16 @@ export class RecosComponent implements OnInit, OnDestroy {
     ) {
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    this.tuneToStation(changes['currentStation'].currentValue);
+  }
+
   ngOnInit() {
+    // nada
+  }
+
+  tuneToStation(stationName: string) {
+    this.lastFiveSub?.unsubscribe();
     this.seedTrackUris = '';
     this.lastFivePlaylistRef = this.playlistService.getLastTracks(5);
     this.lastFiveSub = this.lastFivePlaylistRef.valueChanges()

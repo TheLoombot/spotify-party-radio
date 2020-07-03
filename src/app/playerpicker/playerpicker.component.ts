@@ -101,7 +101,6 @@ export class PlayerpickerComponent implements OnInit {
   }
 
   onSlide(slideEvent: NgbSlideEvent) {
-    // this.tuneToStation(slideEvent.current);
     this.router.navigate(["", slideEvent.current]);
   }
 
@@ -116,7 +115,6 @@ export class PlayerpickerComponent implements OnInit {
       );
     this.timeOutSubs.forEach(id => clearTimeout(id));
     this.playlistSub?.unsubscribe();
-    this.playlistService.setStation(stationName);
     this.subscribeToPlaylist();
   }
 

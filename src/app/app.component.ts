@@ -29,7 +29,9 @@ export class AppComponent implements OnInit {
       .subscribe(
         (state: State) => {
           this.state = state;
-          this.station = state.station;
+          if (state.station) {
+            this.station = state.station;
+          }
           this.appEnabled = state.enabled;
           this.stationLoading = state.loading;
           // console.log('State obtained in app:', this.state);

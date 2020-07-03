@@ -10,12 +10,13 @@ import { User } from '../models/user';
 /* Others */
 import { environment } from '../../../environments/environment';
 import { StateService } from './state.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SpotifyService {
-  token: string = '';
+  token: string = null;
   private tokenSubject: Subject<any>;
   user: User;
   authorizeURL = 'https://accounts.spotify.com/authorize';
@@ -39,13 +40,12 @@ export class SpotifyService {
   constructor(
     private http: HttpClient,
     private stateService: StateService,
-    ) {
+    private router: Router,
+  ) {
 
     if (window.localStorage.getItem('access_token')) {
       const accessTokenStored = window.localStorage.getItem('access_token');
       this.setToken(accessTokenStored);
-      // this.sendToken(this.accessTokenStored);
-      // Other otherwise we show the login button
     }
   }
 
@@ -56,6 +56,9 @@ export class SpotifyService {
       (user: User) => {
         this.user = user;
         this.stateService.sendState({ enabled: true });
+        if (this.router.url === '/auth' || this.router.url === '/') {
+          this.router.navigate(["", this.getUserName() ]);
+        } 
       },
       error => {
         console.error('getUserProfile:', error);
@@ -79,7 +82,7 @@ export class SpotifyService {
       }
       );
     this.stateService.sendError(`There is no available token`);
-    this.token = '';
+    this.token = null;
     window.localStorage.removeItem('access_token');
   }
 

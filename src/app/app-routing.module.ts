@@ -8,6 +8,7 @@ import { StationRouterComponent } from './station-router/station-router.componen
 const routes: Routes = [
 { path: 'auth', component: CallbackComponent },
 { path: ':station', component: StationRouterComponent },
+{ path: '', component: StationRouterComponent },
 ];
 
 @NgModule({

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { NgbCarousel, NgbSlideEvent, NgbSlideEventSource } from '@ng-bootstrap/ng-bootstrap';
 import { SpotifyService } from '../shared/services/spotify.service';
 import { PlaylistService } from '../shared/services/playlist.service';
@@ -7,6 +7,7 @@ import { interval, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { Track } from '../shared/models/track';
 import { Title } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-playerpicker',
@@ -15,7 +16,7 @@ import { Title } from '@angular/platform-browser';
 })
 export class PlayerpickerComponent implements OnInit {
 
-  currentStation: string;
+  @Input() currentStation: string;
   stationSub: Subscription;
   stations;
   playlistSub: Subscription;  
@@ -37,15 +38,21 @@ export class PlayerpickerComponent implements OnInit {
     private titleService: Title,
     private spotifyService: SpotifyService,
     private playlistService: PlaylistService,
-    private stateService: StateService
+    private stateService: StateService,
+    private router: Router,
     ) {     
     this.progress = 0;
     this.showSkip = false;
     this.showNowPlaying = false;
   }
 
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.tuneToStation(changes['currentStation'].currentValue);
+  }
+
+
   ngOnInit() {
-    this.currentStation = this.playlistService.getStation();
 
     this.stationSub = this.playlistService.getAllStations()
     .subscribe(
@@ -60,8 +67,6 @@ export class PlayerpickerComponent implements OnInit {
       },
       error => console.error('Stations retrieve error: ', error)
       );
-
-    this.subscribeToPlaylist();
 
     this.progressSub = interval(1000)
     .subscribe(
@@ -96,6 +101,10 @@ export class PlayerpickerComponent implements OnInit {
   }
 
   onSlide(slideEvent: NgbSlideEvent) {
+    this.router.navigate(["", slideEvent.current]);
+  }
+
+  tuneToStation(stationName: string) {
     this.showNowPlaying = false;
     this.spotifyService.pauseTrack()
     .subscribe(
@@ -105,13 +114,7 @@ export class PlayerpickerComponent implements OnInit {
       }
       );
     this.timeOutSubs.forEach(id => clearTimeout(id));
-    this.playlistSub.unsubscribe();
-    this.stateService.sendState({ enabled: true, loading: true, station: slideEvent.current });
-    this.playlistService.setStation(slideEvent.current);
-    setTimeout(() => {
-      this.stateService.sendState({ enabled: true, loading: false, station: slideEvent.current });
-    }, 1);
-    this.currentStation = slideEvent.current;
+    this.playlistSub?.unsubscribe();
     this.subscribeToPlaylist();
   }
 

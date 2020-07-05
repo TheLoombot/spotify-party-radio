@@ -27,8 +27,6 @@ export class CallbackComponent implements OnInit {
 					const accessToken = paramArray[1];
 					window.localStorage.setItem('access_token', accessToken);
 					this.spotifyService.setToken(accessToken);
-					this.router.navigate(['/']);
-					// this.spotifyService.sendToken(accessToken);
 				}
 			}
 		}

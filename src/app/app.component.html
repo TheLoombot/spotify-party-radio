@@ -21,10 +21,10 @@
     <!-- it's kosher to nest columns in columns! --> 
     <div class="col-md-6"> 
       <div class="col-md-12 my-3" *ngIf="appEnabled">
-        <app-playerpicker *ngIf="appEnabled"></app-playerpicker>
+        <app-playerpicker [currentStation]="station"></app-playerpicker>
       </div>
-      <div class="col-md-12 my-3" *ngIf="appEnabled && !stationLoading">
-        <app-playlist></app-playlist>
+      <div class="col-md-12 my-3" *ngIf="appEnabled">
+        <app-playlist [currentStation]="station"></app-playlist>
       </div>
     </div>
 
@@ -32,7 +32,7 @@
       <div class="col-md-12 my-3" *ngIf="appEnabled">
         <app-search></app-search>
         <app-user-playlists></app-user-playlists>
-        <app-recos *ngIf="!stationLoading"></app-recos>
+        <app-recos [currentStation]="station"></app-recos>
       </div>
     </div>
 

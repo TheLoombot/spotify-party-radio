@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, OnChanges, SimpleChanges } from '@angular/core';
 /* Services */
 import { PlaylistService } from '../shared/services/playlist.service';
 
@@ -9,7 +9,7 @@ import { PlaylistService } from '../shared/services/playlist.service';
 })
 export class PlaylistComponent implements OnInit, OnDestroy {
 
-
+  @Input() currentStation: string;
   tracks: Object;
   trackSub;
 
@@ -19,7 +19,15 @@ export class PlaylistComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    // ngOnChanges() is called on init! so nothing to do here
+  }
 
+  ngOnChanges(changes: SimpleChanges) {
+    this.tuneToStation(changes['currentStation'].currentValue);
+  }
+
+  tuneToStation(stationName: string) {
+    this.trackSub?.unsubscribe();
     this.trackSub = this.playlistService.getAllTracks()
     .subscribe(
       tracks => {
@@ -28,7 +36,6 @@ export class PlaylistComponent implements OnInit, OnDestroy {
       },
       error => console.error('Playlist retrieves error: ', error)
       );
-
   }
 
   removeTrack(track: any, i: number): void {

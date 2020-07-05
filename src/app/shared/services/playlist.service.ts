@@ -32,7 +32,7 @@ export class PlaylistService {
     this.environment = environment.production ? 'prod' : 'dev';
 
     // on startup, set the current station to the user's own station
-    this.setStation(this.spotifyService.getUserName());
+    // this.setStation(this.spotifyService.getUserName());
 
   }
 

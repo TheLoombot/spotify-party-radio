@@ -144,7 +144,7 @@ export class SpotifyService {
     const bodyObj = {
       'uris': [uri]
     };
-    return this.http.put(this.baseUrl + '/me/player/play', JSON.stringify(bodyObj));
+    return this.http.put(this.baseUrl + '/me/player/play?device_id=a89872700dfd973914222c17041462a02ff3c6c0', JSON.stringify(bodyObj));
   }
 
   pauseTrack() {

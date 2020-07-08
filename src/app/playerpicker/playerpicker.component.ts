@@ -188,13 +188,38 @@ export class PlayerpickerComponent implements OnInit {
           this.nowPlaying = data ? data.item : null;
           if (this.nowPlaying == null) {
             // assmume the player isn't going... wait and try again
-            console.warn('There is nothing being played');
-            this.timeOutSubs.forEach(id => clearTimeout(id));
-            this.timeOutSubs.push(
-              setTimeout( () => {
-                this.checkFirstTrack();
-              }, 2500)
+            // console.warn('There is nothing being played');
+            // this.timeOutSubs.forEach(id => clearTimeout(id));
+            // this.timeOutSubs.push(
+            //   setTimeout( () => {
+            //     this.checkFirstTrack();
+            //   }, 2500)
+            //   );
+            this.spotifyService.playTrack(this.firstTrack.uri)
+            .subscribe(
+              (response) => {
+                // this.playerError = response
+                console.log(`${this.firstTrack.name} requested playback!`);
+                this.spotifyService.seekTrack(this.getTime() - this.firstTrack.expires_at + this.firstTrack.duration_ms)
+                .subscribe(
+                  () => {},
+                  error => {
+                    console.error('Brads error: failed on seek', error);
+                  }
+                  );
+              },
+              error => {
+                this.playerError = error.error.error;
+                console.log('play back error ', this.playerError);
+                setTimeout(() => {
+                  this.checkFirstTrack();
+                }, 5000);
+                // playTrack doesn't give us an affirmative response on the play request
+                // so we have to wait a bit (fudge = 1.0s) before we try check the 'now
+                // playing status' again
+              }
               );
+
           } else if (this.firstTrack == null) {
             console.warn('Sorry mate theres nothing to play');
           } else if (data.is_playing && this.nowPlaying.uri === this.firstTrack.uri) {

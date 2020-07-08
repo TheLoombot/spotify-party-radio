@@ -207,16 +207,18 @@ export class PlayerpickerComponent implements OnInit {
                     console.error('Brads error: failed on seek', error);
                   }
                   );
+                // do we still need to take this "check back later" approach?
+                // could we at least reduce the time until this call?
+                setTimeout(() => {
+                  this.checkFirstTrack();
+                }, 500);
               },
               error => {
                 this.playerError = error.error.error;
-                console.log('play back error ', this.playerError);
+                console.log('play back error... retrying in 3s... ', this.playerError);
                 setTimeout(() => {
                   this.checkFirstTrack();
-                }, 5000);
-                // playTrack doesn't give us an affirmative response on the play request
-                // so we have to wait a bit (fudge = 1.0s) before we try check the 'now
-                // playing status' again
+                }, 3000);
               }
               );
 

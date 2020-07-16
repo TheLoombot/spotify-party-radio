@@ -141,10 +141,17 @@ export class SpotifyService {
   }
 
   playTrack(uri: string) {
+    const device_id = window.localStorage.getItem('device_id');
     const bodyObj = {
       'uris': [uri]
     };
-    return this.http.put(this.baseUrl + '/me/player/play', JSON.stringify(bodyObj));
+
+    if (device_id) {
+      return this.http.put(this.baseUrl + '/me/player/play?device_id=' + device_id, JSON.stringify(bodyObj));
+    } else {
+      return this.http.put(this.baseUrl + '/me/player/play', JSON.stringify(bodyObj));
+    }
+
   }
 
   pauseTrack() {

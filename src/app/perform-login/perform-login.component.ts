@@ -26,6 +26,7 @@ export class PerformLoginComponent implements OnInit {
 
   authSpotify() {
     window.location.href = this.spotifyService.getAuthUrl();
+    return false;
   }
 
 }

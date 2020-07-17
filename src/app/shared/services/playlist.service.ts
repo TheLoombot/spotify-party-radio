@@ -303,24 +303,18 @@ export class PlaylistService {
       }
   }
 
-  /** Method to save track in Firebase secondary list */
+  /** Method to save track in station pool */
   saveTrack(track: Track): any {
-    // console.log('Track to save in Secondary List:', track);
-    // Verify if it's default robot track
-    if (track.id === '0RbfwabR0mycfvZOduSIOO') {
-      // console.log('Default track does not need to be saved in previous played tracks');
-    } else if (track.player) {
-      if (track.player.auto) {
-        // console.log('Random track does not need to be saved again in previous played tracks');
-      }
-    } else {
-      // Clean track Object
-      delete track.expires_at;
-      // Save track in previous played list
-      this.db.list(this.previouslistUrl).set(track.id, track);
-      console.log(`${track.name} saved to previous list`);
-      this.pruneTracks(40);
-    }
+    
+    // Clean track Object
+    delete track.expires_at;
+    // not sure why this is there TBH 🤔
+    delete track.key;
+
+    this.db.list(this.previouslistUrl).set(track.id, track);
+    console.log(`${track.name} saved to previous list`);
+    this.pruneTracks(40);
+    
   }
 
   private getTime(): number {

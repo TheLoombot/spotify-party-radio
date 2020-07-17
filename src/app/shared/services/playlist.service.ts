@@ -220,7 +220,7 @@ export class PlaylistService {
     .subscribe(
       (tracks: Array<any>) => {
         if (tracks.length <= tracksToLeave) {
-          console.log('not enough tracks to prune: ', tracks.length);
+          // console.log('not enough tracks to prune: ', tracks.length);
         } else {
           for (let track of tracks.slice(0,tracks.length-tracksToLeave)) {
             // It turns out the track's key in the pool is just its
@@ -236,6 +236,51 @@ export class PlaylistService {
 
   removeFromPool(key: string) {
     this.db.list(this.previouslistUrl).remove(key);
+  }
+
+  pushOldestTracks() {
+    const getAllPreviousTracksSubscription = this.getAllPreviousTracks()
+    .subscribe(
+      (tracks: Array<any>) => {
+        if (tracks.length > 0) {
+
+          console.log(`🤖 ${tracks.length} tracks in pool, pushing (up to) 3 tracks, seen longest ago!`);
+          var delay = 0;
+          for (let track of tracks.slice(0,3)) {
+            track.player = { auto: true };
+            this.timeOutSubs.push(
+              setTimeout(() => {
+                this.pushTrack(track, track['added_by']);
+              }, delay)
+              )
+            // we introduce some delay here to give one track time 
+            // to push before the next one does, or else the expiration 
+            // times get screwy! 
+            delay = delay + 250;
+          }
+
+        } else {
+          // when there are no previous tracks in the pool (like on first login)
+          // then we push three of the user's "top tracks" instead
+          this.spotifyService.getTopTracks()
+            .subscribe(
+              topTracks => {
+                for (let track of topTracks['items']) { 
+                  this.pushTrack(track, this.spotifyService.getUserName());
+                } 
+              },
+              error => {
+                console.log(`top track fetch error: ${error}`);
+              }
+            );
+        }
+        getAllPreviousTracksSubscription.unsubscribe();
+      },
+      error => console.error(error),
+      () => {
+        console.log('pushOldestTracks finished with error ', this.getTime());
+      }
+      );
   }
 
   pushRandomTrack() {
@@ -312,7 +357,7 @@ export class PlaylistService {
     delete track.key;
 
     this.db.list(this.previouslistUrl).set(track.id, track);
-    console.log(`${track.name} saved to previous list`);
+    // console.log(`${track.name} saved to previous list`);
     this.pruneTracks(40);
     
   }
@@ -352,7 +397,8 @@ export class PlaylistService {
     .then(
       result => {
         if (result.committed) {
-          this.pushRandomTrack();
+          // this.pushRandomTrack();
+          this.pushOldestTracks();
         }
       }
       );

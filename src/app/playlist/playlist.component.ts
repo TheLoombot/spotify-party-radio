@@ -41,9 +41,11 @@ export class PlaylistComponent implements OnInit, OnDestroy {
   removeTrack(track: any, i: number): void {
     // add 1 to the index because we slice off the first track
     i++;
-    console.log('Clicked to remove track:', i);
-    // console.warn('Remove Track:', track);
+    console.log(`Clicked to remove ${track.name}`);
     this.playlistService.remove(track.key, i);
+    if (track.player) {
+      this.playlistService.saveTrack(track);
+    }
   }
 
   ngOnDestroy() {

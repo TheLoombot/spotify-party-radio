@@ -2,10 +2,13 @@
   <div class="card-body text-primary bg-light">
 
     <div class="row">
-      <div class="col-10"> 
-        <input type="search" class="form-control my-3" style="font-size: 16px;"spellcheck="false" placeholder="Search"
-        (keyup)="newSearch($event.target.value, 0)"
-        (search)="newSearch($event.target.value)">
+      <div class="col-10 input-group my-3"> 
+          <div class="input-group-prepend">
+            <span class="input-group-text">🕵️‍♀️</span>
+          </div>
+          <input type="search" class="form-control" spellcheck="false" placeholder="Search"
+          (keyup)="newSearch($event.target.value, 0)"
+          (search)="newSearch($event.target.value)">
       </div>
       <div class="col-1 align-self-center">
         <span class="fa fa-chevron-left text-primary cursor-pointer"

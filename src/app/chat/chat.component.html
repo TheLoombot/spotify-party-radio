@@ -1,0 +1,16 @@
+<div class="card w-100 mb-3" style="min-height:200px">
+  <div class="card-header">Listner Call-ins
+  </div>
+  <div class="card-body bg-light">
+    <div class="card mb-3" *ngFor="let message of messages" >
+      <div class="card-body">   
+        <img src="{{ message.user_img }}" width="96px" class="float-left">
+        <h4 class="card-title text-truncate">{{ message.username }}</h4>
+        <h5 class="card-subtitle text-truncate">{{ message.message }}</h5>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer">
+  	<input #box class="w-100 form-control" (keyup.enter)="pushMessage(box.value); box.value=''" placeholder="Caller go ahead">
+  </div>
+</div>

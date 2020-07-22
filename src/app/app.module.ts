@@ -15,7 +15,6 @@ import { AppComponent } from './app.component';
 import { PerformLoginComponent } from './perform-login/perform-login.component';
 import { SearchComponent } from './search/search.component';
 import { PlaylistComponent } from './playlist/playlist.component';
-import { PlayerComponent } from './player/player.component';
 import { RecosComponent } from './recos/recos.component';
 import { ToptracksComponent } from './toptracks/toptracks.component';
 /* Shared Components */
@@ -27,7 +26,6 @@ import { StateService } from './shared/services/state.service';
 
 /* Others */
 import { environment } from '../environments/environment';
-import { StationpickerComponent } from './stationpicker/stationpicker.component';
 import { PlayerpickerComponent } from './playerpicker/playerpicker.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { UserPlaylistsComponent } from './user-playlists/user-playlists.component';
@@ -41,11 +39,9 @@ import { StationRouterComponent } from './station-router/station-router.componen
     PerformLoginComponent,
     SearchComponent,
     PlaylistComponent,
-    PlayerComponent,
     RecosComponent,
     ToptracksComponent,
     AlertComponent,
-    StationpickerComponent,
     PlayerpickerComponent,
     UserPlaylistsComponent,
     CallbackComponent,

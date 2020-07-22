@@ -16,7 +16,6 @@ import { PerformLoginComponent } from './perform-login/perform-login.component';
 import { SearchComponent } from './search/search.component';
 import { PlaylistComponent } from './playlist/playlist.component';
 import { RecosComponent } from './recos/recos.component';
-import { ToptracksComponent } from './toptracks/toptracks.component';
 /* Shared Components */
 import { AlertComponent } from './shared/components/alert/alert.component';
 
@@ -40,7 +39,6 @@ import { StationRouterComponent } from './station-router/station-router.componen
     SearchComponent,
     PlaylistComponent,
     RecosComponent,
-    ToptracksComponent,
     AlertComponent,
     PlayerpickerComponent,
     UserPlaylistsComponent,

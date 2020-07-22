@@ -43,10 +43,15 @@ export class SpotifyService {
     private router: Router,
   ) {
 
-    if (window.localStorage.getItem('access_token')) {
+    console.log(window.location.pathname);
+
+    if (window.location.pathname == '/auth') {
+      window.localStorage.removeItem('access_token');
+    } else if (window.localStorage.getItem('access_token')) {
       const accessTokenStored = window.localStorage.getItem('access_token');
       this.setToken(accessTokenStored);
     }
+
   }
 
   setToken(token: string): void {

@@ -26,7 +26,7 @@ export class ChatService {
   pushMessageToStation(message: string, station: string) {
     const messageObject = {
       message: message,
-      username: this.spotifyService.getUserName(),
+      user_name: this.spotifyService.getUserName(),
       user_img: this.spotifyService.getUser()['images'][0]['url'],
     }
 

@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, ViewChild, ElementRef } from '@angular/core';
 import { ChatService } from '../shared/services/chat.service';
+import { SpotifyService } from '../shared/services/spotify.service';
 
 @Component({
   selector: 'app-chat',
@@ -15,6 +16,7 @@ export class ChatComponent implements OnInit {
 
   constructor(
     private chatService: ChatService,
+    private spotifyService: SpotifyService,
     ) { }
 
   ngOnInit(): void {
@@ -31,7 +33,6 @@ export class ChatComponent implements OnInit {
     .subscribe(
       messages => {
         this.messages = messages;
-        console.log(this.messages);
       }
       )
     if (this.box) {
@@ -39,8 +40,12 @@ export class ChatComponent implements OnInit {
     }
   }
 
+  ownMessage(message: any): boolean {
+    if (message['user_name'] === this.spotifyService.getUserName()) return true;
+    return false;
+  }
+
   pushMessage(messageText: string) {
-    console.log(messageText);
     if (messageText) {
       this.chatService.pushMessageToStation(messageText, this.currentStation);
     }

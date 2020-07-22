@@ -29,7 +29,7 @@ export class ChatComponent implements OnInit {
 
   tuneToStation(stationName: string) {
     this.messagesSub?.unsubscribe();
-    this.chatService.getMessagesForStation(stationName).valueChanges()
+    this.chatService.getMessagesForStation(stationName)
     .subscribe(
       messages => {
         this.messages = messages;
@@ -48,6 +48,9 @@ export class ChatComponent implements OnInit {
   pushMessage(messageText: string) {
     if (messageText) {
       this.chatService.pushMessageToStation(messageText, this.currentStation);
+    }
+    if (this.messages.length >= 5) {
+      this.chatService.deleteMessageFromStation(this.messages[0].key, this.currentStation);
     }
   }
 

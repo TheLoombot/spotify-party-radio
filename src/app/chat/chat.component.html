@@ -1,0 +1,24 @@
+<div class="card w-100 mb-3" style="min-height:200px">
+  <div class="card-body bg-light">
+    <div class="row" *ngFor="let message of messages">
+      <div class="col-4" *ngIf="ownMessage(message)"></div>
+      <div class="col-8">
+        <div class="media mb-3 rounded float-right" [ngClass]="{'float-right bg-primary text-white': ownMessage(message), 'bg-white': !ownMessage(message)}" >   
+          <img src="{{ message.user_img }}" width="48px" *ngIf="!ownMessage(message) && message.user_img" class="mx-1 my-1 rounded">
+          <div class="media-body mx-2 rounded">
+            <small class="text-secondary text-truncate" *ngIf="!ownMessage(message)">{{ message.user_name }}</small>
+            <div>{{ message.message }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer">
+    <div class="input-group w-100">
+      <div class="input-group-prepend">
+        <span class="input-group-text">🗣</span>
+      </div>
+      <input #box class="form-control" (keyup.enter)="pushMessage(box.value); box.value=''" placeholder="Caller go ahead">
+    </div>
+  </div>
+</div>

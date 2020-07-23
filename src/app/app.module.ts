@@ -31,6 +31,7 @@ import { UserPlaylistsComponent } from './user-playlists/user-playlists.componen
 import { CallbackComponent } from './callback/callback.component';
 import { LoggedInUserComponent } from './logged-in-user/logged-in-user.component';
 import { StationRouterComponent } from './station-router/station-router.component';
+import { ChatComponent } from './chat/chat.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { StationRouterComponent } from './station-router/station-router.componen
     UserPlaylistsComponent,
     CallbackComponent,
     LoggedInUserComponent,
-    StationRouterComponent
+    StationRouterComponent,
+    ChatComponent
   ],
   imports: [
     BrowserModule,

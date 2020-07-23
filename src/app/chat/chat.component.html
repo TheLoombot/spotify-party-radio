@@ -4,7 +4,7 @@
       <div class="col-4" *ngIf="ownMessage(message)"></div>
       <div class="col-8">
         <div class="media bg-white mb-3 rounded float-right" [ngClass]="{'float-right': ownMessage(message)}">   
-          <img src="{{ message.user_img }}" width="48px" *ngIf="!ownMessage(message) && message.user_img" class="mx-1 my-1">
+          <img src="{{ message.user_img }}" width="48px" *ngIf="!ownMessage(message) && message.user_img" class="mx-1 my-1 rounded">
           <div class="media-body mx-2">
             <small class="text-secondary text-truncate" *ngIf="!ownMessage(message)">{{ message.user_name }}</small>
             <div>{{ message.message }}</div>

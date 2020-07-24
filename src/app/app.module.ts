@@ -32,6 +32,7 @@ import { CallbackComponent } from './callback/callback.component';
 import { LoggedInUserComponent } from './logged-in-user/logged-in-user.component';
 import { StationRouterComponent } from './station-router/station-router.component';
 import { ChatComponent } from './chat/chat.component';
+import { AddTracksComponent } from './add-tracks/add-tracks.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { ChatComponent } from './chat/chat.component';
     CallbackComponent,
     LoggedInUserComponent,
     StationRouterComponent,
-    ChatComponent
+    ChatComponent,
+    AddTracksComponent
   ],
   imports: [
     BrowserModule,

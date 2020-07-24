@@ -1,0 +1,63 @@
+<div class="card w-100 mb-3" style="min-height: 574px">
+  <div class="card-body text-primary bg-light">
+
+    <div class="row">
+
+      <!-- search input text box -->
+      <div class="col-9 input-group my-3"> 
+        <div class="input-group-prepend">
+          <span class="input-group-text">🕵️‍♀️</span>
+        </div>
+        <input type="search" class="form-control" spellcheck="false" placeholder="Search"
+        (keyup)="newSearch($event.target.value, 0)"
+        (search)="newSearch($event.target.value)">
+      </div>
+
+      <!-- button position 1: results back -->
+      <div class="col-1 text-center align-self-center">
+        <span class="fa fa-chevron-left text-primary cursor-pointer"
+        (click)="prevPage()" *ngIf="curOffset > 0 && searchResultTotal" ></span>
+      </div>
+
+      <!-- button position 2: refresh or nav up -->
+      <div class="col-1 text-center align-self-center">
+        <span class="fa fa-chevron-up text-primary cursor-pointer"></span>
+      </div>
+
+      <!-- button position 3: results forward -->
+      <div class="col-1 text-center align-self-center">
+        <span class="fa fa-chevron-right text-primary cursor-pointer"
+        (click)="nextPage()" *ngIf="curOffset + pageSize < searchResultTotal"></span> 
+      </div>
+
+    </div>
+
+    <!-- mini nav for recos and playlists -->
+    <div class="row mb-3">
+      <div class="col-11 mx-auto">      
+        <div class="btn-group btn-group-toggle mx-auto btn-block" data-toggle="buttons">
+          <label class="btn btn-primary btn-sm col-6">
+            <input type="radio" name="options" id="option2"> Recommended
+          </label>
+          <label class="btn btn-outline-primary btn-sm col-6">
+            <input type="radio" name="options" id="option3"> Playlists
+          </label>
+        </div>  
+      </div>
+    </div>
+
+    <!-- search results -->
+    <div class="card mb-3 border-primary" *ngFor="let track of searchTracks; let i = index" >
+      <div (click)="pushTrack(track, i)" class="card-body cursor-pointer">
+        <img src="{{ track.album?.images[1]?.url }}" width="96px" class="float-left" style="margin-right: 10px" 
+        *ngIf="track.album?.images">
+        <span class="float-right fa" [class.fa-plus]="clicked !== i"
+        [class.fa-check]="clicked === i"></span>
+        <h4 class="card-title text-truncate">{{ track.name }}</h4>
+        <h5 class="card-subtitle text-truncate">{{ track.artists[0].name }} - {{ track.album.name }}</h5>
+      </div>
+    </div>
+
+  </div>
+
+</div>

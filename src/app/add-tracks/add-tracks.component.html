@@ -21,7 +21,9 @@
 
       <!-- button position 2: refresh or nav up -->
       <div class="col-1 text-center align-self-center">
-        <span class="fa fa-chevron-up text-primary cursor-pointer"></span>
+        <span class="fa fa-chevron-up text-primary cursor-pointer" *ngIf="false"></span>
+        <span id="refresh-btn" class="float-right fa fa-refresh text-primary cursor-pointer"
+          (click)="refreshRecommendations()" *ngIf="recosActive && !searchTracks"></span>
       </div>
 
       <!-- button position 3: results forward -->
@@ -32,24 +34,50 @@
 
     </div>
 
-    <!-- mini nav for recos and playlists -->
-    <div class="row mb-3">
-      <div class="col-11 mx-auto">      
-        <div class="btn-group btn-group-toggle mx-auto btn-block" data-toggle="buttons">
-          <label class="btn btn-primary btn-sm col-6">
-            <input type="radio" name="options" id="option2"> Recommended
-          </label>
-          <label class="btn btn-outline-primary btn-sm col-6">
-            <input type="radio" name="options" id="option3"> Playlists
-          </label>
-        </div>  
+    <!-- Container for recos and playlists, should hide when we search (even if no results) -->
+    <div [hidden]="searchTracks">
+
+      <!-- mini nav for recos and playlists -->
+      <div class="row mb-3">
+        <div class="col-12 mx-auto mx-3">
+          <div class="btn-group btn-group-toggle mx-auto btn-block" data-toggle="buttons">
+            <label class="btn btn-primary btn-sm col-6">
+              <input type="radio" name="options" id="option2"> Recommended
+            </label>
+            <label class="btn btn-outline-primary btn-sm col-6">
+              <input type="radio" name="options" id="option3"> Playlists
+            </label>
+          </div>  
+        </div>
       </div>
+
+      <!-- recos -->
+      <div *ngIf="recosActive">
+        <div class="d-flex justify-content-center align-middle" *ngIf="!recommendations?.length && recosActive">
+          <div class="spinner-border text-secondary" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+        <div class="card mb-3 border-primary" *ngFor="let track of recommendations; let i = index">
+          <div class="card-body cursor-pointer" 
+            (click)="pushTrack(track, i)">   
+            <img src="{{ track.album.images[1].url }}" width="96px" class="float-left mr-2">
+            <span class="float-right fa" 
+              [class.fa-plus]="clicked !== i"
+              [class.fa-check]="clicked === i">
+            </span>
+            <h4 class="card-title text-truncate">{{ track.name }}</h4>
+            <h5 class="card-subtitle text-truncate">{{ track.artists[0].name }} - {{ track.album.name }}</h5>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- search results -->
     <div class="card mb-3 border-primary" *ngFor="let track of searchTracks; let i = index" >
       <div (click)="pushTrack(track, i)" class="card-body cursor-pointer">
-        <img src="{{ track.album?.images[1]?.url }}" width="96px" class="float-left" style="margin-right: 10px" 
+        <img src="{{ track.album?.images[1]?.url }}" width="96px" class="float-left mr-2" 
         *ngIf="track.album?.images">
         <span class="float-right fa" [class.fa-plus]="clicked !== i"
         [class.fa-check]="clicked === i"></span>

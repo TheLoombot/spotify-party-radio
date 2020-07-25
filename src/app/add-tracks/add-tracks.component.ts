@@ -73,7 +73,6 @@ export class AddTracksComponent implements OnInit {
     .subscribe(
       userPlaylists => {
         this.userPlaylists = userPlaylists;
-        // console.log(this.userPlaylists);
       },
       error => {
         console.log(error);
@@ -85,7 +84,6 @@ export class AddTracksComponent implements OnInit {
     .subscribe(
       tracks => {
         this.curPlaylistTracks = tracks;
-        // console.log(this.curPlaylistTracks.items);
       },
       error => {
         console.log(error);
@@ -212,7 +210,6 @@ export class AddTracksComponent implements OnInit {
   clickedPlaylists() {
     this.recosActive = false;
     this.playlistsActive = true;
-    console.log(this.recosActive, this.playlistsActive);
   }
 
   ngOnDestroy() {

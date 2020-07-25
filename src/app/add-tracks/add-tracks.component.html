@@ -1,4 +1,4 @@
-<div class="card w-100 mb-3" style="min-height: 574px">
+<div class="card w-100 mb-3" style="min-height: 622px">
   <div class="card-body text-primary bg-light">
 
     <div class="row">
@@ -15,11 +15,14 @@
 
       <!-- button position 1: results back -->
       <div class="col-1 text-center align-self-center">
+        <!-- search prev page -->
         <span class="fa fa-chevron-left text-primary cursor-pointer"
         (click)="prevSearchPage()" *ngIf="curSearchOffset > 0 && searchResultTotal" ></span>
+        <!-- playlists prev page -->
         <span class="fa fa-chevron-left text-primary cursor-pointer"
         (click)="prevPlaylistPage()" 
-        *ngIf="playlistsActive && !curPlaylistTracks?.items && (curPlaylistOffset > 0)" ></span>
+        *ngIf="!searchTracks && playlistsActive && !curPlaylistTracks?.items && (curPlaylistOffset > 0)" ></span>
+        <!-- playlist tracks prev page -->
         <span class="fa fa-chevron-left text-primary cursor-pointer"
         (click)="prevPlaylistTracksPage()" 
         *ngIf="!searchTracks && playlistsActive && curPlaylistTracks?.items && (curPlaylistTracksOffset > 0)" ></span>
@@ -27,19 +30,24 @@
 
       <!-- button position 2: refresh or nav up -->
       <div class="col-1 text-center align-self-center">
+        <!-- back up to playlist browse playlists -->
         <span class="fa fa-chevron-up text-primary cursor-pointer" 
-          *ngIf="playlistsActive && curPlaylistTracks?.items" (click)="upToPlaylists()"></span>
+          *ngIf="playlistsActive && curPlaylistTracks?.items && !searchTracks" (click)="upToPlaylists()"></span>
+        <!-- refresh recos -->
         <span id="refresh-btn" class="float-right fa fa-refresh text-primary cursor-pointer"
           (click)="refreshRecommendations()" *ngIf="recosActive && !searchTracks"></span>
       </div>
 
       <!-- button position 3: results forward -->
       <div class="col-1 text-center align-self-center">
+        <!-- search next page -->
         <span class="fa fa-chevron-right text-primary cursor-pointer"
         (click)="nextSearchPage()" *ngIf="curSearchOffset + pageSize < searchResultTotal"></span> 
+        <!-- playlists next page -->
         <span class="fa fa-chevron-right text-primary cursor-pointer"
         (click)="nextPlaylistPage()" 
-        *ngIf="playlistsActive && !curPlaylistTracks?.items && (curPlaylistOffset + pageSize < userPlaylists.total)"></span> 
+        *ngIf="!searchTracks && playlistsActive && !curPlaylistTracks?.items && (curPlaylistOffset + pageSize < userPlaylists.total)"></span> 
+        <!-- playlist tracks next page -->
         <span class="fa fa-chevron-right text-primary cursor-pointer"
         (click)="nextPlaylistTracksPage()" 
         *ngIf="!searchTracks && playlistsActive && curPlaylistTracks?.items && (curPlaylistTracksOffset + pageSize < curPlaylistTracks?.total)"></span> 
@@ -59,7 +67,7 @@
             </label>
             <label class="btn btn-sm col-6" [ngClass]="{'btn-primary': playlistsActive, 'btn-outline-primary': !playlistsActive}">
               <input type="radio" name="options" id="option3" (click)="clickedPlaylists()"> 
-              <span *ngIf="!curPlaylistTracks?.items" class="text-truncate"> Playlists </span>
+              <span *ngIf="!curPlaylistTracks?.items" class="text-truncate"> Your Playlists </span>
               <span *ngIf="curPlaylistTracks?.items" class="text-truncate"> {{ curPlaylistName }} </span>
             </label>
           </div>  

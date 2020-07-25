@@ -1,0 +1,142 @@
+<div class="card w-100 mb-3" style="min-height: 622px">
+  <div class="card-body text-primary bg-light">
+
+    <div class="row">
+
+      <!-- search input text box -->
+      <div class="col-9 input-group my-3"> 
+        <div class="input-group-prepend">
+          <span class="input-group-text">🕵️‍♀️</span>
+        </div>
+        <input type="search" class="form-control" spellcheck="false" placeholder="Search"
+        (keyup)="newSearch($event.target.value, 0)"
+        (search)="newSearch($event.target.value)">
+      </div>
+
+      <!-- button position 1: results back -->
+      <div class="col-1 text-center align-self-center">
+        <!-- search prev page -->
+        <span class="fa fa-chevron-left text-primary cursor-pointer"
+        (click)="prevSearchPage()" *ngIf="curSearchOffset > 0 && searchResultTotal" ></span>
+        <!-- playlists prev page -->
+        <span class="fa fa-chevron-left text-primary cursor-pointer"
+        (click)="prevPlaylistPage()" 
+        *ngIf="!searchTracks && playlistsActive && !curPlaylistTracks?.items && (curPlaylistOffset > 0)" ></span>
+        <!-- playlist tracks prev page -->
+        <span class="fa fa-chevron-left text-primary cursor-pointer"
+        (click)="prevPlaylistTracksPage()" 
+        *ngIf="!searchTracks && playlistsActive && curPlaylistTracks?.items && (curPlaylistTracksOffset > 0)" ></span>
+      </div>
+
+      <!-- button position 2: refresh or nav up -->
+      <div class="col-1 text-center align-self-center">
+        <!-- back up to playlist browse playlists -->
+        <span class="fa fa-chevron-up text-primary cursor-pointer" 
+          *ngIf="playlistsActive && curPlaylistTracks?.items && !searchTracks" (click)="upToPlaylists()"></span>
+        <!-- refresh recos -->
+        <span id="refresh-btn" class="float-right fa fa-refresh text-primary cursor-pointer"
+          (click)="refreshRecommendations()" *ngIf="recosActive && !searchTracks"></span>
+      </div>
+
+      <!-- button position 3: results forward -->
+      <div class="col-1 text-center align-self-center">
+        <!-- search next page -->
+        <span class="fa fa-chevron-right text-primary cursor-pointer"
+        (click)="nextSearchPage()" *ngIf="curSearchOffset + pageSize < searchResultTotal"></span> 
+        <!-- playlists next page -->
+        <span class="fa fa-chevron-right text-primary cursor-pointer"
+        (click)="nextPlaylistPage()" 
+        *ngIf="!searchTracks && playlistsActive && !curPlaylistTracks?.items && (curPlaylistOffset + pageSize < userPlaylists.total)"></span> 
+        <!-- playlist tracks next page -->
+        <span class="fa fa-chevron-right text-primary cursor-pointer"
+        (click)="nextPlaylistTracksPage()" 
+        *ngIf="!searchTracks && playlistsActive && curPlaylistTracks?.items && (curPlaylistTracksOffset + pageSize < curPlaylistTracks?.total)"></span> 
+      </div>
+
+    </div>
+
+    <!-- Container for recos and playlists, whole thing should hide when we search (even if no results) -->
+    <div [hidden]="searchTracks">
+
+      <!-- mini nav for recos and playlists -->
+      <div class="row mb-3">
+        <div class="col-12 mx-auto mx-3">
+          <div class="btn-group btn-group-toggle mx-auto btn-block" data-toggle="buttons">
+            <label class="btn btn-sm col-6" [ngClass]="{'btn-primary': recosActive, 'btn-outline-primary': !recosActive}">
+              <input type="radio" name="options" id="option2" (click)="clickedRecos()"> Recommended 
+            </label>
+            <label class="btn btn-sm col-6" [ngClass]="{'btn-primary': playlistsActive, 'btn-outline-primary': !playlistsActive}">
+              <input type="radio" name="options" id="option3" (click)="clickedPlaylists()"> 
+              <span *ngIf="!curPlaylistTracks?.items" class="text-truncate"> Your Playlists </span>
+              <span *ngIf="curPlaylistTracks?.items" class="text-truncate"> {{ curPlaylistName }} </span>
+            </label>
+          </div>  
+        </div>
+      </div>
+
+      <!-- recos -->
+      <div *ngIf="recosActive">
+        <div class="d-flex justify-content-center align-middle" *ngIf="!recommendations?.length && recosActive">
+          <div class="spinner-border text-secondary" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+        <div class="card mb-3 border-primary" *ngFor="let track of recommendations; let i = index">
+          <div class="card-body cursor-pointer" 
+            (click)="pushTrack(track, i)">   
+            <img src="{{ track.album.images[1].url }}" width="96px" class="float-left mr-2">
+            <span class="float-right fa" 
+              [class.fa-plus]="clicked !== i"
+              [class.fa-check]="clicked === i">
+            </span>
+            <h4 class="card-title text-truncate">{{ track.name }}</h4>
+            <h5 class="card-subtitle text-truncate">{{ track.artists[0].name }} - {{ track.album.name }}</h5>
+          </div>
+        </div>
+      </div>
+
+      <!-- User's playlists -->
+      <div *ngIf="playlistsActive && !curPlaylistTracks?.items">
+        <div class="card mb-3 border-primary" *ngFor="let playlist of userPlaylists.items; let i = index">
+          <div class="card-body cursor-pointer" (click)="clickedPlaylist(playlist)">
+            <img width="96" class="float-left mr-2" src="{{ playlist.images[0].url }}" *ngIf="playlist.images?.length">
+            <span class="float-right fa fa-chevron-right"></span>
+            <h4 class="card-title text-truncate">{{ playlist.name }} </h4>
+            <h5 class="card-subtitle text-truncate">{{ playlist.owner.display_name }}</h5>
+          </div>
+        </div>
+      </div>
+
+      <!-- Playlist tracks -->
+      <div *ngIf="playlistsActive && curPlaylistTracks?.items">
+        <div class="card mb-3 border-primary" *ngFor="let track of curPlaylistTracks.items; let i = index">
+          <div class="card-body cursor-pointer" (click)="pushTrack(track.track, i)">
+            <img width="96" class="float-left mr-2" src="{{ track.track.album.images[1].url }}" *ngIf="track.track.album?.images?.length">
+            <span class="float-right fa" [class.fa-plus]="clicked !== i" [class.fa-check]="clicked === i">
+            </span>
+            <h4 class="card-title text-truncate">{{ track.track.name }} </h4>
+            <h5 class="card-subtitle text-truncate">{{ track.track.artists[0].name}} -
+            {{ track.track.album.name }} </h5>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+    <!-- search results -->
+    <div class="card mb-3 border-primary" *ngFor="let track of searchTracks; let i = index" >
+      <div (click)="pushTrack(track, i)" class="card-body cursor-pointer">
+        <img src="{{ track.album?.images[1]?.url }}" width="96px" class="float-left mr-2" 
+        *ngIf="track.album?.images">
+        <span class="float-right fa" [class.fa-plus]="clicked !== i"
+        [class.fa-check]="clicked === i"></span>
+        <h4 class="card-title text-truncate">{{ track.name }}</h4>
+        <h5 class="card-subtitle text-truncate">{{ track.artists[0].name }} - {{ track.album.name }}</h5>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+  

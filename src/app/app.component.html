@@ -30,10 +30,8 @@
 
     <div class="col-md-6"> 
       <div class="col-md-12 my-3" *ngIf="appEnabled">
+        <app-add-tracks [currentStation]="station"></app-add-tracks>
         <app-chat [currentStation]="station"></app-chat>
-        <app-search></app-search>
-        <app-user-playlists></app-user-playlists>
-        <app-recos [currentStation]="station"></app-recos>
       </div>
     </div>
 

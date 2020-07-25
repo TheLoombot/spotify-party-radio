@@ -16,16 +16,27 @@ export class AddTracksComponent implements OnInit {
 
   @Input() currentStation: string;
   searchResultTotal: number;
-  searchTracks;
+  searchTracks: Array<Track>;
   searchTerm$ = new Subject<string>();
-  offset$ = new Subject<number>();
-  curOffset = 0;
-  clicked: number;
+  searchOffset$ = new Subject<number>();
+  curSearchOffset: number = 0;
+  clicked: number = -1;
   pageSize: number = 3;
   recosActive: boolean = true;
   lastFiveSub: Subscription;
   recommendations: Array<Track>;
   seedTracksUris: string;
+  playlistsActive: boolean = false;
+  curPlaylistOffset: number = 0;
+  curPlaylistTracksOffset: number = 0;
+  playlistOffset$ = new Subject<number>();
+  playlistTracksOffset$ = new Subject<number>();
+  showPlaylists: boolean;
+  showTracks: boolean;
+  curPlaylistTracks: Array<Track>;
+  curPlaylist$ = new Subject<string>();
+  curPlaylistName: string;
+  userPlaylists; 
 
   constructor(
     private spotifyService: SpotifyService,
@@ -35,7 +46,7 @@ export class AddTracksComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.spotifyService.search(this.searchTerm$, this.offset$)
+    this.spotifyService.search(this.searchTerm$, this.searchOffset$)
     .subscribe(
       (results: any) => {
         if (results.tracks) {
@@ -49,13 +60,42 @@ export class AddTracksComponent implements OnInit {
       },
       error => {
         console.error(error);
+        this.stateService.sendError(error);
       }
       );
 
     // it's important that these emit values once each after the subscription 
     // because if that hasn't happened, combineLatest won't work!
     this.searchTerm$.next('');
-    this.offset$.next(this.curOffset);
+    this.searchOffset$.next(this.curSearchOffset);
+
+    this.spotifyService.getUserPlaylists(this.playlistOffset$)
+    .subscribe(
+      userPlaylists => {
+        this.userPlaylists = userPlaylists;
+        // console.log(this.userPlaylists);
+      },
+      error => {
+        console.log(error);
+        this.stateService.sendError(error);
+      }
+      );
+
+    this.spotifyService.getTracksForPlaylist(this.curPlaylist$, this.playlistTracksOffset$)
+    .subscribe(
+      tracks => {
+        this.curPlaylistTracks = tracks as Array<Track>;
+        // console.log(this.curPlaylistTracks.items);
+      },
+      error => {
+        console.log(error);
+        this.stateService.sendError(error);
+      }
+      );
+
+    this.playlistOffset$.next(this.curPlaylistOffset);
+    this.playlistTracksOffset$.next(this.curPlaylistTracksOffset);
+    this.curPlaylist$.next('');
 
   }
 
@@ -104,22 +144,22 @@ export class AddTracksComponent implements OnInit {
   }
 
 
-  newSearch(eventValue: string, newOffset = this.curOffset) {
+  newSearch(eventValue: string, newOffset = this.curSearchOffset) {
     this.searchTerm$.next(eventValue);
-    if (newOffset !== this.curOffset) {
-      this.curOffset = newOffset;
-      this.offset$.next(this.curOffset);
+    if (newOffset !== this.curSearchOffset) {
+      this.curSearchOffset = newOffset;
+      this.searchOffset$.next(this.curSearchOffset);
     }
   }
 
-  nextPage() {
-    this.curOffset += this.pageSize;
-    this.offset$.next(this.curOffset);
+  nextSearchPage() {
+    this.curSearchOffset += this.pageSize;
+    this.searchOffset$.next(this.curSearchOffset);
   }
 
-  prevPage() {
-    this.curOffset -= this.pageSize;
-    this.offset$.next(this.curOffset);
+  prevSearchPage() {
+    this.curSearchOffset -= this.pageSize;
+    this.searchOffset$.next(this.curSearchOffset);
   }
 
   pushTrack(track: Track, i: number) {
@@ -128,12 +168,51 @@ export class AddTracksComponent implements OnInit {
     this.playlistService.pushTrack(track, user);
   }
 
+  nextPlaylistPage() {
+    this.curPlaylistOffset += this.pageSize;
+    this.playlistOffset$.next(this.curPlaylistOffset);
+  }
+
+  prevPlaylistPage() {
+    this.curPlaylistOffset -= this.pageSize;
+    this.playlistOffset$.next(this.curPlaylistOffset);
+  }
+
+  clickedPlaylist(playlist: Object) {
+    this.curPlaylistTracksOffset = 0;
+    this.playlistTracksOffset$.next(this.curPlaylistTracksOffset);
+    this.curPlaylistName = playlist['name'];
+    this.curPlaylist$.next(playlist['id']);
+    this.clicked = -1;
+  }
+
+  nextPlaylistTracksPage() {
+    this.curPlaylistTracksOffset += this.pageSize;
+    this.playlistTracksOffset$.next(this.curPlaylistTracksOffset);
+    this.clicked = -1;
+  }
+
+  prevPlaylistTracksPage() { 
+    this.curPlaylistTracksOffset -= this.pageSize;
+    this.playlistTracksOffset$.next(this.curPlaylistTracksOffset);
+    this.clicked = -1;
+  }
+
+  upToPlaylists() {
+    this.curPlaylistTracks = null;
+    this.curPlaylist$.next('');
+    this.clicked = -1;
+  }
+
   clickedRecos() {
     this.recosActive = true;
+    this.playlistsActive = false;
   }
 
   clickedPlaylists() {
-
+    this.recosActive = false;
+    this.playlistsActive = true;
+    console.log(this.recosActive, this.playlistsActive);
   }
 
   ngOnDestroy() {

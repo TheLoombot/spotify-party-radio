@@ -34,7 +34,8 @@ export class SpotifyService {
   'user-read-private',
   'user-top-read',
   'playlist-read-private',
-  'playlist-read-collaborative'
+  'playlist-read-collaborative',
+  'user-library-read'
   ].join('%20');
 
   constructor(
@@ -141,6 +142,10 @@ export class SpotifyService {
 
   getUserPlaylists(offset: Observable<number>) { 
     return offset.pipe(switchMap(offset => this.http.get(this.baseUrl + '/me/playlists?limit=3&offset=' + offset)));
+  }
+
+  getLikedSongs(offset: Observable<number>) {
+    return offset.pipe(switchMap(offset => this.http.get(this.baseUrl + '/me/tracks?limit=3&offset=' + offset)));
   }
 
   playTrack(uri: string) {

@@ -26,6 +26,10 @@
         <span class="fa fa-chevron-left text-primary cursor-pointer"
         (click)="prevPlaylistTracksPage()" 
         *ngIf="!searchTracks && playlistsActive && curPlaylistTracks?.items && (curPlaylistTracksOffset > 0)" ></span>
+        <!-- liked songs prev page -->
+        <span class="fa fa-chevron-left text-primary cursor-pointer"
+        (click)="prevLikedSongsPage()" 
+        *ngIf="!searchTracks && likedSongsActive && (curLikedSongsOffset > 0) && likedSongs.total" ></span>
       </div>
 
       <!-- button position 2: refresh or nav up -->
@@ -51,25 +55,32 @@
         <span class="fa fa-chevron-right text-primary cursor-pointer"
         (click)="nextPlaylistTracksPage()" 
         *ngIf="!searchTracks && playlistsActive && curPlaylistTracks?.items && (curPlaylistTracksOffset + pageSize < curPlaylistTracks?.total)"></span> 
+        <!-- liked songs next page -->
+        <span class="fa fa-chevron-right text-primary cursor-pointer"
+        (click)="nextLikedSongsPage()" 
+        *ngIf="!searchTracks && likedSongsActive && likedSongs.total && (curLikedSongsOffset + pageSize < likedSongs.total)"></span> 
       </div>
 
     </div>
 
-    <!-- Container for recos and playlists, whole thing should hide when we search (even if no results) -->
+    <!-- Container for recos and playlists and liked songs, whole thing should hide when we search (even if no results) -->
     <div [hidden]="searchTracks">
 
-      <!-- mini nav for recos and playlists -->
+      <!-- mini nav for recos and playlists and liked songs -->
       <div class="row mb-3">
         <div class="col-12 mx-auto mx-3">
           <div class="btn-group btn-group-toggle mx-auto btn-block" data-toggle="buttons">
             <label class="btn btn-sm col-6" [ngClass]="{'btn-primary': recosActive, 'btn-outline-primary': !recosActive}">
-              <input type="radio" name="options" id="option2" (click)="clickedRecos()"> Recommended 
+              <input type="radio" name="options" id="option1" (click)="clickedRecos()"> Recommended 
             </label>
             <label class="btn btn-sm col-6" [ngClass]="{'btn-primary': playlistsActive, 'btn-outline-primary': !playlistsActive}">
-              <input type="radio" name="options" id="option3" (click)="clickedPlaylists()"> 
-              <span *ngIf="!curPlaylistTracks?.items" class="text-truncate"> Your Playlists </span>
+              <input type="radio" name="options" id="option2" (click)="clickedPlaylists()"> 
+              <span *ngIf="!curPlaylistTracks?.items" class="text-truncate"> Playlists </span>
               <span *ngIf="curPlaylistTracks?.items" class="text-truncate"> {{ curPlaylistName }} </span>
             </label>
+            <label class="btn btn-sm col-6" [ngClass]="{'btn-primary': likedSongsActive, 'btn-outline-primary': !likedSongsActive}">
+              <input type="radio" name="options" id="option3" (click)="clickedLikedSongs()"> Liked Songs
+            </label>            
           </div>  
         </div>
       </div>
@@ -121,6 +132,19 @@
         </div>
       </div>
 
+      <!-- liked songs -->
+      <div *ngIf="likedSongsActive">
+        <div class="card mb-3 border-primary" *ngFor="let track of likedSongs.items; let i = index">
+          <div class="card-body cursor-pointer" (click)="pushTrack(track.track, i)">
+            <img width="96" class="float-left mr-2" src="{{ track.track.album.images[1].url }}" *ngIf="track.track.album?.images?.length">
+            <span class="float-right fa" [class.fa-plus]="clicked !== i" [class.fa-check]="clicked === i">
+            </span>
+            <h4 class="card-title text-truncate">{{ track.track.name }} </h4>
+            <h5 class="card-subtitle text-truncate">{{ track.track.artists[0].name}} -
+            {{ track.track.album.name }} </h5>
+          </div>
+        </div>
+      </div>
 
     </div>
 

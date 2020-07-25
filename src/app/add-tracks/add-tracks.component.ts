@@ -15,28 +15,35 @@ import { State } from '../shared/models/state';
 export class AddTracksComponent implements OnInit {
 
   @Input() currentStation: string;
+  clicked: number = -1;
+  pageSize: number = 3;
+
   searchResultTotal: number;
   searchTracks: Array<Track>;
   searchTerm$ = new Subject<string>();
   searchOffset$ = new Subject<number>();
   curSearchOffset: number = 0;
-  clicked: number = -1;
-  pageSize: number = 3;
+
   recosActive: boolean = true;
   lastFiveSub: Subscription;
   recommendations: Array<Track>;
   seedTracksUris: string;
+
   playlistsActive: boolean = false;
   curPlaylistOffset: number = 0;
   curPlaylistTracksOffset: number = 0;
   playlistOffset$ = new Subject<number>();
   playlistTracksOffset$ = new Subject<number>();
-  showPlaylists: boolean;
-  showTracks: boolean;
   curPlaylistTracks;
   curPlaylist$ = new Subject<string>();
   curPlaylistName: string;
   userPlaylists; 
+
+  likedSongs;
+  likedSongsTotal: number;
+  curLikedSongsOffset: number = 0;
+  likedSongsOffset$ = new Subject<number>();
+  likedSongsActive: boolean = false;
 
   constructor(
     private spotifyService: SpotifyService,
@@ -94,6 +101,20 @@ export class AddTracksComponent implements OnInit {
     this.playlistOffset$.next(this.curPlaylistOffset);
     this.playlistTracksOffset$.next(this.curPlaylistTracksOffset);
     this.curPlaylist$.next('');
+
+    this.spotifyService.getLikedSongs(this.likedSongsOffset$)
+    .subscribe(
+      (tracks: any) => {
+        this.likedSongs = tracks;
+        this.likedSongsTotal = tracks.total;
+      },
+      error => {
+        console.log(error);
+        this.stateService.sendError(error);
+      }
+      );
+
+    this.likedSongsOffset$.next(this.curLikedSongsOffset);
 
   }
 
@@ -196,6 +217,18 @@ export class AddTracksComponent implements OnInit {
     this.clicked = -1;
   }
 
+  nextLikedSongsPage() {
+    this.curLikedSongsOffset += this.pageSize;
+    this.likedSongsOffset$.next(this.curLikedSongsOffset);
+    this.clicked = -1;
+  }
+
+  prevLikedSongsPage() {
+    this.curLikedSongsOffset -= this.pageSize;
+    this.likedSongsOffset$.next(this.curLikedSongsOffset);
+    this.clicked = -1;    
+  }
+
   upToPlaylists() {
     this.curPlaylistTracks = null;
     this.curPlaylist$.next('');
@@ -205,11 +238,19 @@ export class AddTracksComponent implements OnInit {
   clickedRecos() {
     this.recosActive = true;
     this.playlistsActive = false;
+    this.likedSongsActive = false;        
   }
 
   clickedPlaylists() {
     this.recosActive = false;
     this.playlistsActive = true;
+    this.likedSongsActive = false;    
+  }
+
+  clickedLikedSongs() {
+    this.recosActive = false;
+    this.playlistsActive = false;
+    this.likedSongsActive = true;    
   }
 
   ngOnDestroy() {

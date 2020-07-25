@@ -1,4 +1,7 @@
 <div class="card w-100 mb-3" style="min-height:200px">
+  <div class="card-header">
+    Station Chat
+  </div>
   <div class="card-body bg-light">
     <div class="row" *ngFor="let message of messages">
       <div class="col-4" *ngIf="ownMessage(message)"></div>

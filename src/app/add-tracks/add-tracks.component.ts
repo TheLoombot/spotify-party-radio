@@ -33,7 +33,7 @@ export class AddTracksComponent implements OnInit {
   playlistTracksOffset$ = new Subject<number>();
   showPlaylists: boolean;
   showTracks: boolean;
-  curPlaylistTracks: Array<Track>;
+  curPlaylistTracks;
   curPlaylist$ = new Subject<string>();
   curPlaylistName: string;
   userPlaylists; 
@@ -84,7 +84,7 @@ export class AddTracksComponent implements OnInit {
     this.spotifyService.getTracksForPlaylist(this.curPlaylist$, this.playlistTracksOffset$)
     .subscribe(
       tracks => {
-        this.curPlaylistTracks = tracks as Array<Track>;
+        this.curPlaylistTracks = tracks;
         // console.log(this.curPlaylistTracks.items);
       },
       error => {

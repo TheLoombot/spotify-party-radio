@@ -123,6 +123,7 @@ export class AddTracksComponent implements OnInit {
   }
 
   tuneToStation(stationName: string) {
+    this.recommendations = null;
     this.lastFiveSub?.unsubscribe();
     this.lastFiveSub = this.playlistService.getLastTracks(5).valueChanges()
     .pipe(debounceTime(500))

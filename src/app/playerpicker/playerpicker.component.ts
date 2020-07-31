@@ -28,7 +28,6 @@ export class PlayerpickerComponent implements OnInit {
   progressSub: Subscription;
   timeOutSubs = [];
   nowPlaying;
-  playerError;
   showPushButton: boolean;
   clicked: boolean = false;
 
@@ -186,45 +185,13 @@ export class PlayerpickerComponent implements OnInit {
       .subscribe(
         (data: any) => {
           this.nowPlaying = data ? data.item : null;
-          if (this.nowPlaying == null) {
-            // assmume the player isn't going... wait and try again
-            // console.warn('There is nothing being played');
-            // this.timeOutSubs.forEach(id => clearTimeout(id));
-            // this.timeOutSubs.push(
-            //   setTimeout( () => {
-            //     this.checkFirstTrack();
-            //   }, 2500)
-            //   );
-            this.spotifyService.playTrack(this.firstTrack.uri)
-            .subscribe(
-              (response) => {
-                // this.playerError = response
-                console.log(`${this.firstTrack.name} requested playback!`);
-                this.spotifyService.seekTrack(this.getTime() - this.firstTrack.expires_at + this.firstTrack.duration_ms)
-                .subscribe(
-                  () => {},
-                  error => {
-                    console.error('Brads error: failed on seek', error);
-                  }
-                  );
-                // do we still need to take this "check back later" approach?
-                // could we at least reduce the time until this call?
-                setTimeout(() => {
-                  this.checkFirstTrack();
-                }, 500);
-              },
-              error => {
-                this.playerError = error.error.error;
-                console.log('play back error... retrying in 3s... ', this.playerError);
-                setTimeout(() => {
-                  this.checkFirstTrack();
-                }, 3000);
-              }
-              );
 
-          } else if (this.firstTrack == null) {
+          if (this.firstTrack == null) {
+            // for some reason playlist is empty... assume it will 
+            // be non-empty later and that will retrigger this check
             console.warn('Sorry mate theres nothing to play');
-          } else if (data.is_playing && this.nowPlaying.uri === this.firstTrack.uri) {
+          } else if (data?.is_playing && this.nowPlaying.uri === this.firstTrack.uri) {
+            // assume playback state is synchronized... update app state to reflect this
             console.log(`${this.nowPlaying.name} expires in ${timeToExpiration}`);
             this.showNowPlaying = true;
             this.setTitle(`${this.firstTrack.artist_name} - ${this.firstTrack.name}`);
@@ -243,36 +210,28 @@ export class PlayerpickerComponent implements OnInit {
                 this.checkFirstTrack();
               }, -timeToExpiration)
               );
-
           } else {
-            this.spotifyService.playTrack(this.firstTrack.uri)
+            // we have a track to play, but the player isn't already playing it...
+            // request playback (starting at offset time), then check again in 500ms
+            this.spotifyService.playTrack(this.firstTrack.uri, this.getTime() - this.firstTrack.expires_at + this.firstTrack.duration_ms)
             .subscribe(
               (response) => {
-                // this.playerError = response
-                console.log(`${this.firstTrack.name} requested playback, scheduled check in 1000ms`);
+                console.log(`${this.firstTrack.name} requested playback!`);
+                setTimeout(() => {
+                  this.checkFirstTrack();
+                }, 500);
+              },
+              error => {
+                console.log(error);
+                console.log(`Playback error, retrying in 1s...`);
                 setTimeout(() => {
                   this.checkFirstTrack();
                 }, 1000);
-                // playTrack doesn't give us an affirmative response on the play request
-                // so we have to wait a bit (fudge = 1.0s) before we try check the 'now
-                // playing status' again
-                this.spotifyService.seekTrack(this.getTime() - this.firstTrack.expires_at + this.firstTrack.duration_ms)
-                .subscribe(
-                  () => {},
-                  error => {
-                    console.error('Brads error: failed on seek', error);
-                  }
-                  );
-              },
-              error => {
-                this.playerError = error.error.error;
-                console.log('play back error ', this.playerError);
               }
               );
-          }
+          }  
         },
         error => {
-          this.playerError = error.error.error;
           console.error('Now playing error:', error);
           this.stateService.sendError(`There is no available user, ${error.error.error.message}`, error.error.error.status);
           this.setTitle('Logged out');

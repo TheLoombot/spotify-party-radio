@@ -148,10 +148,11 @@ export class SpotifyService {
     return offset.pipe(switchMap(offset => this.http.get(this.baseUrl + '/me/tracks?limit=3&offset=' + offset)));
   }
 
-  playTrack(uri: string) {
+  playTrack(uri: string, startTime: number = 0) {
     const device_id = window.localStorage.getItem('device_id');
     const bodyObj = {
-      'uris': [uri]
+      'uris': [uri],
+      'position_ms': startTime,
     };
 
     if (device_id) {

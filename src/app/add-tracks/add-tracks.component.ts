@@ -57,7 +57,9 @@ export class AddTracksComponent implements OnInit {
     .subscribe(
       (results: any) => {
         if (results.tracks) {
+          // for whatever reason this often mismatches actual results 🤨
           this.searchResultTotal = results.tracks.total;
+          // console.log(`total results ${this.searchResultTotal}`)
           this.searchTracks = results.tracks.items as Array<Track>;
         } else {
           this.searchTracks = null;

@@ -134,7 +134,7 @@ export class SpotifyService {
   getTracksForPlaylist(playlistId: Observable<string>, offset: Observable<number>) {
     return combineLatest(playlistId, offset)
     .pipe(switchMap(([playlistId, offset]) => (playlistId) ?
-      this.http.get(this.baseUrl + '/playlists/' + playlistId + '/tracks?limit=3&fields=total,items(track(name,duration_ms,artists,id,uri,href,images,album(name,images,external_urls(spotify))))&offset=' + offset)
+      this.http.get(this.baseUrl + '/playlists/' + playlistId + '/tracks?limit=3&fields=total,items(track(name,duration_ms,artists,id,uri,href,explicit,images,album(name,images,external_urls(spotify))))&offset=' + offset)
       :
       of([])
       ));

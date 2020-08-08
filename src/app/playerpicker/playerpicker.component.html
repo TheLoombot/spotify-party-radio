@@ -9,7 +9,9 @@
 
           <div class="card-body" *ngIf="showNowPlaying">
             <h3 class="text-truncate">{{ nowPlaying.name }} </h3>
-            <h4 class="text-truncate"> {{ nowPlaying.artists[0].name }} - 
+            <h4 class="text-truncate"> 
+              <span *ngIf="nowPlaying.explicit">🅴</span>
+              {{ nowPlaying.artists[0].name }} - 
               <a target="_blank" href="{{ nowPlaying.album.external_urls.spotify }}">{{ nowPlaying.album.name }}</a>
             </h4>
             <div class="progress">

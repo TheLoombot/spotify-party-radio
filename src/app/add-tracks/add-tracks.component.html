@@ -101,7 +101,10 @@
               [class.fa-check]="clicked === i">
             </span>
             <h4 class="card-title text-truncate">{{ track.name }}</h4>
-            <h5 class="card-subtitle text-truncate">{{ track.artists[0].name }} - {{ track.album.name }}</h5>
+            <h5 class="card-subtitle text-truncate">
+              <span *ngIf="track.explicit">🅴</span>
+              {{ track.artists[0].name }} - {{ track.album.name }}
+            </h5>
           </div>
         </div>
       </div>
@@ -126,8 +129,10 @@
             <span class="float-right fa" [class.fa-plus]="clicked !== i" [class.fa-check]="clicked === i">
             </span>
             <h4 class="card-title text-truncate">{{ track.track.name }} </h4>
-            <h5 class="card-subtitle text-truncate">{{ track.track.artists[0].name}} -
-            {{ track.track.album.name }} </h5>
+            <h5 class="card-subtitle text-truncate">
+              <span *ngIf="track.track.explicit">🅴</span>
+              {{ track.track.artists[0].name }} - {{ track.track.album.name }} 
+            </h5>
           </div>
         </div>
       </div>
@@ -140,8 +145,10 @@
             <span class="float-right fa" [class.fa-plus]="clicked !== i" [class.fa-check]="clicked === i">
             </span>
             <h4 class="card-title text-truncate">{{ track.track.name }} </h4>
-            <h5 class="card-subtitle text-truncate">{{ track.track.artists[0].name}} -
-            {{ track.track.album.name }} </h5>
+            <h5 class="card-subtitle text-truncate">
+              <span *ngIf="track.track.explicit">🅴</span>
+              {{ track.track.artists[0].name }} - {{ track.track.album.name }}
+            </h5>
           </div>
         </div>
       </div>
@@ -156,7 +163,10 @@
         <span class="float-right fa" [class.fa-plus]="clicked !== i"
         [class.fa-check]="clicked === i"></span>
         <h4 class="card-title text-truncate">{{ track.name }}</h4>
-        <h5 class="card-subtitle text-truncate">{{ track.artists[0].name }} - {{ track.album.name }}</h5>
+        <h5 class="card-subtitle text-truncate">
+          <span *ngIf="track.explicit">🅴</span>
+          {{ track.artists[0].name }} - {{ track.album.name }}
+        </h5>
       </div>
     </div>
 

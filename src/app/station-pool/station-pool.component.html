@@ -3,7 +3,7 @@
     Station Pool
   </div>
 	<div class="card-body text-primary bg-light">
-		<div class="card mb-3 border-primary" *ngFor="let track of searchTracks; let i = index" >
+		<div class="card mb-3 border-primary" *ngFor="let track of tracks; let i = index" >
 			<div (click)="pushTrack(track, i)" class="card-body cursor-pointer">
 				<img src="{{ track.album?.images[1]?.url }}" width="96px" class="float-left mr-2" 
 				*ngIf="track.album?.images">

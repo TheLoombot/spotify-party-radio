@@ -26,6 +26,9 @@
       <div class="col-md-12 my-3" *ngIf="appEnabled">
         <app-playlist [currentStation]="station"></app-playlist>
       </div>
+      <div class="col-md-12 my-3" *ngIf="appEnabled">
+        <app-station-pool [currentStation]="station"></app-station-pool>
+      </div>
     </div>
 
     <div class="col-md-6"> 

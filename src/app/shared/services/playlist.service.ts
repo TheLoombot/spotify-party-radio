@@ -247,9 +247,9 @@ export class PlaylistService {
       (tracks: Array<any>) => {
         if (tracks.length > 0) {
 
-          console.log(`🤖 ${tracks.length} tracks in pool, pushing (up to) 3 tracks, seen longest ago!`);
+          console.log(`🤖 ${tracks.length} tracks in pool, pushing (up to) 1 tracks, seen longest ago!`);
           var delay = 0;
-          for (let track of tracks.slice(0,3)) {
+          for (let track of tracks.slice(0,1)) {
             track.player = { auto: true };
             this.timeOutSubs.push(
               setTimeout(() => {

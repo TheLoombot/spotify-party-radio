@@ -1,5 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { PlaylistService } from '../shared/services/playlist.service';
+import { Track } from '../shared/models/track';
+import { SpotifyService } from '../shared/services/spotify.service';
 
 @Component({
   selector: 'app-station-pool',
@@ -14,6 +16,7 @@ export class StationPoolComponent implements OnInit {
 
   constructor(
   	private playlistService: PlaylistService,
+    private spotifyService: SpotifyService,
   	) { }
 
   ngOnInit(): void {
@@ -35,5 +38,11 @@ export class StationPoolComponent implements OnInit {
       error => console.error('Playlist retrieves error: ', error)
       );
   }
+
+  pushTrack(track: Track, i: number) {
+    const user = this.spotifyService.getUserName();
+    this.playlistService.pushTrack(track, user);
+  }
+
 
 }

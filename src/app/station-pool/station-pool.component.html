@@ -2,13 +2,12 @@
   <div class="card-header">
     Station Pool
   </div>
-	<div class="card-body text-primary bg-light">
-		<div class="card mb-3 border-primary" *ngFor="let track of tracks; let i = index" >
+	<div class="card-body bg-light">
+		<div class="card mb-3 border-primary text-primary" *ngFor="let track of tracks; let i = index" >
 			<div (click)="pushTrack(track, i)" class="card-body cursor-pointer">
 				<img src="{{ track.album?.images[1]?.url }}" width="96px" class="float-left mr-2" 
 				*ngIf="track.album?.images">
-				<span class="float-right fa" [class.fa-plus]="clicked !== i"
-				[class.fa-check]="clicked === i"></span>
+				<span class="float-right fa fa-plus"></span>
 				<h4 class="card-title text-truncate">{{ track.name }}</h4>
 				<h5 class="card-subtitle text-truncate">
 					<span *ngIf="track.explicit">🅴</span>
@@ -16,5 +15,8 @@
 				</h5>
 			</div>
 		</div>
+		<div class="card-body bg-light" *ngIf="!tracks.length">
+			<h5 class="card-title" *ngIf="tracks.length<2">The pool's empty 🈳</h5>
+		</div>	
 	</div>  
 </div>

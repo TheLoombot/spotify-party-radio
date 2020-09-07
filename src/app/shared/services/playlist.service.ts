@@ -173,7 +173,7 @@ export class PlaylistService {
   }
 
   pushTrackForStation(track: any, userName: string, station: string) {
-    // console.log(`pashing onto playlist for user ${userName} and station: ${station}`);
+    // console.log(`pushing onto playlist for user ${userName} and station: ${station}`);
     const now = this.getTime();
     const lastTrackExpiresAt = (this.lastTrack) ? this.lastTrack.expires_at : now;
     const nextTrackExpiresAt = lastTrackExpiresAt + track.duration_ms + 1500; // introducing some fudge here
@@ -208,6 +208,9 @@ export class PlaylistService {
       const playlistUrl = `${this.environment}/${station}/lists/playlist`;
       this.db.list(playlistUrl).push(playlistEntry);
     }
+
+    console.log(`Removing track from pool: ${track.name} with id ${track.id}`);
+    this.removeFromPool(track.id);
   }
 
   // push a track to the *currently tuned* station
@@ -226,7 +229,7 @@ export class PlaylistService {
             // It turns out the track's key in the pool is just its
             // track ID, so we can just remove(track.id)
             console.log('pruning track', track.name);
-            this.db.list(this.previouslistUrl).remove(track.id);
+            this.removeFromPool(track.id);
           }        
         }
         getAllPreviousTracksSubscription.unsubscribe();

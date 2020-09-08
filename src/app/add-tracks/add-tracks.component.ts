@@ -120,6 +120,10 @@ export class AddTracksComponent implements OnInit {
 
   }
 
+  private getTime(): number {
+    return new Date().getTime();
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     this.tuneToStation(changes['currentStation'].currentValue);
   }
@@ -187,7 +191,9 @@ export class AddTracksComponent implements OnInit {
   pushTrack(track: Track, i: number) {
     const user = this.spotifyService.getUserName();
     this.clicked = i;
-    this.playlistService.pushTrack(track, user);
+    // this.playlistService.pushTrack(track, user);
+    track.added_at = this.getTime();
+    this.playlistService.saveTrack(track);
   }
 
   nextPlaylistPage() {

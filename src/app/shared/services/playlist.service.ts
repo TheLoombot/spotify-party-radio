@@ -268,6 +268,7 @@ export class PlaylistService {
             .subscribe(
               topTracks => {
                 for (let track of topTracks['items']) { 
+                  track.player = { auto: true };
                   this.pushTrack(track, this.spotifyService.getUserName());
                 } 
               },

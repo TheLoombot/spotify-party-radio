@@ -1,5 +1,5 @@
 <div class="card w-100 mb-3 bg-dark">
-  <div class="card-header text-white">Up next</div>
+  <div class="card-header text-white">Up next: Your hand</div>
   <div class="card-body" *ngIf="tracks">
     <div class="card mb-3 border-primary cursor-pointer text-primary" *ngFor="let track of tracks | slice:1; index as i; last as isLast" >
       <div class="card-body " (click)="removeTrack(track, i)">
@@ -13,6 +13,6 @@
         </h5>
       </div>
     </div>
-    <h5 class="card-title text-white">...followed by a pick from the {{currentStation}} deck 🃏</h5>
+    <h5 class="card-title text-white">...followed by a robo-pick from the {{currentStation}} deck 🃏</h5>
   </div>
 </div>

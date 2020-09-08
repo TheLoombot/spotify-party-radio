@@ -73,7 +73,12 @@ export class PlaylistComponent implements OnInit, OnDestroy {
     i++;
     console.log(`Clicked to remove ${track.name}`);
     this.playlistService.remove(track.key, i);
+    track['added_at'] = this.getTime();
     this.playlistService.saveTrack(track);
+  }
+
+  private getTime(): number {
+    return new Date().getTime();
   }
 
   ngOnDestroy() {

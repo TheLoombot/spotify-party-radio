@@ -190,7 +190,6 @@ export class PlaylistService {
     }
 
     const additionalData = {
-      added_at: now,
       added_by: userName,
       album_name: track.album.name,
       album_url: track.album.external_urls.spotify,

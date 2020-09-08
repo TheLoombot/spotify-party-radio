@@ -11,7 +11,7 @@ import { SpotifyService } from '../shared/services/spotify.service';
 export class StationPoolComponent implements OnInit {
 
   @Input() currentStation: string;
-  tracks: Object;
+  tracks: any[];
   trackSub;
 
   constructor(
@@ -33,7 +33,7 @@ export class StationPoolComponent implements OnInit {
     .subscribe(
       tracks => {
         this.tracks = tracks;
-        console.log(`Pool update, new size: ${this.tracks['length']}`);
+        console.log(`Pool update, new size: ${this.tracks.length}`);
       },
       error => console.error('Playlist retrieves error: ', error)
       );

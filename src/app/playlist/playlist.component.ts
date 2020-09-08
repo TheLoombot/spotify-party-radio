@@ -14,6 +14,8 @@ export class PlaylistComponent implements OnInit, OnDestroy {
   @Input() currentStation: string;
   tracks: Object;
   trackSub;
+  poolTracks: Object;
+  poolTracksSub;
 
   constructor(
     private playlistService: PlaylistService,
@@ -37,8 +39,18 @@ export class PlaylistComponent implements OnInit, OnDestroy {
         this.tracks = tracks;
         console.log(`Playlist update, new size: ${this.tracks['length']}`);
       },
-      error => console.error('Playlist retrieves error: ', error)
+      error => console.error('Playlist retrieve error: ', error)
       );
+    this.poolTracksSub?.unsubscribe();
+    this.poolTracks = this.playlistService.getAllPreviousTracks()
+    .subscribe(
+      tracks => {
+        this.poolTracks = tracks;
+        console.log(`Pool update, new size: {this.poolTracks['length']}`);
+      },
+      error =>console.error('pool tracks retrieve error: `', error)
+      );
+
   }
 
   userOwnsStation(): boolean {
@@ -50,8 +62,9 @@ export class PlaylistComponent implements OnInit, OnDestroy {
   // to someone else's station... but not if it came out of the pool via Robot DJ
   canRemoveTrack(track: Track): boolean {
     if (this.userOwnsStation()) return true;
-    if (track.player) return false;
-    if (track.added_by === this.spotifyService.getUserName()) return true;
+
+    // if (track.player) return false;
+    // if (track.added_by === this.spotifyService.getUserName()) return true;
     return false;
   }
 

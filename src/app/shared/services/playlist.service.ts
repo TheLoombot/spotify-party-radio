@@ -265,16 +265,20 @@ export class PlaylistService {
           // when there are no previous tracks in the pool (like on first login)
           // then we push three of the user's "top tracks" instead
           this.spotifyService.getTopTracks()
-            .subscribe(
-              topTracks => {
-                for (let track of topTracks['items']) { 
-                  track.player = { auto: true };
+          .subscribe(
+            topTracks => {
+              topTracks['items'].forEach((track, index) => {
+                track.player = { auto: true };
+                if (index == 0) {
                   this.pushTrack(track, this.spotifyService.getUserName());
-                } 
-              },
-              error => {
-                console.log(`top track fetch error: ${error}`);
-              }
+                } else {
+                  this.saveTrack(track);
+                }
+              }); 
+            },
+            error => {
+              console.log(`top track fetch error: ${error}`);
+            }
             );
         }
         getAllPreviousTracksSubscription.unsubscribe();
@@ -324,15 +328,15 @@ export class PlaylistService {
           // when there are no previous tracks in the pool (like on first login)
           // then we push three of the user's "top tracks" instead
           this.spotifyService.getTopTracks()
-            .subscribe(
-              topTracks => {
-                for (let track of topTracks['items']) { 
-                  this.pushTrack(track, this.spotifyService.getUserName());
-                } 
-              },
-              error => {
-                console.log(`top track fetch error: ${error}`);
-              }
+          .subscribe(
+            topTracks => {
+              for (let track of topTracks['items']) { 
+                this.pushTrack(track, this.spotifyService.getUserName());
+              } 
+            },
+            error => {
+              console.log(`top track fetch error: ${error}`);
+            }
             );
         }
         getAllPreviousTracksSubscription.unsubscribe();
@@ -345,19 +349,23 @@ export class PlaylistService {
   }
 
   shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [array[i], array[j]] = [array[j], array[i]];
-      }
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
   }
 
   /** Method to save track in station pool */
   saveTrack(track: Track): any {
-    
+
     // Clean track Object
     delete track.expires_at;
     // not sure why this is there TBH 🤔
     delete track.key;
+
+    if (!track.added_by) {
+      track.added_by = this.spotifyService.getUserName();
+    }
 
     this.db.list(this.previouslistUrl).set(track.id, track);
     // console.log(`${track.name} saved to previous list`);

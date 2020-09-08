@@ -41,6 +41,9 @@ export class StationPoolComponent implements OnInit {
 
   pushTrack(track: Track, i: number) {
     const user = this.spotifyService.getUserName();
+    if (track.player) {
+      delete track.player;
+    }
     this.playlistService.pushTrack(track, user);
   }
 

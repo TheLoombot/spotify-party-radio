@@ -14,8 +14,6 @@ export class PlaylistComponent implements OnInit, OnDestroy {
   @Input() currentStation: string;
   tracks: Object;
   trackSub;
-  poolTracks: Object;
-  poolTracksSub;
 
   constructor(
     private playlistService: PlaylistService,
@@ -41,16 +39,6 @@ export class PlaylistComponent implements OnInit, OnDestroy {
       },
       error => console.error('Playlist retrieve error: ', error)
       );
-    this.poolTracksSub?.unsubscribe();
-    this.poolTracks = this.playlistService.getAllPreviousTracks()
-    .subscribe(
-      tracks => {
-        this.poolTracks = tracks;
-        console.log(`Pool update, new size: {this.poolTracks['length']}`);
-      },
-      error =>console.error('pool tracks retrieve error: `', error)
-      );
-
   }
 
   userOwnsStation(): boolean {

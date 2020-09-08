@@ -173,12 +173,12 @@ export class PlayerpickerComponent implements OnInit {
         // Track has expired
         console.log(`${this.firstTrack.name} expired`);
         // console.log(this.showDate(this.getTime()), 'expected expiration time was', this.showDate(this.firstTrack.expires_at));
-        this.playlistService.remove(this.firstTrackKey, 0);
-        this.firstTrack['added_at'] = this.getTime();
-        if (this.firstTrack.player.auto) {
+        if (this.firstTrack?.player?.auto) {
           delete this.firstTrack.player;
+          this.firstTrack['added_at'] = this.getTime();
           this.playlistService.saveTrack(this.firstTrack); // Save track in secondary list
         }
+        this.playlistService.remove(this.firstTrackKey, 0);
         this.showSkip = false;
         this.showNowPlaying = false;
         this.firstTrack = null;

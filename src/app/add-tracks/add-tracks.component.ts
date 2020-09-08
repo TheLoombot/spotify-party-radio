@@ -247,7 +247,8 @@ export class AddTracksComponent implements OnInit {
   clickedRecos() {
     this.recosActive = true;
     this.playlistsActive = false;
-    this.likedSongsActive = false;        
+    this.likedSongsActive = false;
+    this.clicked = -1;
   }
 
   clickedPlaylists() {

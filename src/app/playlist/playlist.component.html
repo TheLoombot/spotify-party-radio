@@ -4,7 +4,7 @@
     <div class="card mb-3" *ngFor="let track of tracks | slice:1; index as i; last as isLast" >
       <div class="card-body">
         <img src="{{ track.image_url }}" width="96px" class="float-left" style="margin-right: 10px">
-        <span class="fa fa-remove float-right text-primary cursor-pointer" 
+        <span class="fa fa-arrow-circle-down float-right text-primary cursor-pointer" 
         *ngIf="canRemoveTrack(track)"
         (click)="removeTrack(track, i)"></span>
         <h4 class="card-title text-truncate"> {{ track.name }} </h4>
@@ -14,6 +14,6 @@
         </h5>
       </div>
     </div>
-    <h5 class="card-title text-white" *ngIf="tracks.length<2">A </h5>
+    <h5 class="card-title text-white">...followed by a pick from the {{currentStation}} deck 🃏</h5>
   </div>
 </div>

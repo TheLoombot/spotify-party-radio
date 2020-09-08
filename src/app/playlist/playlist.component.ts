@@ -73,10 +73,7 @@ export class PlaylistComponent implements OnInit, OnDestroy {
     i++;
     console.log(`Clicked to remove ${track.name}`);
     this.playlistService.remove(track.key, i);
-    if (track.player) {
-      // this.playlistService.saveTrack(track);
-      this.playlistService.removeFromPool(track.id);
-    }
+    this.playlistService.saveTrack(track);
   }
 
   ngOnDestroy() {

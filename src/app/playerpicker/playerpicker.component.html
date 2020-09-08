@@ -1,7 +1,7 @@
 <ngb-carousel #carousel (slide)="onSlide($event)" [showNavigationIndicators]="false" [showNavigationArrows]="true" [interval]="false">
   <ng-template ngbSlide id={{station.key}} *ngFor="let station of stations; index as i">
     <div class="card w-100 bg-dark" *ngIf="nowPlaying" style="min-height:640px">
-      <div class="card-header text-white h3"> Radio {{ currentStation }}</div>
+      <div class="card-header text-white h3"> Now Playing: Radio {{ currentStation }}</div>
       <div class="card-body">
         <div class="card w-75 mx-auto">
           <img class="card-img-top" *ngIf="showNowPlaying" src="{{ nowPlaying.album.images[0].url }}">

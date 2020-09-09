@@ -45,6 +45,12 @@ export class AddTracksComponent implements OnInit {
   likedSongsOffset$ = new Subject<number>();
   likedSongsActive: boolean = false;
 
+  playlistSub: Subscription;
+  playlistCount: number = 0;
+  poolSub: Subscription;
+  poolCount: number = 0;
+  deckCount: number;
+
   constructor(
     private spotifyService: SpotifyService,
     private playlistService: PlaylistService,
@@ -147,6 +153,23 @@ export class AddTracksComponent implements OnInit {
         console.log('playlist retrieve error for recos:', error);
       }
       );
+
+    this.playlistSub?.unsubscribe();
+    this.playlistSub = this.playlistService.getAllTracks()
+    .subscribe(
+      tracks => {
+        this.playlistCount = tracks.length;
+        this.deckCount = this.playlistCount + this.poolCount;
+      });
+
+    this.poolSub?.unsubscribe();
+    this.poolSub = this.playlistService.getAllPreviousTracks()
+    .subscribe(
+      tracks => {
+        this.poolCount = tracks.length;
+        this.deckCount = this.playlistCount + this.poolCount;
+      })
+
   }
 
   refreshRecommendations(): void {
@@ -264,9 +287,9 @@ export class AddTracksComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    if (this.lastFiveSub) {
-      this.lastFiveSub.unsubscribe();
-    }
+    this.lastFiveSub?.unsubscribe();
+    this.playlistSub?.unsubscribe();
+    this.poolSub?.unsubscribe();
   }
 
 }

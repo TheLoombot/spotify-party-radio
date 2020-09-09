@@ -14,10 +14,14 @@
       </div>
     </div>
     <div class="card-body" *ngIf="tracks?.length<2">
-      <h5 class="card-title text-white" >Your hand is empty. Robot DJ will pick a track from your deck. It will return to your deck after playing (unless you skip it).</h5>
+      <h5 class="card-title text-white" >
+        No cards up next, so Robot DJ will pick a track from your deck.<br/>
+        <br/>
+        It will return to your deck after playing, unless you skip it.
+      </h5>
     </div>
     <div class="card-body" *ngIf="tracks?.length>=2">
-      <h5 class="card-title text-white" >These tracks will discard after playing</h5>
+      <h5 class="card-title text-white" >These tracks will discard after playing.</h5>
     </div>
   </div>
 </div>

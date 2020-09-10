@@ -32,11 +32,27 @@ export class StationPoolComponent implements OnInit {
     this.trackSub = this.playlistService.getAllPreviousTracks()
     .subscribe(
       tracks => {
-        this.tracks = tracks;
+        // I don't know why we have to sort again here... 
+        // for some reason orderByChild SOMETIMES returns the order wrong! :(
+        this.tracks = tracks.sort((a, b) => a['index'] - b['index']);
         console.log(`Pool update, new size: ${this.tracks.length}`);
+        // console.log(this.tracks);
       },
       error => console.error('Playlist retrieves error: ', error)
       );
+  }
+
+  moveUp2(i: number) {
+    this.tracks.forEach((t, index) => {
+      // console.log(`name: ${t.name}, index: ${index}`);
+      if (index == (i-1)) {
+        this.playlistService.updatePoolTrack(t.id, {index: index+1});
+      } else if (index == i) {
+        this.playlistService.updatePoolTrack(t.id, {index: index-1});
+      } else {
+        this.playlistService.updatePoolTrack(t.id, {index: index});
+      }
+    });
   }
 
   pushTrack(track: Track, i: number) {

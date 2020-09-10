@@ -2,7 +2,7 @@ import { Injectable, Component, OnInit, ViewChild } from '@angular/core';
 /* RxJs */
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { take } from 'rxjs/operators';
+import { take, debounceTime } from 'rxjs/operators';
 /* Models */
 import { Track } from '../models/track';
 /* Services */
@@ -23,6 +23,9 @@ export class PlaylistService {
   playerMetaRef: any;
   lastTrackSub: Subscription;
   timeOutSubs = [];
+
+  poolTrackSub: Subscription;
+  poolTracks;
 
   constructor(
     private db: AngularFireDatabase,
@@ -62,6 +65,15 @@ export class PlaylistService {
         console.log('playlist retrieve error:', error);
       }
       );
+
+    if (this.poolTrackSub) {
+      this.poolTrackSub.unsubscribe();
+    }
+
+    this.poolTrackSub = this.getAllPreviousTracks().subscribe(
+      data => {
+        this.poolTracks = data;
+      });
 
   }
 
@@ -160,7 +172,8 @@ export class PlaylistService {
   }
 
   getAllPreviousTracks() {
-    const tracks = this.db.list(this.previouslistUrl, ref=>ref.orderByChild('added_at')).valueChanges();
+    const tracks = this.db.list(this.previouslistUrl, ref=>ref.orderByChild('index')).valueChanges()
+    .pipe(debounceTime(100));
     return tracks;
   }
 
@@ -252,6 +265,7 @@ export class PlaylistService {
             track.player = { auto: true };
             this.timeOutSubs.push(
               setTimeout(() => {
+                delete track.index;
                 this.pushTrack(track, track['added_by']);
               }, delay)
               )
@@ -367,10 +381,18 @@ export class PlaylistService {
       track.added_by = this.spotifyService.getUserName();
     }
 
+    if (!("index" in track)) {
+      track.index = (this.poolTracks ? this.poolTracks.length : 0);
+    }
+ 
     this.db.list(this.previouslistUrl).set(track.id, track);
     // console.log(`${track.name} saved to previous list`);
     this.pruneTracks(40);
     
+  }
+
+  updatePoolTrack(trackKey: string, update: Object) {
+    this.db.list(this.previouslistUrl).update(trackKey, update);
   }
 
   private getTime(): number {

@@ -3,13 +3,14 @@
     Deck
   </div>
   <div class="card-body bg-light">
-    <div class="card mb-3 border-primary text-primary" *ngFor="let track of tracks; let i = index" >
-     <div (click)="pushTrack(track, i)" class="card-body cursor-pointer">
+    <div class="card mb-3" *ngFor="let track of tracks; let i = index" >
+     <div class="card-body">
       <img src="{{ track.album?.images[1]?.url }}" width="96px" class="float-left mr-2" 
       *ngIf="track.album?.images">
-      <span class="float-right fa fa-arrow-circle-up"></span>
+      <span class="float-right fa fa-arrow-circle-up cursor-pointer text-primary" (click)="moveUp2(i)"></span>
       <h4 class="card-title text-truncate">{{ track.name }}</h4>
       <h5 class="card-subtitle text-truncate">
+       <span>{{track.index}}</span>
        <span *ngIf="track.explicit">🅴</span>
        {{ track.artists[0].name }} - {{ track.album.name }}
      </h5>

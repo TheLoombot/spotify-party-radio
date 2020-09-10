@@ -17,10 +17,13 @@
              </h5>
            </div>
            <div class="col-1 center">
-             <span class="fa fa-arrow-circle-up cursor-pointer text-primary" (click)="moveUp(i)"></span><br />
-             <span class="fa fa-arrow-circle-down cursor-pointer text-primary" (click)="moveDown(i)"></span><br />
+             <span class="fa fa-arrow-circle-up cursor-pointer text-primary" *ngIf="i > 0" (click)="moveUp(i)">
+             </span><br />
+             <span class="fa fa-arrow-circle-down cursor-pointer text-primary" *ngIf="i+1 < tracks?.length" (click)="moveDown(i)">
+             </span><br />
              <br />
-             <span class="fa fa-times-circle cursor-pointer text-primary" (click)="discard(track)"></span><br />
+             <span class="fa fa-times-circle cursor-pointer text-primary" (click)="discard(track)">
+             </span><br />
            </div>
          </div>
        </div>

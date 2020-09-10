@@ -37,7 +37,7 @@ export class PlaylistComponent implements OnInit, OnDestroy {
         this.tracks = tracks;
         console.log(`Playlist update, new size: ${this.tracks['length']}`);
       },
-      error => console.error('Playlist retrieves error: ', error)
+      error => console.error('Playlist retrieve error: ', error)
       );
   }
 
@@ -50,8 +50,9 @@ export class PlaylistComponent implements OnInit, OnDestroy {
   // to someone else's station... but not if it came out of the pool via Robot DJ
   canRemoveTrack(track: Track): boolean {
     if (this.userOwnsStation()) return true;
-    if (track.player) return false;
-    if (track.added_by === this.spotifyService.getUserName()) return true;
+
+    // if (track.player) return false;
+    // if (track.added_by === this.spotifyService.getUserName()) return true;
     return false;
   }
 
@@ -60,10 +61,12 @@ export class PlaylistComponent implements OnInit, OnDestroy {
     i++;
     console.log(`Clicked to remove ${track.name}`);
     this.playlistService.remove(track.key, i);
-    if (track.player) {
-      // this.playlistService.saveTrack(track);
-      this.playlistService.removeFromPool(track.id);
-    }
+    track['added_at'] = this.getTime();
+    this.playlistService.saveTrack(track);
+  }
+
+  private getTime(): number {
+    return new Date().getTime();
   }
 
   ngOnDestroy() {

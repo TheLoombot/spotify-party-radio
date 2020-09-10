@@ -30,6 +30,7 @@ import { LoggedInUserComponent } from './logged-in-user/logged-in-user.component
 import { StationRouterComponent } from './station-router/station-router.component';
 import { ChatComponent } from './chat/chat.component';
 import { AddTracksComponent } from './add-tracks/add-tracks.component';
+import { StationPoolComponent } from './station-pool/station-pool.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { AddTracksComponent } from './add-tracks/add-tracks.component';
     LoggedInUserComponent,
     StationRouterComponent,
     ChatComponent,
-    AddTracksComponent
+    AddTracksComponent,
+    StationPoolComponent
   ],
   imports: [
     BrowserModule,

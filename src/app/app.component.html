@@ -23,14 +23,17 @@
       <div class="col-md-12 my-3" *ngIf="appEnabled">
         <app-playerpicker [currentStation]="station"></app-playerpicker>
       </div>
-      <div class="col-md-12 my-3" *ngIf="appEnabled">
+      <!-- <div class="col-md-12 my-3" *ngIf="appEnabled">
         <app-playlist [currentStation]="station"></app-playlist>
+      </div> -->
+      <div class="col-md-12 my-3" *ngIf="appEnabled">
+        <app-station-pool [currentStation]="station" *ngIf="userOwnsStation()"></app-station-pool>
       </div>
     </div>
 
     <div class="col-md-6"> 
       <div class="col-md-12 my-3" *ngIf="appEnabled">
-        <app-add-tracks [currentStation]="station"></app-add-tracks>
+        <app-add-tracks [currentStation]="station" *ngIf="userOwnsStation()"></app-add-tracks>
         <app-chat [currentStation]="station"></app-chat>
       </div>
     </div>

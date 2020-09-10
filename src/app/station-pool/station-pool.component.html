@@ -1,0 +1,38 @@
+<div class="card w-100 mb-3 bg-light" style="min-height: 100px">
+  <div class="card-header">
+    Deck
+  </div>
+    <div class="card-body bg-light">
+      <div class="card mb-3" *ngFor="let track of tracks; let i = index" >
+        <div class="card-body">
+          <div class="row">
+            <div class="col-11">
+              <img src="{{ track.album?.images[1]?.url }}" width="96px" class="float-left mr-2" 
+              *ngIf="track.album?.images">
+              <h4 class="card-title text-truncate">{{ track.name }}</h4>
+              <h5 class="card-subtitle text-truncate">
+               <span>{{track.index}}</span>
+               <span *ngIf="track.explicit">🅴</span>
+               {{ track.artists[0].name }} - {{ track.album.name }}
+             </h5>
+           </div>
+           <div class="col-1 center h5">
+             <span class="fa fa-arrow-circle-up cursor-pointer text-primary" *ngIf="i > 0" (click)="moveUp(i)">
+             </span><br />
+             <span class="fa fa-arrow-circle-down cursor-pointer text-primary" *ngIf="i+1 < tracks?.length" (click)="moveDown(i)">
+             </span><br />
+             <br />
+             <span class="fa fa-times-circle cursor-pointer text-primary" (click)="discard(track)">
+             </span><br />
+           </div>
+         </div>
+       </div>
+     </div>
+     <div class="card-body bg-light" *ngIf="!tracks?.length">
+      <h5 class="card-title">No cards in deck. Draw some cards.<br />
+        <br />
+        If your deck is empty when the music runs out, Robot DJ will draw some cards for you.
+      </h5>
+    </div>	
+  </div>  
+</div>

@@ -45,6 +45,12 @@ export class AddTracksComponent implements OnInit {
   likedSongsOffset$ = new Subject<number>();
   likedSongsActive: boolean = false;
 
+  playlistSub: Subscription;
+  playlistCount: number = 0;
+  poolSub: Subscription;
+  poolCount: number;
+  deckCount: number;
+
   constructor(
     private spotifyService: SpotifyService,
     private playlistService: PlaylistService,
@@ -120,6 +126,10 @@ export class AddTracksComponent implements OnInit {
 
   }
 
+  private getTime(): number {
+    return new Date().getTime();
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     this.tuneToStation(changes['currentStation'].currentValue);
   }
@@ -143,6 +153,27 @@ export class AddTracksComponent implements OnInit {
         console.log('playlist retrieve error for recos:', error);
       }
       );
+
+    // big fat debounce times on these next two because deck count isn't critical... 
+    // and it takes a while to move stuff between lists for whatever reason 
+    this.playlistSub?.unsubscribe();
+    this.playlistSub = this.playlistService.getAllTracks().pipe(debounceTime(1000))
+    .subscribe(
+      tracks => {
+        this.playlistCount = tracks.length;
+        this.deckCount = this.playlistCount + this.poolCount;
+        console.log(this.deckCount);
+      });
+
+    this.poolSub?.unsubscribe();
+    this.poolSub = this.playlistService.getAllPreviousTracks().pipe(debounceTime(1000))
+    .subscribe(
+      tracks => {
+        this.poolCount = tracks.length;
+        this.deckCount = this.playlistCount + this.poolCount;
+        console.log(this.deckCount);
+      })
+
   }
 
   refreshRecommendations(): void {
@@ -187,7 +218,9 @@ export class AddTracksComponent implements OnInit {
   pushTrack(track: Track, i: number) {
     const user = this.spotifyService.getUserName();
     this.clicked = i;
-    this.playlistService.pushTrack(track, user);
+    // this.playlistService.pushTrack(track, user);
+    track.added_at = this.getTime();
+    this.playlistService.saveTrack(track);
   }
 
   nextPlaylistPage() {
@@ -241,7 +274,8 @@ export class AddTracksComponent implements OnInit {
   clickedRecos() {
     this.recosActive = true;
     this.playlistsActive = false;
-    this.likedSongsActive = false;        
+    this.likedSongsActive = false;
+    this.clicked = -1;
   }
 
   clickedPlaylists() {
@@ -257,9 +291,9 @@ export class AddTracksComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    if (this.lastFiveSub) {
-      this.lastFiveSub.unsubscribe();
-    }
+    this.lastFiveSub?.unsubscribe();
+    this.playlistSub?.unsubscribe();
+    this.poolSub?.unsubscribe();
   }
 
 }

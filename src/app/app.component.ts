@@ -3,7 +3,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { State } from './shared/models/state';
 /* Services */
 import { StateService } from './shared/services/state.service';
-
+import { SpotifyService } from './shared/services/spotify.service';
 
 @Component({
   selector: 'app-root',
@@ -19,10 +19,17 @@ export class AppComponent implements OnInit {
   constructor (
     private cdr: ChangeDetectorRef,
     private stateService: StateService,
+    private spotifyService: SpotifyService,
   ) {
     this.appEnabled = false; // Disable components
     this.stationLoading = true;
   }
+
+  userOwnsStation(): boolean {
+    if (this.station == this.spotifyService.getUserName()) return true;
+    return false;
+  }
+
 
   ngOnInit () {
     this.stateService.getState()

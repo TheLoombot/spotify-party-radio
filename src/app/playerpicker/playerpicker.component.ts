@@ -77,10 +77,10 @@ export class PlayerpickerComponent implements OnInit {
       );
   }
 
-  skipTrack(key: string): void {
-    console.log(`Skipping and removing ${this.firstTrack.name} from pool `);
+  skipTrack(track: Track, trackKey: string): void {
+    console.log(`Skipping ${track.name}`);
     this.showNowPlaying = false;
-    this.playlistService.removeFromPool(this.firstTrack.id);
+    this.playlistService.saveTrack(track);
     this.spotifyService.pauseTrack()
     .subscribe(
       () => {},
@@ -89,7 +89,7 @@ export class PlayerpickerComponent implements OnInit {
       }
       );
     this.timeOutSubs.forEach(id => clearTimeout(id));
-    this.playlistService.remove(key, 0);
+    this.playlistService.remove(trackKey, 0);
     this.showSkip = false;
     this.firstTrack = null;
   }
@@ -97,6 +97,11 @@ export class PlayerpickerComponent implements OnInit {
   pushTrack(track: Track) {
     this.clicked = true;
     this.playlistService.pushTrackForStation(track, this.spotifyService.getUserName(), this.spotifyService.getUserName());    
+  }
+
+  saveTrack(track: Track) {
+    this.clicked = true;
+    this.playlistService.saveTrackForStation(track, this.spotifyService.getUserName());
   }
 
   onSlide(slideEvent: NgbSlideEvent) {
@@ -173,8 +178,12 @@ export class PlayerpickerComponent implements OnInit {
         // Track has expired
         console.log(`${this.firstTrack.name} expired`);
         // console.log(this.showDate(this.getTime()), 'expected expiration time was', this.showDate(this.firstTrack.expires_at));
+        if (this.firstTrack?.player?.auto) {
+          delete this.firstTrack.player;
+          this.firstTrack['added_at'] = this.getTime();
+          this.playlistService.saveTrack(this.firstTrack); // Save track in secondary list
+        }
         this.playlistService.remove(this.firstTrackKey, 0);
-        this.playlistService.saveTrack(this.firstTrack); // Save track in secondary list
         this.showSkip = false;
         this.showNowPlaying = false;
         this.firstTrack = null;

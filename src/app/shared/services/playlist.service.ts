@@ -2,7 +2,7 @@ import { Injectable, Component, OnInit, ViewChild } from '@angular/core';
 /* RxJs */
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { take } from 'rxjs/operators';
+import { take, debounceTime } from 'rxjs/operators';
 /* Models */
 import { Track } from '../models/track';
 /* Services */
@@ -23,6 +23,9 @@ export class PlaylistService {
   playerMetaRef: any;
   lastTrackSub: Subscription;
   timeOutSubs = [];
+
+  poolTrackSub: Subscription;
+  poolTracks;
 
   constructor(
     private db: AngularFireDatabase,
@@ -62,6 +65,17 @@ export class PlaylistService {
         console.log('playlist retrieve error:', error);
       }
       );
+
+    if (this.poolTrackSub) {
+      this.poolTrackSub.unsubscribe();
+    }
+
+    this.poolTrackSub = this.getAllPreviousTracks().subscribe(
+      data => {
+        // I don't know why we have to sort again here... 
+        // for some reason orderByChild SOMETIMES returns the order wrong! :(
+        this.poolTracks = data.sort((a, b) => a['index'] - b['index']);
+      });
 
   }
 
@@ -160,7 +174,8 @@ export class PlaylistService {
   }
 
   getAllPreviousTracks() {
-    const tracks = this.db.list(this.previouslistUrl, ref=>ref.orderByChild('added_at')).valueChanges();
+    const tracks = this.db.list(this.previouslistUrl, ref=>ref.orderByChild('index')).valueChanges()
+    .pipe(debounceTime(50));
     return tracks;
   }
 
@@ -173,7 +188,7 @@ export class PlaylistService {
   }
 
   pushTrackForStation(track: any, userName: string, station: string) {
-    // console.log(`pashing onto playlist for user ${userName} and station: ${station}`);
+    // console.log(`pushing onto playlist for user ${userName} and station: ${station}`);
     const now = this.getTime();
     const lastTrackExpiresAt = (this.lastTrack) ? this.lastTrack.expires_at : now;
     const nextTrackExpiresAt = lastTrackExpiresAt + track.duration_ms + 1500; // introducing some fudge here
@@ -190,7 +205,6 @@ export class PlaylistService {
     }
 
     const additionalData = {
-      added_at: now,
       added_by: userName,
       album_name: track.album.name,
       album_url: track.album.external_urls.spotify,
@@ -208,6 +222,9 @@ export class PlaylistService {
       const playlistUrl = `${this.environment}/${station}/lists/playlist`;
       this.db.list(playlistUrl).push(playlistEntry);
     }
+
+    console.log(`Removing track from pool: ${track.name} with id ${track.id}`);
+    this.removeFromPool(track.id);
   }
 
   // push a track to the *currently tuned* station
@@ -226,7 +243,7 @@ export class PlaylistService {
             // It turns out the track's key in the pool is just its
             // track ID, so we can just remove(track.id)
             console.log('pruning track', track.name);
-            this.db.list(this.previouslistUrl).remove(track.id);
+            this.removeFromPool(track.id);
           }        
         }
         getAllPreviousTracksSubscription.unsubscribe();
@@ -244,12 +261,13 @@ export class PlaylistService {
       (tracks: Array<any>) => {
         if (tracks.length > 0) {
 
-          console.log(`🤖 ${tracks.length} tracks in pool, pushing (up to) 3 tracks, seen longest ago!`);
+          console.log(`🤖 ${tracks.length} tracks in pool, pushing (up to) 1 tracks, seen longest ago!`);
           var delay = 0;
-          for (let track of tracks.slice(0,3)) {
+          for (let track of tracks.slice(0,1)) {
             track.player = { auto: true };
             this.timeOutSubs.push(
               setTimeout(() => {
+                delete track.index;
                 this.pushTrack(track, track['added_by']);
               }, delay)
               )
@@ -263,15 +281,20 @@ export class PlaylistService {
           // when there are no previous tracks in the pool (like on first login)
           // then we push three of the user's "top tracks" instead
           this.spotifyService.getTopTracks()
-            .subscribe(
-              topTracks => {
-                for (let track of topTracks['items']) { 
+          .subscribe(
+            topTracks => {
+              topTracks['items'].forEach((track, index) => {
+                track.player = { auto: true };
+                if (index == 0) {
                   this.pushTrack(track, this.spotifyService.getUserName());
-                } 
-              },
-              error => {
-                console.log(`top track fetch error: ${error}`);
-              }
+                } else {
+                  this.saveTrack(track);
+                }
+              }); 
+            },
+            error => {
+              console.log(`top track fetch error: ${error}`);
+            }
             );
         }
         getAllPreviousTracksSubscription.unsubscribe();
@@ -321,15 +344,15 @@ export class PlaylistService {
           // when there are no previous tracks in the pool (like on first login)
           // then we push three of the user's "top tracks" instead
           this.spotifyService.getTopTracks()
-            .subscribe(
-              topTracks => {
-                for (let track of topTracks['items']) { 
-                  this.pushTrack(track, this.spotifyService.getUserName());
-                } 
-              },
-              error => {
-                console.log(`top track fetch error: ${error}`);
-              }
+          .subscribe(
+            topTracks => {
+              for (let track of topTracks['items']) { 
+                this.pushTrack(track, this.spotifyService.getUserName());
+              } 
+            },
+            error => {
+              console.log(`top track fetch error: ${error}`);
+            }
             );
         }
         getAllPreviousTracksSubscription.unsubscribe();
@@ -342,24 +365,83 @@ export class PlaylistService {
   }
 
   shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [array[i], array[j]] = [array[j], array[i]];
-      }
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
   }
 
   /** Method to save track in station pool */
   saveTrack(track: Track): any {
-    
+    this.saveTrackForStation(track, this.stationName);
+  }
+
+  saveTrackForStation(track: Track, station: string) {
     // Clean track Object
     delete track.expires_at;
     // not sure why this is there TBH 🤔
     delete track.key;
 
-    this.db.list(this.previouslistUrl).set(track.id, track);
-    // console.log(`${track.name} saved to previous list`);
-    this.pruneTracks(40);
-    
+    if (!track.added_by) {
+      track.added_by = this.spotifyService.getUserName();
+    }
+
+    // BUG: when you save tracks from other stations, this references
+    // the WRONG station... to be corrected! 
+    track.index = (this.poolTracks ? this.poolTracks.length : 0);
+
+
+    console.log(`Saving ${track.name} to pool ${station}`);
+
+    if (station == this.stationName) {
+      this.db.list(this.previouslistUrl).set(track.id, track);
+    } else {
+      const playlistUrl = `${this.environment}/${station}/lists/previouslist`;
+      this.db.list(playlistUrl).set(track.id, track);
+    }
+
+    this.fixPoolIndexes();
+  }
+
+  // move a pool track up one position
+  moveTrackUp(i: number) {
+    if (i == 0) return;
+    this.poolTracks.forEach((t, index) => {
+      // console.log(`name: ${t.name}, index: ${index}`);
+      if (index == (i-1)) {
+        this.updatePoolTrack(t.id, {index: index+1});
+      } else if (index == i) {
+        this.updatePoolTrack(t.id, {index: index-1});
+      } else {
+        this.updatePoolTrack(t.id, {index: index});
+      }
+    });
+  }
+
+  // move a pool track down one position
+  moveTrackDown(i: number) {
+    if ((i+1) == this.poolTracks.length) return;
+    this.poolTracks.forEach((t, index) => {
+      // console.log(`name: ${t.name}, index: ${index}`);
+      if (index == i) {
+        this.updatePoolTrack(t.id, {index: index+1});
+      } else if (index == i+1) {
+        this.updatePoolTrack(t.id, {index: index-1});
+      } else {
+        this.updatePoolTrack(t.id, {index: index});
+      }
+    });
+  }
+
+  fixPoolIndexes() {
+    this.poolTracks.forEach((t, index) => {
+      // console.log(`name: ${t.name}, index: ${index}`);
+      this.updatePoolTrack(t.id, {index: index});
+    });
+  }
+
+  updatePoolTrack(trackKey: string, update: Object) {
+    this.db.list(this.previouslistUrl).update(trackKey, update);
   }
 
   private getTime(): number {

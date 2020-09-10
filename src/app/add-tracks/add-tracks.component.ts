@@ -154,20 +154,24 @@ export class AddTracksComponent implements OnInit {
       }
       );
 
+    // big fat debounce times on these next two because deck count isn't critical... 
+    // and it takes a while to move stuff between lists for whatever reason 
     this.playlistSub?.unsubscribe();
-    this.playlistSub = this.playlistService.getAllTracks()
+    this.playlistSub = this.playlistService.getAllTracks().pipe(debounceTime(1000))
     .subscribe(
       tracks => {
         this.playlistCount = tracks.length;
         this.deckCount = this.playlistCount + this.poolCount;
+        console.log(this.deckCount);
       });
 
     this.poolSub?.unsubscribe();
-    this.poolSub = this.playlistService.getAllPreviousTracks()
+    this.poolSub = this.playlistService.getAllPreviousTracks().pipe(debounceTime(1000))
     .subscribe(
       tracks => {
         this.poolCount = tracks.length;
         this.deckCount = this.playlistCount + this.poolCount;
+        console.log(this.deckCount);
       })
 
   }

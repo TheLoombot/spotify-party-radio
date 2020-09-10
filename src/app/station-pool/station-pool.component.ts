@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, Input, OnChanges, SimpleChanges } from '@
 import { PlaylistService } from '../shared/services/playlist.service';
 import { Track } from '../shared/models/track';
 import { SpotifyService } from '../shared/services/spotify.service';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-station-pool',
@@ -29,7 +30,7 @@ export class StationPoolComponent implements OnInit {
 
   tuneToStation(stationName: string) {
     this.trackSub?.unsubscribe();
-    this.trackSub = this.playlistService.getAllPreviousTracks()
+    this.trackSub = this.playlistService.getAllPreviousTracks().pipe(debounceTime(200))
     .subscribe(
       tracks => {
         // I don't know why we have to sort again here... 

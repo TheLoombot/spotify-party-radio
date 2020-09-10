@@ -23,9 +23,9 @@
       <div class="col-md-12 my-3" *ngIf="appEnabled">
         <app-playerpicker [currentStation]="station"></app-playerpicker>
       </div>
-      <div class="col-md-12 my-3" *ngIf="appEnabled">
+      <!-- <div class="col-md-12 my-3" *ngIf="appEnabled">
         <app-playlist [currentStation]="station"></app-playlist>
-      </div>
+      </div> -->
       <div class="col-md-12 my-3" *ngIf="appEnabled">
         <app-station-pool [currentStation]="station" *ngIf="userOwnsStation()"></app-station-pool>
       </div>

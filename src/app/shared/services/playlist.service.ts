@@ -72,7 +72,9 @@ export class PlaylistService {
 
     this.poolTrackSub = this.getAllPreviousTracks().subscribe(
       data => {
-        this.poolTracks = data;
+        // I don't know why we have to sort again here... 
+        // for some reason orderByChild SOMETIMES returns the order wrong! :(
+        this.poolTracks = data.sort((a, b) => a['index'] - b['index']);
       });
 
   }
@@ -173,7 +175,7 @@ export class PlaylistService {
 
   getAllPreviousTracks() {
     const tracks = this.db.list(this.previouslistUrl, ref=>ref.orderByChild('index')).valueChanges()
-    .pipe(debounceTime(100));
+    .pipe(debounceTime(50));
     return tracks;
   }
 
@@ -371,7 +373,10 @@ export class PlaylistService {
 
   /** Method to save track in station pool */
   saveTrack(track: Track): any {
+    this.saveTrackForStation(track, this.stationName);
+  }
 
+  saveTrackForStation(track: Track, station: string) {
     // Clean track Object
     delete track.expires_at;
     // not sure why this is there TBH 🤔
@@ -381,14 +386,56 @@ export class PlaylistService {
       track.added_by = this.spotifyService.getUserName();
     }
 
-    if (!("index" in track)) {
-      track.index = (this.poolTracks ? this.poolTracks.length : 0);
+    track.index = (this.poolTracks ? this.poolTracks.length : 0);
+
+
+    console.log(`Saving ${track.name} to pool ${station}`);
+
+    if (station == this.stationName) {
+      this.db.list(this.previouslistUrl).set(track.id, track);
+    } else {
+      const playlistUrl = `${this.environment}/${station}/lists/previouslist`;
+      this.db.list(playlistUrl).set(track.id, track);
     }
- 
-    this.db.list(this.previouslistUrl).set(track.id, track);
-    // console.log(`${track.name} saved to previous list`);
-    this.pruneTracks(40);
-    
+
+    this.fixPoolIndexes();
+  }
+
+  // move a pool track up one position
+  moveTrackUp(i: number) {
+    if (i == 0) return;
+    this.poolTracks.forEach((t, index) => {
+      // console.log(`name: ${t.name}, index: ${index}`);
+      if (index == (i-1)) {
+        this.updatePoolTrack(t.id, {index: index+1});
+      } else if (index == i) {
+        this.updatePoolTrack(t.id, {index: index-1});
+      } else {
+        this.updatePoolTrack(t.id, {index: index});
+      }
+    });
+  }
+
+  // move a pool track down one position
+  moveTrackDown(i: number) {
+    if ((i+1) == this.poolTracks.length) return;
+    this.poolTracks.forEach((t, index) => {
+      // console.log(`name: ${t.name}, index: ${index}`);
+      if (index == i) {
+        this.updatePoolTrack(t.id, {index: index+1});
+      } else if (index == i+1) {
+        this.updatePoolTrack(t.id, {index: index-1});
+      } else {
+        this.updatePoolTrack(t.id, {index: index});
+      }
+    });
+  }
+
+  fixPoolIndexes() {
+    this.poolTracks.forEach((t, index) => {
+      // console.log(`name: ${t.name}, index: ${index}`);
+      this.updatePoolTrack(t.id, {index: index});
+    });
   }
 
   updatePoolTrack(trackKey: string, update: Object) {

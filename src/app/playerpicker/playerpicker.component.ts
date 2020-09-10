@@ -99,6 +99,11 @@ export class PlayerpickerComponent implements OnInit {
     this.playlistService.pushTrackForStation(track, this.spotifyService.getUserName(), this.spotifyService.getUserName());    
   }
 
+  saveTrack(track: Track) {
+    this.clicked = true;
+    this.playlistService.saveTrackForStation(track, this.spotifyService.getUserName());
+  }
+
   onSlide(slideEvent: NgbSlideEvent) {
     this.router.navigate(["", slideEvent.current]);
   }

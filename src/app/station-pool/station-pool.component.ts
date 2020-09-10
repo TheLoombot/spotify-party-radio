@@ -42,17 +42,16 @@ export class StationPoolComponent implements OnInit {
       );
   }
 
-  moveUp2(i: number) {
-    this.tracks.forEach((t, index) => {
-      // console.log(`name: ${t.name}, index: ${index}`);
-      if (index == (i-1)) {
-        this.playlistService.updatePoolTrack(t.id, {index: index+1});
-      } else if (index == i) {
-        this.playlistService.updatePoolTrack(t.id, {index: index-1});
-      } else {
-        this.playlistService.updatePoolTrack(t.id, {index: index});
-      }
-    });
+  moveUp(i: number) {
+    this.playlistService.moveTrackUp(i);
+  }
+
+  moveDown(i: number) {
+    this.playlistService.moveTrackDown(i);
+  }
+
+  discard(track: Track) {
+    this.playlistService.removeFromPool(track.id);
   }
 
   pushTrack(track: Track, i: number) {

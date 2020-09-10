@@ -48,7 +48,7 @@ export class AddTracksComponent implements OnInit {
   playlistSub: Subscription;
   playlistCount: number = 0;
   poolSub: Subscription;
-  poolCount: number = 0;
+  poolCount: number;
   deckCount: number;
 
   constructor(

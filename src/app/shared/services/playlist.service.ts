@@ -386,6 +386,8 @@ export class PlaylistService {
       track.added_by = this.spotifyService.getUserName();
     }
 
+    // BUG: when you save tracks from other stations, this references
+    // the WRONG station... to be corrected! 
     track.index = (this.poolTracks ? this.poolTracks.length : 0);
 
 

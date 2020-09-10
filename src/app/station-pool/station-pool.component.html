@@ -16,7 +16,7 @@
                {{ track.artists[0].name }} - {{ track.album.name }}
              </h5>
            </div>
-           <div class="col-1 center">
+           <div class="col-1 center h5">
              <span class="fa fa-arrow-circle-up cursor-pointer text-primary" *ngIf="i > 0" (click)="moveUp(i)">
              </span><br />
              <span class="fa fa-arrow-circle-down cursor-pointer text-primary" *ngIf="i+1 < tracks?.length" (click)="moveDown(i)">

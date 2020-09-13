@@ -91,7 +91,7 @@ export class SpotifyService {
   }
 
   getUserName(): string {
-    return (this.user.display_name || this.user.id);
+    return (this.user?.display_name || this.user?.id);
   }
 
   getUser() {

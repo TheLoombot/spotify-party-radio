@@ -162,7 +162,6 @@ export class AddTracksComponent implements OnInit {
       tracks => {
         this.playlistCount = tracks.length;
         this.deckCount = this.playlistCount + this.poolCount;
-        console.log(this.deckCount);
       });
 
     this.poolSub?.unsubscribe();
@@ -171,7 +170,6 @@ export class AddTracksComponent implements OnInit {
       tracks => {
         this.poolCount = tracks.length;
         this.deckCount = this.playlistCount + this.poolCount;
-        console.log(this.deckCount);
       })
 
   }

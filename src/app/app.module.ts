@@ -27,10 +27,10 @@ import { PlayerpickerComponent } from './playerpicker/playerpicker.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CallbackComponent } from './callback/callback.component';
 import { LoggedInUserComponent } from './logged-in-user/logged-in-user.component';
-import { StationRouterComponent } from './station-router/station-router.component';
 import { ChatComponent } from './chat/chat.component';
 import { AddTracksComponent } from './add-tracks/add-tracks.component';
 import { StationPoolComponent } from './station-pool/station-pool.component';
+import { SinglePlayerStationComponent } from './single-player-station/single-player-station.component';
 
 @NgModule({
   declarations: [
@@ -41,10 +41,10 @@ import { StationPoolComponent } from './station-pool/station-pool.component';
     PlayerpickerComponent,
     CallbackComponent,
     LoggedInUserComponent,
-    StationRouterComponent,
     ChatComponent,
     AddTracksComponent,
-    StationPoolComponent
+    StationPoolComponent,
+    SinglePlayerStationComponent
   ],
   imports: [
     BrowserModule,

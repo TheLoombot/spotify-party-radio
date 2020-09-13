@@ -36,7 +36,7 @@ export class StationPoolComponent implements OnInit {
         // I don't know why we have to sort again here... 
         // for some reason orderByChild SOMETIMES returns the order wrong! :(
         this.tracks = tracks.sort((a, b) => a['index'] - b['index']);
-        console.log(`Pool update, new size: ${this.tracks.length}`);
+        // console.log(`Pool update, new size: ${this.tracks.length}`);
         // console.log(this.tracks);
       },
       error => console.error('Playlist retrieves error: ', error)

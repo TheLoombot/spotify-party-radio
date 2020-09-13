@@ -43,14 +43,21 @@ export class SpotifyService {
     private stateService: StateService,
     private router: Router,
   ) {
-
     if (window.location.pathname == '/auth') {
       window.localStorage.removeItem('access_token');
+      var params = window.location.hash.substring(1).split('&');
+      for (const paramString of params) {
+        const paramArray = paramString.split('=');
+        if (paramArray[0] === 'access_token') {
+          const accessToken = paramArray[1];
+          window.localStorage.setItem('access_token', accessToken);
+          this.setToken(accessToken);
+        }
+      }
     } else if (window.localStorage.getItem('access_token')) {
       const accessTokenStored = window.localStorage.getItem('access_token');
       this.setToken(accessTokenStored);
     }
-
   }
 
   setToken(token: string): void {
@@ -60,7 +67,7 @@ export class SpotifyService {
       (user: User) => {
         this.user = user;
         this.stateService.sendState({ enabled: true });
-        if (this.router.url === '/auth' || this.router.url === '/') {
+        if (window.location.pathname === '/auth' || window.location.pathname === '/') {
           this.router.navigate(["", this.getUserName() ]);
         } 
       },

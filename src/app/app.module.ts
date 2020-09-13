@@ -25,7 +25,6 @@ import { StateService } from './shared/services/state.service';
 import { environment } from '../environments/environment';
 import { PlayerpickerComponent } from './playerpicker/playerpicker.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { CallbackComponent } from './callback/callback.component';
 import { LoggedInUserComponent } from './logged-in-user/logged-in-user.component';
 import { ChatComponent } from './chat/chat.component';
 import { AddTracksComponent } from './add-tracks/add-tracks.component';
@@ -39,7 +38,6 @@ import { SinglePlayerStationComponent } from './single-player-station/single-pla
     PlaylistComponent,
     AlertComponent,
     PlayerpickerComponent,
-    CallbackComponent,
     LoggedInUserComponent,
     ChatComponent,
     AddTracksComponent,

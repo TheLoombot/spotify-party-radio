@@ -21,8 +21,6 @@ export class AppComponent implements OnInit {
     this.appEnabled = false; // Disable components
   }
 
-
-
   ngOnInit () {
     this.stateService.getState()
       .subscribe(

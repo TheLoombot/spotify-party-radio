@@ -14,8 +14,7 @@
 
   </div>
 
-  <!-- Components that could appear here: SinglePlayerStation or Callback --> 
-  <router-outlet></router-outlet>
+  <router-outlet *ngIf="appEnabled"></router-outlet>
 
 </div>
 

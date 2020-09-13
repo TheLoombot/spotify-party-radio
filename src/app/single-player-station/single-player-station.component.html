@@ -1,13 +1,10 @@
 
-<div class="row align-self-center" *ngIf="appEnabled">
+<div class="row align-self-center">
   <!-- it's kosher to nest columns in columns! --> 
   <div class="col-md-6"> 
     <div class="col-12 my-3">
       <app-playerpicker [currentStation]="station"></app-playerpicker>
     </div>
-    <!-- <div class="col-md-12 my-3" *ngIf="appEnabled">
-      <app-playlist [currentStation]="station"></app-playlist>
-    </div> -->
     <div class="col-12 my-3">
       <app-station-pool [currentStation]="station" *ngIf="userOwnsStation()"></app-station-pool>
     </div>

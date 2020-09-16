@@ -31,6 +31,7 @@ import { AddTracksComponent } from './add-tracks/add-tracks.component';
 import { StationPoolComponent } from './station-pool/station-pool.component';
 import { SinglePlayerStationComponent } from './single-player-station/single-player-station.component';
 import { BattleStationComponent } from './battle-station/battle-station.component';
+import { DeckComponent } from './deck/deck.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { BattleStationComponent } from './battle-station/battle-station.componen
     AddTracksComponent,
     StationPoolComponent,
     SinglePlayerStationComponent,
-    BattleStationComponent
+    BattleStationComponent,
+    DeckComponent
   ],
   imports: [
     BrowserModule,

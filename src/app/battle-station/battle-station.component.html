@@ -1,16 +1,17 @@
 
 <div class="row"> 
 
-  <div class="col-3">
+  <div class="col-4">
     {{ user1 }} <br/>
     <app-station-pool [currentStation]="user1"></app-station-pool>
   </div>
 
-  <div class="col-3">
-    <app-battle-player [battleId]="battleId"> </app-battle-player>
-  </div>
+  <div class="col-4">
+    {{ battleId }}
+<!--     <app-battle-player [battleId]="battleId"> </app-battle-player>
+ -->  </div>
 
-  <div class="col-3">
+  <div class="col-4">
     {{ user2 }} <br/>
     <app-station-pool [currentStation]="user2"></app-station-pool>
   </div>

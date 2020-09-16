@@ -22,12 +22,12 @@ export class SinglePlayerStationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-      this.route.params.subscribe( 
-        params => { 
-          this.station = params['station'] ;
-          this.playlistService.setStation(this.station);
-        }
-        );
+    this.route.params.subscribe( 
+      params => { 
+        this.station = params['station'] ;
+        this.playlistService.setStation(this.station);
+      }
+      );
   }
 
   userOwnsStation(): boolean {

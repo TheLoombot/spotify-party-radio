@@ -30,6 +30,7 @@ import { ChatComponent } from './chat/chat.component';
 import { AddTracksComponent } from './add-tracks/add-tracks.component';
 import { StationPoolComponent } from './station-pool/station-pool.component';
 import { SinglePlayerStationComponent } from './single-player-station/single-player-station.component';
+import { BattleStationComponent } from './battle-station/battle-station.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { SinglePlayerStationComponent } from './single-player-station/single-pla
     ChatComponent,
     AddTracksComponent,
     StationPoolComponent,
-    SinglePlayerStationComponent
+    SinglePlayerStationComponent,
+    BattleStationComponent
   ],
   imports: [
     BrowserModule,

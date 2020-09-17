@@ -28,7 +28,7 @@ export class DeckComponent implements OnInit {
         // for some reason orderByChild SOMETIMES returns the order wrong! :(
         this.tracks = tracks.sort((a, b) => a['index'] - b['index']);
         // console.log(`Pool update, new size: ${this.tracks.length}`);
-        console.log(this.tracks);
+        // console.log(this.tracks);
       },
       error => console.error('Conshocken police department: ', error)
       );

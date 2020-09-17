@@ -6,7 +6,6 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-battle-station',
   templateUrl: './battle-station.component.html',
-  styleUrls: ['./battle-station.component.css']
 })
 export class BattleStationComponent implements OnInit {
 

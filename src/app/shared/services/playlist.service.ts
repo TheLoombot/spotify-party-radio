@@ -390,7 +390,6 @@ export class PlaylistService {
     // the WRONG station... to be corrected! 
     track.index = (this.poolTracks ? this.poolTracks.length : 0);
 
-
     console.log(`Saving ${track.name} to pool ${station}`);
 
     if (station == this.stationName) {
@@ -401,6 +400,27 @@ export class PlaylistService {
     }
 
     this.fixPoolIndexes();
+  }
+
+  insertTrack(track: Track) {
+    // Clean track Object
+    delete track.expires_at;
+    // not sure why this is there TBH 🤔
+    delete track.key;
+
+    if (!track.added_by) {
+      track.added_by = this.spotifyService.getUserName();
+    }
+
+    // BUG: when you save tracks from other stations, this references
+    // the WRONG station... to be corrected! 
+    track.index = 0;
+    this.poolTracks.forEach((t, index) => {
+      // console.log(`name: ${t.name}, index: ${index}`);
+      this.updatePoolTrack(t.id, {index: index+1});
+    });
+
+    this.db.list(this.previouslistUrl).set(track.id, track);
   }
 
   // move a pool track up one position

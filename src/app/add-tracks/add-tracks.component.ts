@@ -218,7 +218,7 @@ export class AddTracksComponent implements OnInit {
     this.clicked = i;
     // this.playlistService.pushTrack(track, user);
     track.added_at = this.getTime();
-    this.playlistService.saveTrack(track);
+    this.playlistService.insertTrack(track);
   }
 
   nextPlaylistPage() {

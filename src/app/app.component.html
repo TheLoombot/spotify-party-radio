@@ -8,7 +8,7 @@
     </div>
     <div class="col-md-6 mt-3 h-100">
       <!-- router outlet for callback component --> 
-      <router-outlet></router-outlet>
+      <router-outlet (deactivate)='onDeactivate($event)'></router-outlet>
       <app-perform-login *ngIf="!appEnabled"> </app-perform-login>
       <app-logged-in-user *ngIf="appEnabled"></app-logged-in-user>
       <app-alert *ngIf="!appEnabled"></app-alert>

@@ -19,6 +19,7 @@ export class CallbackComponent implements OnInit {
 
 	ngOnInit(): void {
 		if (this.route.snapshot.fragment) {
+			console.log(`fragment in callback is ${this.route.snapshot.fragment}`);
 			const params = this.route.snapshot.fragment.split('&');
 			window.location.hash = '';
 			for (const paramString of params) {
@@ -30,6 +31,7 @@ export class CallbackComponent implements OnInit {
 				}
 			}
 		}
+		this.router.navigate([""]);
 	}
 
 }

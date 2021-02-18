@@ -44,12 +44,12 @@ export class SpotifyService {
     private router: Router,
   ) {
 
-    if (window.location.pathname == '/auth') {
-      window.localStorage.removeItem('access_token');
-    } else if (window.localStorage.getItem('access_token')) {
-      const accessTokenStored = window.localStorage.getItem('access_token');
-      this.setToken(accessTokenStored);
-    }
+    // if (window.location.pathname == '/auth') {
+    //   window.localStorage.removeItem('access_token');
+    // } else if (window.localStorage.getItem('access_token')) {
+    //   const accessTokenStored = window.localStorage.getItem('access_token');
+    //   this.setToken(accessTokenStored);
+    // }
 
   }
 

@@ -1,9 +1,9 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 /* Models */
-import { State } from './shared/models/state';
+import { User } from './shared/models/user';
 /* Services */
-import { StateService } from './shared/services/state.service';
 import { SpotifyService } from './shared/services/spotify.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -12,42 +12,36 @@ import { SpotifyService } from './shared/services/spotify.service';
 })
 export class AppComponent implements OnInit {
   appEnabled: boolean;
-  stationLoading: boolean;
-  state: State;
-  station: string;
+  user: User;
 
   constructor (
-    private cdr: ChangeDetectorRef,
-    private stateService: StateService,
     private spotifyService: SpotifyService,
+    private router: Router,
   ) {
-    this.appEnabled = false; // Disable components
-    this.stationLoading = true;
   }
 
-  userOwnsStation(): boolean {
-    if (this.station == this.spotifyService.getUserName()) return true;
-    return false;
+  checkAuth() {
+    this.spotifyService.getUserProfile()
+    .subscribe(
+      (user: User) => {
+        this.user = user;
+        this.appEnabled = true;
+        console.log(`got a user object back ${this.user}`);
+      },
+      error => {
+        console.error('getUserProfile:', error);
+        this.appEnabled = false;
+      }
+      );
   }
 
+  onDeactivate (componentRef) {
+    console.log("DEACTIVATED!");
+    this.checkAuth();
+  }
 
   ngOnInit () {
-    this.stateService.getState()
-      .subscribe(
-        (state: State) => {
-          this.state = state;
-          if (state.station) {
-            this.station = state.station;
-          }
-          this.appEnabled = state.enabled;
-          this.stationLoading = state.loading;
-          // console.log('State obtained in app:', this.state);
-        },
-        error => console.error(error),
-        () => {
-          this.cdr.detectChanges();
-        }
-      );
+    this.checkAuth();
   }
 }
 

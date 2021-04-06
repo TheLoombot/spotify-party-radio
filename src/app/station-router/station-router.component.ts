@@ -25,13 +25,8 @@ export class StationRouterComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe( 
       params => { 
-        if (!this.spotifyService.getToken()) {
-          this.stateService.sendError(`There is no available token?`);
-          return;
-        }
         this.station = params['station'] ;
         this.playlistService.setStation(this.station);
-        this.stateService.sendState({ enabled: true, loading: false, station: `${this.station}` });
       }
       );
   }

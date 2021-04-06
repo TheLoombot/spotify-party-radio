@@ -27,7 +27,6 @@ export class LoggedInUserComponent implements OnInit {
   	this.user = this.spotifyService.getUser();
     this.userName = this.spotifyService.getUserName();
 
-    this.accessToken = this.spotifyService.getToken();
   }
 
   signOut() {

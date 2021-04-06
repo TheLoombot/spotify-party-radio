@@ -53,29 +53,8 @@ export class SpotifyService {
 
   }
 
-  setToken(token: string): void {
-    this.token = token;
-    this.getUserProfile()
-    .subscribe(
-      (user: User) => {
-        this.user = user;
-        this.stateService.sendState({ enabled: true });
-        if (this.router.url === '/auth' || this.router.url === '/') {
-          this.router.navigate(["", this.getUserName() ]);
-        } 
-      },
-      error => {
-        console.error('getUserProfile:', error);
-        this.stateService.sendError(`There is no available user, ${error.error.error.message}`, error.error.error.status);
-        window.localStorage.removeItem('access_token');
-        // this.accessTokenStored = null;
-        // this.availableToken = false;
-      }
-      );
-  }
-
-  getToken(): string {
-    return this.token;
+  setUser(user: User): void {
+    this.user = user;
   }
 
   clearToken(): void {

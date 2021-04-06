@@ -12,7 +12,6 @@ import { Router } from '@angular/router';
 })
 export class AppComponent implements OnInit {
   appEnabled: boolean;
-  user: User;
 
   constructor (
     private spotifyService: SpotifyService,
@@ -24,9 +23,8 @@ export class AppComponent implements OnInit {
     this.spotifyService.getUserProfile()
     .subscribe(
       (user: User) => {
-        this.user = user;
+        this.spotifyService.setUser(user);
         this.appEnabled = true;
-        console.log(`got a user object back ${this.user}`);
       },
       error => {
         console.error('getUserProfile:', error);

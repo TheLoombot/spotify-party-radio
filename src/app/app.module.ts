@@ -31,6 +31,7 @@ import { StationRouterComponent } from './station-router/station-router.componen
 import { ChatComponent } from './chat/chat.component';
 import { AddTracksComponent } from './add-tracks/add-tracks.component';
 import { StationPoolComponent } from './station-pool/station-pool.component';
+import { StationComponent } from './station/station.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { StationPoolComponent } from './station-pool/station-pool.component';
     StationRouterComponent,
     ChatComponent,
     AddTracksComponent,
-    StationPoolComponent
+    StationPoolComponent,
+    StationComponent
   ],
   imports: [
     BrowserModule,

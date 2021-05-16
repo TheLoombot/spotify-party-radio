@@ -3,7 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { User } from './shared/models/user';
 /* Services */
 import { SpotifyService } from './shared/services/spotify.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { StateService } from './shared/services/state.service';
 
 @Component({
   selector: 'app-root',
@@ -14,32 +15,20 @@ export class AppComponent implements OnInit {
   appEnabled: boolean;
 
   constructor (
+    private route: ActivatedRoute,
     private spotifyService: SpotifyService,
     private router: Router,
-  ) {
-  }
-
-  checkAuth() {
-    this.spotifyService.getUserProfile()
-    .subscribe(
-      (user: User) => {
-        this.spotifyService.setUser(user);
-        this.appEnabled = true;
-      },
-      error => {
-        console.error('getUserProfile:', error);
-        this.appEnabled = false;
-      }
-      );
-  }
-
-  onDeactivate (componentRef) {
-    console.log("DEACTIVATED!");
-    this.checkAuth();
+    private stateService: StateService,
+    ) {
   }
 
   ngOnInit () {
-    this.checkAuth();
+    this.stateService.getState().
+    subscribe(
+      state => {
+        this.appEnabled = state['enabled'];
+      }
+      );
   }
 }
 

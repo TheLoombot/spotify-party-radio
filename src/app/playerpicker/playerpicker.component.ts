@@ -211,7 +211,7 @@ export class PlayerpickerComponent implements OnInit {
             } else {
               this.showPushButton = true;
               this.clicked = false;
-              this.showSkip = false;
+              this.showSkip = true;
             }
             this.timeOutSubs.forEach(id => clearTimeout(id));
             this.timeOutSubs.push(

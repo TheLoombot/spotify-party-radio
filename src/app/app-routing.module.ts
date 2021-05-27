@@ -5,8 +5,8 @@ import { StationComponent } from './station/station.component';
 
 const routes: Routes = [
 { path: 'auth', component: CallbackComponent },
+{ path: '', component: StationComponent },
 { path: ':station', component: StationComponent },
-{ path: '', component: CallbackComponent },
 ];
 
 @NgModule({

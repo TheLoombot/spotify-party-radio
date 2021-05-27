@@ -17,7 +17,7 @@
   <div class="row">
     <div class="col-md-12"> 
       <!-- router outlet for callback component --> 
-      <router-outlet></router-outlet>
+      <router-outlet (deactivate)='onDeactivate($event)'></router-outlet>
     </div>
 
   </div>
@@ -27,11 +27,7 @@
     <!-- it's kosher to nest columns in columns! --> 
     <div class="col-md-6"> 
       <div class="col-md-12 my-3" *ngIf="appEnabled">
-        <app-playerpicker [currentStation]="station"></app-playerpicker>
       </div>
-      <!-- <div class="col-md-12 my-3" *ngIf="appEnabled">
-        <app-playlist [currentStation]="station"></app-playlist>
-      </div> -->
       <div class="col-md-12 my-3" *ngIf="appEnabled">
         <app-station-pool [currentStation]="station" ></app-station-pool>
       </div>

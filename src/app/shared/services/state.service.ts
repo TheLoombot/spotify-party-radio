@@ -14,17 +14,21 @@ import { environment } from '../../../environments/environment';
 })
 export class StateService {
   private stateSubject: Subject<State>;
+  defaultState: State = { enabled: false };
 
   constructor () {
     this.stateSubject = new Subject<State>();
+    this.sendState(this.defaultState);
   }
 
   sendState(state: State): void {
+    // console.log("incoming STATE: " + state['enabled']);
     this.stateSubject.next(state);
   }
 
   clearState(): void {
     this.stateSubject.next();
+    console.log("STATE");
   }
 
   getState(): Observable<State> {

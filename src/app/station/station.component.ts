@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SpotifyService } from '../shared/services/spotify.service';
+import { StateService } from '../shared/services/state.service';
 
 @Component({
   selector: 'app-station',
@@ -15,12 +16,13 @@ export class StationComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private spotifyService: SpotifyService,
-    ) { }
+    private stateService: StateService,
+   ) { }
 
   ngOnInit(): void {
+
     this.route.params.subscribe( 
       params => { 
-        console.log();
         if (!params['station']) {
           console.log("no route");
           console.log(this.spotifyService.getUser());
@@ -31,5 +33,7 @@ export class StationComponent implements OnInit {
       }
       );
   }
+
+
 
 }
